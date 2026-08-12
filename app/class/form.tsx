@@ -5,6 +5,7 @@ import { FormSection, PickerField, TextField } from "@/components/form-ui";
 import { IconButton, PrimaryButton, ScreenTitle } from "@/components/dars-ui";
 import { ScreenContainer } from "@/components/screen-container";
 import { useDars } from "@/lib/dars-context";
+import { haptic } from "@/lib/haptics";
 import { subjects, type ClassDraft, type DarsClass } from "@/lib/types/dars";
 
 const today = () => { const date = new Date(); return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}`; };
@@ -37,6 +38,7 @@ export default function ClassFormScreen() {
     }
     const selectedLocation = locations.find((location) => location.id === draft.locationId);
     const savedId = saveClass({ ...draft, title: draft.title.trim(), city: selectedLocation?.city ?? draft.city, endTime: draft.endTime || undefined, notes: draft.notes?.trim() || undefined, recurrenceRule: draft.type === "recurring" ? draft.recurrenceRule || "Weekly" : undefined }, existing?.id);
+    haptic.success();
     router.replace(`/class/${savedId}` as never);
   };
 
