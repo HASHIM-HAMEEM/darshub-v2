@@ -15,3 +15,6 @@
 - [x] Standardize Google Material iconography and add smooth, accessible interaction feedback across controls.
 - [x] Harden every class, directory, search, form, theme, and navigation flow with focused automated and layout checks.
 - [x] Save a final responsive polish checkpoint after validating the completed experience.
+- [x] Rebuild DarsHub’s visual system around the supplied warm ivory, deep-green Islamic study reference.
+- [x] Align the Home, Add/Edit, Class Detail, Schedule, Teachers, and More experiences with the reference’s cards, featured panel, sections, and icon treatment.
+- [x] Validate the reference-aligned design across phone and tablet layouts and save the updated checkpoint.

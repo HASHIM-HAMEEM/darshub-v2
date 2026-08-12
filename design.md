@@ -2,9 +2,9 @@
 
 ## Product Intent
 
-DarsHub is a quiet, local-first study companion for students attending Islamic studies lessons in Egypt. The redesign adopts the user-supplied reference direction: **near-white or near-black canvas, exceptionally generous whitespace, small amounts of crisp black-and-white typography, hairline separation, and sparse line icons**. The app must feel closer to a considered notebook or private messenger than a productivity dashboard.
+DarsHub is a warm, local-first study companion for students attending Islamic studies lessons in Egypt. The visual direction now follows the supplied reference: **soft ivory canvas, a dignified deep-green accent, gently rounded white cards, restrained Islamic arch-and-book motifs, and refined but highly readable typography**. The product should feel like a personal study journal—calm, reverent, and organized rather than generic or corporate.
 
-The design is optimized for **one-handed portrait use on a 9:16 phone**. Every screen has a restrained top bar, a single visual focal point, and a clear lower-screen action where required. The light and dark themes use the same spacing and hierarchy, not a recoloured variant of a card-heavy interface.
+The design remains optimized for **one-handed portrait use on a 9:16 phone**, with tablet layouts centered in a readable content frame. Dark mode retains the same component hierarchy using deep green-charcoal surfaces and soft cream text; it is not a simple colour inversion.
 
 ## Screen List
 
@@ -31,24 +31,25 @@ The design is optimized for **one-handed portrait use on a 9:16 phone**. Every s
 | Find a relevant lesson | Use Home search or Search & Filter → choose a teacher, subject, book, city, or status → tap a matching class. |
 | Browse reference details | Open Teachers / Books / Locations from tabs or More → tap a list item → inspect linked classes → add a new reference item if needed. |
 
-## Minimalist Direction
+## Reference-Aligned Direction
 
-The Home screen is rebuilt as a single, breathing composition. A compact wordmark sits at the upper left; a quiet menu / settings affordance balances it at the upper right. The next lesson is communicated through deliberate type and one discreet date rule, rather than a large coloured feature card. Supporting lessons become plain, full-width rows with one divider and a small time column. Empty space is intentional—not a gap to fill with widgets.
+The Home screen opens with an inviting greeting and a small notification action. The next lesson receives a single deep-green featured card with a date/time lockup, prominent class title, teacher and location metadata, a quiet Islamic book motif, and a full-width `View details` affordance. Upcoming classes follow as compact white cards: each has a slim date column, clear class title, teacher and location lines, and one chevron. Filter pills are warm-green when selected and pale ivory otherwise. The quick add action is a circular deep-green control that stays in the thumb zone.
 
-Navigation takes a reduced, monochrome form. Primary destinations use a low-contrast bottom rail with outline icons and no competing colour. The Add action becomes a rounded black or white `New class` pill, positioned as an obvious, thumb-friendly commitment rather than a brightly coloured tab. Search and filters remain available but live behind a single low-emphasis control and expand only when needed.
+Forms are built from warm-white cards inside an ivory page, arranged into numbered sections: `1. Class Details`, `2. Time`, `3. Place`, and `4. Notes`. Inputs are visually consistent, labels are explicit, and toggle treatments are reserved for mutually exclusive choices such as one-time versus recurring. Class details turn the subject, book, teacher, date, time, and place into a clear vertical information card with an image/motif header and a small action dock at the bottom.
 
-Forms preserve their logical sections, but replace framed fields and elevated cards with label-first rows, hairline dividers, and a fixed save action. Lists, teacher details, books, locations, and settings adopt this same system: text-led rows, a 44-point minimum target, sparse supporting metadata, and no shadows.
+Schedule uses segmented `Today / Week / Month` filtering and grouped agenda cards. Teachers use small circular portraits or letter avatars with subject tags and their next class. More becomes a clean grouped menu of books, locations, subjects, search, settings, reminders, and about. The five-tab navigation retains Google Material icons, but the selected state is deep green and the central Add action is elevated as a circular primary control.
 
 ## Color Choices
 
 | Role | Light mode | Dark mode | Intended use |
 |---|---|---|---|
-| Ink | `#161616` | `#F5F5F4` | Wordmark, primary labels, active actions, and essential icons. |
-| Canvas | `#FCFCFB` | `#101010` | Calm full-bleed screen background. |
-| Surface | `#F4F4F2` | `#191919` | Subtle fields, inactive controls, and selected-row wash. |
-| Secondary | `#79797F` | `#A0A0A5` | Hints, supporting metadata, and inactive navigation. |
-| Hairline | `#E7E7E4` | `#292929` | Dividers and discreet component boundaries. |
-| Positive | `#4E4E4E` | `#C9C9C9` | Completed states communicated without a coloured status system. |
+| Deep Green | `#164D3D` | `#86C5A3` | Featured class cards, selected filters, active navigation, and primary actions. |
+| Ivory Canvas | `#FAF8F1` | `#101714` | Full-screen background with a soft, paper-like warmth. |
+| Paper Surface | `#FFFFFF` | `#17221E` | Form sections, information cards, menus, and class rows. |
+| Sage Wash | `#EEF2E9` | `#20332B` | Inactive chips, small icon discs, selected-row wash, and secondary fills. |
+| Forest Ink | `#183C30` | `#F0F5EF` | Prominent text and core iconography. |
+| Warm Secondary | `#6C746D` | `#AFB9B1` | Supporting detail, hints, and inactive navigation. |
+| Hairline | `#E5E5DC` | `#304238` | Card edges, field outlines, and restrained dividers. |
 
 ## Domain Vocabulary and Local Data
 
