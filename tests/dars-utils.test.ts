@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { classMatchesQuery, dayDifference, getNextClass, getUpcomingClasses, sortClasses } from "../lib/dars-utils";
+import { classMatchesQuery, dayDifference, formatClassDate, formatClassDateParts, getNextClass, getUpcomingClasses, sortClasses } from "../lib/dars-utils";
 import type { DarsClass } from "../lib/types/dars";
 
 const classItem = (id: string, date: string, startTime: string, status: DarsClass["status"] = "upcoming"): DarsClass => ({
@@ -37,5 +37,26 @@ describe("Dars schedule utilities", () => {
     const now = new Date();
     const localToday = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}-${String(now.getDate()).padStart(2, "0")}`;
     expect(dayDifference(localToday)).toBe(0);
+  });
+
+  it("renders Gregorian, Hijri, and combined date preferences without dropping calendar context", () => {
+    const gregorian = formatClassDate("2027-04-01", "gregorian");
+    const hijri = formatClassDate("2027-04-01", "hijri");
+    const dual = formatClassDate("2027-04-01", "dual");
+    expect(gregorian).toContain("Apr");
+    expect(hijri).not.toBe(gregorian);
+    expect(dual).toContain("·");
+    expect(dual).toContain(gregorian);
+    expect(dual).toContain(hijri);
+  });
+
+  it("derives class-card date pieces from locale parts instead of assuming English word order", () => {
+    const english = formatClassDateParts("2027-04-01", "en-EG");
+    const arabic = formatClassDateParts("2027-04-01", "ar-EG");
+    expect(english.weekday).toBeTruthy();
+    expect(english.day).toBeTruthy();
+    expect(arabic.weekday).toBeTruthy();
+    expect(arabic.day).toBeTruthy();
+    expect(arabic.day).not.toBe(english.day);
   });
 });

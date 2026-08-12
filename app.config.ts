@@ -113,6 +113,13 @@ const config: ExpoConfig = {
       },
     ],
     [
+      "expo-notifications",
+      {
+        color: "#164D3D",
+        defaultChannel: "classes",
+      },
+    ],
+    [
       "expo-build-properties",
       {
         android: {

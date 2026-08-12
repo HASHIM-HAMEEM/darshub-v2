@@ -31,3 +31,9 @@
 - [x] Add a polished Google-style Arabic logo splash treatment and validate the cleaned application flow.
 - [x] Improve visual hierarchy, first-use guidance, spacing, touch targets, empty states, and responsive presentation across DarsHub.
 - [x] Validate the upgraded DarsHub interface across the core screens and save the improved release.
+- [x] Redesign the DarsHub interface with a stronger, calmer visual and interaction direction based on a fresh UX audit.
+- [x] Persist classes and reference records locally so study planning survives app restarts.
+- [x] Add local class reminders with a configurable lead time and actionable status feedback.
+- [x] Add Arabic display support and Hijri dates throughout schedules and class details.
+- [x] Stress-test the redesigned feature set across phone and tablet flows before release.
+- [x] Apply the product-design system to rebuild DarsHub’s visual hierarchy, screen structure, states, and responsive layouts.

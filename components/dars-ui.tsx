@@ -3,9 +3,10 @@ import { router } from "expo-router";
 import { ReactNode } from "react";
 import { Pressable, StyleSheet, Text, TextInput, View } from "react-native";
 import { useColors } from "@/hooks/use-colors";
-import { formatClassDate, formatTime, getRef } from "@/lib/dars-utils";
+import { formatClassDateParts, formatTime, getRef } from "@/lib/dars-utils";
 import { haptic } from "@/lib/haptics";
 import type { Book, DarsClass, Location, Teacher } from "@/lib/types/dars";
+import { useDisplayPreferences } from "@/lib/use-display-preferences";
 
 type MaterialIcon = React.ComponentProps<typeof MaterialIcons>["name"];
 
@@ -36,9 +37,9 @@ export function SubjectBadge({ label }: { label: string }) {
 }
 
 export function ClassCard({ item, teachers, books, locations, onPress, compact = false }: { item: DarsClass; teachers: Teacher[]; books: Book[]; locations: Location[]; onPress?: () => void; compact?: boolean }) {
-  const colors = useColors(); const teacher = getRef(teachers, item.teacherId); const book = getRef(books, item.bookId); const location = getRef(locations, item.locationId); const [weekday, , number] = formatClassDate(item.date).split(" "); const navigate = onPress ?? (() => router.push(`/class/${item.id}` as never));
+  const colors = useColors(); const { locale } = useDisplayPreferences(); const teacher = getRef(teachers, item.teacherId); const book = getRef(books, item.bookId); const location = getRef(locations, item.locationId); const { weekday, day } = formatClassDateParts(item.date, locale); const navigate = onPress ?? (() => router.push(`/class/${item.id}` as never));
   return <Pressable accessibilityRole="button" onPress={() => { haptic.light(); navigate(); }} style={({ pressed }) => [styles.classCard, { backgroundColor: colors.surface, borderColor: colors.border, opacity: pressed ? 0.72 : 1, transform: [{ scale: pressed ? 0.987 : 1 }] }]}>
-    <View style={[styles.dateColumn, { backgroundColor: colors.wash }]}><Text style={[styles.dateDay, { color: colors.muted }]}>{weekday}</Text><Text style={[styles.dateNumber, { color: colors.text }]}>{number}</Text><Text style={[styles.dateTime, { color: colors.muted }]}>{formatTime(item.startTime)}</Text></View>
+    <View style={[styles.dateColumn, { backgroundColor: colors.wash }]}><Text style={[styles.dateDay, { color: colors.muted }]}>{weekday}</Text><Text style={[styles.dateNumber, { color: colors.text }]}>{day}</Text><Text style={[styles.dateTime, { color: colors.muted }]}>{formatTime(item.startTime, locale)}</Text></View>
     <View style={styles.classCopy}><View style={styles.cardTopLine}><Text numberOfLines={2} style={[styles.classTitle, { color: colors.text }]}>{item.title}</Text>{!compact ? <MaterialIcons name="chevron-right" size={18} color={colors.muted} /> : null}</View><View style={styles.metaRow}><MaterialIcons name="person-outline" size={13} color={colors.muted} /><Text numberOfLines={1} style={[styles.metadata, { color: colors.muted }]}>{teacher?.name ?? "Teacher pending"}</Text></View><View style={styles.metaRow}><MaterialIcons name="location-on" size={13} color={colors.muted} /><Text numberOfLines={1} style={[styles.metadata, { color: colors.muted }]}>{location?.name ?? item.city}</Text></View>{book ? <Text numberOfLines={1} style={[styles.bookMeta, { color: colors.tint }]}>{book.name}</Text> : null}</View>
   </Pressable>;
 }

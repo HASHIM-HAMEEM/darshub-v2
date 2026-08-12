@@ -1,5 +1,13 @@
 export type ClassStatus = "upcoming" | "completed" | "cancelled";
 export type ClassType = "one-time" | "recurring";
+export type DateDisplay = "gregorian" | "dual" | "hijri";
+
+export type DarsPreferences = {
+  dateDisplay: DateDisplay;
+  dateLanguage: "en" | "ar";
+  remindersEnabled: boolean;
+  reminderLeadMinutes: 10 | 30 | 60;
+};
 
 export type Teacher = {
   id: string;
@@ -47,6 +55,7 @@ export type DarsClass = {
   recurrenceRule?: string;
   language?: string;
   status: ClassStatus;
+  reminderId?: string;
 };
 
 export type ClassDraft = Omit<DarsClass, "id">;
