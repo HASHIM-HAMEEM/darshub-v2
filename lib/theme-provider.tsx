@@ -1,4 +1,4 @@
-import { createContext, useCallback, useContext, useEffect, useMemo, useState } from "react";
+import { createContext, useCallback, useContext, useLayoutEffect, useMemo, useState } from "react";
 import { Appearance, View, useColorScheme as useSystemColorScheme } from "react-native";
 import { colorScheme as nativewindColorScheme, vars } from "nativewind";
 import { SchemeColors, type ColorScheme } from "@/constants/theme";
@@ -30,7 +30,7 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
     applyScheme(scheme);
   }, [applyScheme]);
 
-  useEffect(() => applyScheme(colorScheme), [applyScheme, colorScheme]);
+  useLayoutEffect(() => applyScheme(colorScheme), [applyScheme, colorScheme]);
 
   const themeVariables = useMemo(() => vars({
     "color-primary": SchemeColors[colorScheme].primary,

@@ -5,17 +5,23 @@ import { FormSection, PickerField, TextField } from "@/components/form-ui";
 import { IconButton, PrimaryButton, ScreenTitle } from "@/components/dars-ui";
 import { ScreenContainer } from "@/components/screen-container";
 import { useDars } from "@/lib/dars-context";
-import { subjects, type ClassDraft } from "@/lib/types/dars";
+import { subjects, type ClassDraft, type DarsClass } from "@/lib/types/dars";
 
-const today = () => new Date().toISOString().slice(0, 10);
+const today = () => { const date = new Date(); return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}`; };
+
+function createDraft(existing: DarsClass | undefined, defaults: { teacherId: string; bookId: string; locationId: string; city: string }): ClassDraft {
+  if (existing) {
+    const { id: _id, ...draft } = existing;
+    return { ...draft, endTime: draft.endTime ?? "", notes: draft.notes ?? "", recurrenceRule: draft.recurrenceRule ?? "", language: draft.language ?? "Arabic" };
+  }
+  return { title: "", subject: "Hadith", teacherId: defaults.teacherId, bookId: defaults.bookId, date: today(), startTime: "19:00", endTime: "", locationId: defaults.locationId, city: defaults.city, notes: "", type: "one-time", recurrenceRule: "", language: "Arabic", status: "upcoming" };
+}
 
 export default function ClassFormScreen() {
   const { id } = useLocalSearchParams<{ id?: string }>();
   const { classes, teachers, books, locations, saveClass } = useDars();
   const existing = useMemo(() => classes.find((item) => item.id === id), [classes, id]);
-  const [draft, setDraft] = useState<ClassDraft>(() => existing ? { ...existing, id: undefined } as unknown as ClassDraft : {
-    title: "", subject: "Hadith", teacherId: teachers[0]?.id ?? "", bookId: books[0]?.id ?? "", date: today(), startTime: "19:00", endTime: "", locationId: locations[0]?.id ?? "", city: locations[0]?.city ?? "Cairo", notes: "", type: "one-time", recurrenceRule: "", language: "Arabic", status: "upcoming",
-  });
+  const [draft, setDraft] = useState<ClassDraft>(() => createDraft(existing, { teacherId: teachers[0]?.id ?? "", bookId: books[0]?.id ?? "", locationId: locations[0]?.id ?? "", city: locations[0]?.city ?? "Cairo" }));
   const set = (key: keyof ClassDraft, value: string) => setDraft((current) => ({ ...current, [key]: value }));
   const options = {
     subjects: subjects.map((subject) => ({ label: subject, value: subject })),
