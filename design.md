@@ -2,7 +2,9 @@
 
 ## Product Intent
 
-DarsHub is a calm, local-first study companion for students attending Islamic studies lessons in Egypt. The app is designed for **one-handed portrait use on a 9:16 phone** and follows familiar iOS patterns: clear page titles, predictable bottom navigation, readable lists, restrained sheets, and one primary action per screen. The visual system avoids dashboard density in favor of quiet spacing, direct labels, and immediately scannable time, teacher, book, and location details.
+DarsHub is a quiet, local-first study companion for students attending Islamic studies lessons in Egypt. The redesign adopts the user-supplied reference direction: **near-white or near-black canvas, exceptionally generous whitespace, small amounts of crisp black-and-white typography, hairline separation, and sparse line icons**. The app must feel closer to a considered notebook or private messenger than a productivity dashboard.
+
+The design is optimized for **one-handed portrait use on a 9:16 phone**. Every screen has a restrained top bar, a single visual focal point, and a clear lower-screen action where required. The light and dark themes use the same spacing and hierarchy, not a recoloured variant of a card-heavy interface.
 
 ## Screen List
 
@@ -29,23 +31,24 @@ DarsHub is a calm, local-first study companion for students attending Islamic st
 | Find a relevant lesson | Use Home search or Search & Filter → choose a teacher, subject, book, city, or status → tap a matching class. |
 | Browse reference details | Open Teachers / Books / Locations from tabs or More → tap a list item → inspect linked classes → add a new reference item if needed. |
 
-## Layout and Interaction Principles
+## Minimalist Direction
 
-The Home screen prioritizes recognition over recall: the next dars is anchored at the top, while subsequent lessons appear as lightweight list rows rather than a wall of cards. Each row consistently pairs the date/time with title, scholar, book, and place. Search is always easy to reach, filter chips remain compact, and the floating quick action is reserved for adding a class.
+The Home screen is rebuilt as a single, breathing composition. A compact wordmark sits at the upper left; a quiet menu / settings affordance balances it at the upper right. The next lesson is communicated through deliberate type and one discreet date rule, rather than a large coloured feature card. Supporting lessons become plain, full-width rows with one divider and a small time column. Empty space is intentional—not a gap to fill with widgets.
 
-Forms are divided into four named sections—Class details, Time, Place, and Extra notes—to reduce visual and cognitive load. The save control is prominent and reachable from the lower part of the screen. Lists use generous 16–20 point outer padding and full-width tap targets of at least 44 points. Destructive actions are separated from routine actions and clearly labelled.
+Navigation takes a reduced, monochrome form. Primary destinations use a low-contrast bottom rail with outline icons and no competing colour. The Add action becomes a rounded black or white `New class` pill, positioned as an obvious, thumb-friendly commitment rather than a brightly coloured tab. Search and filters remain available but live behind a single low-emphasis control and expand only when needed.
+
+Forms preserve their logical sections, but replace framed fields and elevated cards with label-first rows, hairline dividers, and a fixed save action. Lists, teacher details, books, locations, and settings adopt this same system: text-led rows, a 44-point minimum target, sparse supporting metadata, and no shadows.
 
 ## Color Choices
 
 | Role | Light mode | Dark mode | Intended use |
 |---|---|---|---|
-| Nile Green | `#225E52` | `#8FD1BC` | Primary actions, active states, calendar emphasis. |
-| Deep Ink | `#172A2A` | `#EFF5F0` | Headlines and high-emphasis text. |
-| Ivory | `#FAF8F2` | `#101817` | Screen background, maintaining a warm study-journal feel. |
-| Paper | `#FFFFFF` | `#192322` | Cards, fields, and grouped navigation surfaces. |
-| Sand | `#E8E0D0` | `#3A413B` | Borders, inactive filter chips, quiet dividers. |
-| Slate | `#66736F` | `#AEBBB6` | Secondary text and metadata. |
-| Completion Green | `#3F7B54` | `#8CCB9D` | Completed state and success feedback. |
+| Ink | `#161616` | `#F5F5F4` | Wordmark, primary labels, active actions, and essential icons. |
+| Canvas | `#FCFCFB` | `#101010` | Calm full-bleed screen background. |
+| Surface | `#F4F4F2` | `#191919` | Subtle fields, inactive controls, and selected-row wash. |
+| Secondary | `#79797F` | `#A0A0A5` | Hints, supporting metadata, and inactive navigation. |
+| Hairline | `#E7E7E4` | `#292929` | Dividers and discreet component boundaries. |
+| Positive | `#4E4E4E` | `#C9C9C9` | Completed states communicated without a coloured status system. |
 
 ## Domain Vocabulary and Local Data
 

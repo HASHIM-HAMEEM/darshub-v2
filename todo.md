@@ -8,3 +8,6 @@
 - [x] Generate and configure a custom DarsHub app icon and app branding metadata.
 - [x] Add deterministic automated tests for core local class-management behavior and validate the project type check.
 - [x] Review the completed feature tracker before saving the initial project checkpoint.
+- [x] Redesign the UI around a monochrome, whitespace-led visual system with refined light and dark themes inspired by the supplied references.
+- [x] Rework core screens, navigation, controls, and content density to establish a genuinely minimal mobile experience.
+- [x] Revalidate the redesigned DarsHub interface and save an updated checkpoint.
