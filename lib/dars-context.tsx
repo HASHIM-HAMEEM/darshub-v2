@@ -13,6 +13,7 @@ type DarsContextValue = {
   addTeacher: (input: Omit<Teacher, "id">) => string;
   addBook: (input: Omit<Book, "id">) => string;
   addLocation: (input: Omit<Location, "id">) => string;
+  resetDemoData: () => void;
 };
 
 const DarsContext = createContext<DarsContextValue | null>(null);
@@ -51,6 +52,12 @@ export function DarsProvider({ children }: { children: React.ReactNode }) {
       const id = makeId("location");
       setLocations((current) => [...current, { ...input, id }]);
       return id;
+    },
+    resetDemoData: () => {
+      setClasses(demoClasses);
+      setTeachers(demoTeachers);
+      setBooks(demoBooks);
+      setLocations(demoLocations);
     },
   }), [books, classes, locations, teachers]);
 

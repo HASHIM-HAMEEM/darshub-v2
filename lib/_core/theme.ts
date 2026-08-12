@@ -29,6 +29,7 @@ function buildSchemePalette(colors: ThemeColorTokens): SchemePalette {
 export const SchemeColors = buildSchemePalette(ThemeColors);
 
 type RuntimePalette = SchemePaletteItem & {
+  wash: string;
   text: string;
   background: string;
   tint: string;
@@ -39,9 +40,10 @@ type RuntimePalette = SchemePaletteItem & {
 };
 
 function buildRuntimePalette(scheme: ColorScheme): RuntimePalette {
-  const base = SchemeColors[scheme];
+  const base = SchemeColors[scheme] as SchemePaletteItem & { wash: string };
   return {
     ...base,
+    wash: base.wash,
     text: base.foreground,
     background: base.background,
     tint: base.primary,

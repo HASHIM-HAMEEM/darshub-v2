@@ -36,6 +36,7 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
     "color-primary": SchemeColors[colorScheme].primary,
     "color-background": SchemeColors[colorScheme].background,
     "color-surface": SchemeColors[colorScheme].surface,
+    "color-wash": (SchemeColors[colorScheme] as typeof SchemeColors[ColorScheme] & { wash: string }).wash,
     "color-foreground": SchemeColors[colorScheme].foreground,
     "color-muted": SchemeColors[colorScheme].muted,
     "color-border": SchemeColors[colorScheme].border,
