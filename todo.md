@@ -29,3 +29,5 @@
 - [x] Remove bundled sample data and all related Settings controls from the DarsHub experience.
 - [x] Create a single Arabic DarsHub logo and configure it across app, splash, favicon, and Android adaptive-icon assets.
 - [x] Add a polished Google-style Arabic logo splash treatment and validate the cleaned application flow.
+- [x] Improve visual hierarchy, first-use guidance, spacing, touch targets, empty states, and responsive presentation across DarsHub.
+- [x] Validate the upgraded DarsHub interface across the core screens and save the improved release.
