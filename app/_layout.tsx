@@ -6,7 +6,9 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import "react-native-reanimated";
 import { Platform } from "react-native";
+import * as SplashScreen from "expo-splash-screen";
 import "@/lib/_core/nativewind-pressable";
+import { BrandIntro } from "@/components/brand-intro";
 import { ThemeProvider } from "@/lib/theme-provider";
 import { DarsProvider } from "@/lib/dars-context";
 import {
@@ -23,6 +25,9 @@ import { initManusRuntime, subscribeSafeAreaInsets } from "@/lib/_core/manus-run
 const DEFAULT_WEB_INSETS: EdgeInsets = { top: 0, right: 0, bottom: 0, left: 0 };
 const DEFAULT_WEB_FRAME: Rect = { x: 0, y: 0, width: 0, height: 0 };
 
+SplashScreen.setOptions({ duration: 520, fade: true });
+void SplashScreen.preventAutoHideAsync();
+
 export const unstable_settings = {
   anchor: "(tabs)",
 };
@@ -37,6 +42,8 @@ export default function RootLayout() {
   // Initialize Manus runtime for cookie injection from parent container
   useEffect(() => {
     initManusRuntime();
+    const timer = setTimeout(() => { void SplashScreen.hideAsync(); }, 16);
+    return () => clearTimeout(timer);
   }, []);
 
   const handleSafeAreaUpdate = useCallback((metrics: Metrics) => {
@@ -104,6 +111,7 @@ export default function RootLayout() {
             <Stack.Screen name="oauth/callback" />
           </Stack>
           <StatusBar style="auto" />
+          <BrandIntro />
           </DarsProvider>
         </QueryClientProvider>
       </trpc.Provider>

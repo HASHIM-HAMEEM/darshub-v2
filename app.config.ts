@@ -32,7 +32,7 @@ const env = {
   appSlug: "darshub-v2",
   // S3 URL of the app logo - set this to the URL returned by generate_image when creating custom logo
   // Leave empty to use the default icon from assets/images/icon.png
-  logoUrl: "/manus-storage/darshub-icon_3947e7dc.png",
+  logoUrl: "/manus-storage/darshub-arabic-logo_e7eb7d88.png",
   scheme: schemeFromBundleId,
   iosBundleId: bundleId,
   androidPackage: bundleId,
@@ -43,7 +43,7 @@ const config: ExpoConfig = {
   slug: env.appSlug,
   version: "1.0.0",
   orientation: "portrait",
-  icon: "./assets/images/icon.png",
+  icon: env.logoUrl,
   scheme: env.scheme,
   userInterfaceStyle: "automatic",
   newArchEnabled: true,
@@ -57,9 +57,9 @@ const config: ExpoConfig = {
   android: {
     adaptiveIcon: {
       backgroundColor: "#225E52",
-      foregroundImage: "./assets/images/android-icon-foreground.png",
+      foregroundImage: env.logoUrl,
       backgroundImage: "./assets/images/android-icon-background.png",
-      monochromeImage: "./assets/images/android-icon-monochrome.png",
+      monochromeImage: env.logoUrl,
     },
     edgeToEdgeEnabled: true,
     predictiveBackGestureEnabled: false,
@@ -82,7 +82,7 @@ const config: ExpoConfig = {
   web: {
     bundler: "metro",
     output: "static",
-    favicon: "./assets/images/favicon.png",
+    favicon: env.logoUrl,
   },
   plugins: [
     "expo-router",
@@ -102,11 +102,12 @@ const config: ExpoConfig = {
     [
       "expo-splash-screen",
       {
-        image: "./assets/images/splash-icon.png",
-        imageWidth: 200,
+        image: env.logoUrl,
+        imageWidth: 156,
         resizeMode: "contain",
         backgroundColor: "#FAF8F2",
         dark: {
+          image: env.logoUrl,
           backgroundColor: "#101817",
         },
       },

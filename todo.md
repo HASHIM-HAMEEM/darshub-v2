@@ -26,3 +26,6 @@
 - [x] Audit and improve back navigation, class/event detail openings, and icon consistency across all routes.
 - [x] Replace Settings placeholder behavior with useful local controls and remove unnecessary interface copy.
 - [x] Validate all revised routes, themes, controls, and settings flows before saving the release.
+- [x] Remove bundled sample data and all related Settings controls from the DarsHub experience.
+- [x] Create a single Arabic DarsHub logo and configure it across app, splash, favicon, and Android adaptive-icon assets.
+- [x] Add a polished Google-style Arabic logo splash treatment and validate the cleaned application flow.
