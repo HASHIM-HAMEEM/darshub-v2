@@ -97,3 +97,6 @@
 - [x] Inspect the Dars Android build configuration, Expo compatibility, and available build-failure evidence.
 - [x] Repair any reproducible Android dependency or configuration issue blocking the build.
 - [x] Run Android-focused validation and confirm the build-ready project state.
+- [x] Audit and repair light/dark mobile text, button, and icon contrast across all Dars screens.
+- [x] Rebuild the More screen’s icon layout so destinations and tap targets render clearly on mobile.
+- [ ] Verify buttons and interactive controls remain visible and usable on physical mobile themes.

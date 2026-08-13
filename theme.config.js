@@ -1,5 +1,6 @@
 const themeColors = {
   primary: { light: '#2E6E5E', dark: '#8FC7B7' },
+  onPrimary: { light: '#FFFFFF', dark: '#10231E' },
   background: { light: '#F5F3EF', dark: '#17211F' },
   surface: { light: '#FFFFFF', dark: '#21302C' },
   wash: { light: '#E8F0ED', dark: '#2C403A' },

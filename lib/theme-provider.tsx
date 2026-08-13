@@ -34,6 +34,7 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
 
   const themeVariables = useMemo(() => vars({
     "color-primary": SchemeColors[colorScheme].primary,
+    "color-on-primary": SchemeColors[colorScheme].onPrimary,
     "color-background": SchemeColors[colorScheme].background,
     "color-surface": SchemeColors[colorScheme].surface,
     "color-wash": (SchemeColors[colorScheme] as typeof SchemeColors[ColorScheme] & { wash: string }).wash,
