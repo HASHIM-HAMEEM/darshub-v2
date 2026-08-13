@@ -44,3 +44,7 @@
 - [x] Replace the finance-like visual treatment with a calm original Islamic study-journal system using generated doodle-style illustrations and icons.
 - [x] Run final phone and tablet closed-loop regressions and independently verify every repaired critical journey.
 - [ ] Confirm reminder permission and a delivered scheduled notification on a physical iOS or Android device.
+- [x] Remove unnecessary copy, decorative density, and competing visual treatments from the DarsHub mobile interface.
+- [x] Rebuild buttons, icon language, tab navigation, action placement, motion, and selection sheets into a sharper native-feeling system.
+- [x] Rework phone and tablet responsive layouts around compact hierarchy, touch ergonomics, and calmer density.
+- [x] Complete a focused visual and interaction regression audit of the stripped-back interface.
