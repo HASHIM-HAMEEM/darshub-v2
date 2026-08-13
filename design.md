@@ -116,6 +116,23 @@ The user-supplied Durus prototype now supersedes earlier visual directions. Its 
 | Navigation | White five-tab bottom bar, quiet labels, centered raised pine Add affordance, light press-scale response. |
 | Motion | 300 ms fade-up entrance sequence for screen content; 150–200 ms press scale; 300 ms smooth option/tab transition; 300 ms modal or sheet rise. Reduced-motion preferences remove all nonessential transforms. |
 
+## Qaf-Inspired Product System
+
+The Qaf-inspired reset supersedes the Durus presentation system. It adapts only the broad public qualities of Qaf’s mobile experience—an almost-white reading canvas, sparse product chrome, text-first hierarchy, controlled dividers, compact controls, and focused input-like actions—without reproducing Qaf branding, product content, proprietary layouts, or assets.
+
+| Pattern | DarsHub rule |
+|---|---|
+| Canvas and contrast | Light mode uses a nearly-white paper canvas, charcoal text, and muted gray metadata. Dark mode uses graphite rather than inverted decorative green panels. |
+| Accent | Deep green is reserved for selected states, the primary action, and useful status emphasis. Gold is no longer a recurring decorative system color. |
+| Surface model | Records use flat chronological or directory rows with hairline dividers. Elevated or rounded surfaces are limited to the next-class focus, fields, selection sheets, and an occasional meaningful empty state. |
+| Typography | Screen titles are clear system-style text, generally 28–29 px. Metadata is compact but readable. No more than four text roles appear on a screen. |
+| Home | A compact date header, one Next class focus module, a short chronological list, and one integrated Add action. There is no greeting, ornament, large colored hero, filter panel, duplicate add control, or Home FAB. |
+| Detail | A low-chrome contextual app bar, text-first summary, ordered metadata rows, and a single visible Edit action. Map/share remain accessible as quiet utilities. |
+| Directories and search | Flat identity-led rows, a quiet search field, one expandable refine control, and clear result counts. Redundant descriptive eyebrows are removed. |
+| Editing | The four-step flow remains, but with one decision group at a time, plain labelled fields, native sheets, and a fixed keyboard-safe primary action. |
+| Navigation | Five stable labeled destinations remain. Add opens the class form from the tab without changing selection; its affordance is compact and integrated, not raised or duplicated by a floating control. |
+| Motion | Use 140–220 ms press, page, and sheet continuity. Remove fade-up staggers, bouncing, ornamental transforms, and decorative animation. Respect reduced-motion preferences. |
+
 ## Color Choices
 
 | Role | Light mode | Dark mode | Intended use |

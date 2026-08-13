@@ -67,3 +67,8 @@
 - [x] Apply the Durus design system to DarsHub’s shared tokens, controls, bottom navigation, and interaction states.
 - [x] Rebuild Home, Add Class, Class Detail, Schedule, Teachers, and supporting screens to match the supplied reference patterns.
 - [x] Validate the Durus-reference rebuild across bilingual, dark-mode, responsive, reminder, and interaction flows.
+- [x] Audit current UI issues and establish Qaf-inspired visual acceptance criteria without copying Qaf brand assets or layouts.
+- [x] Reset shared DarsHub tokens, tab shell, app bars, action affordances, rows, fields, sheets, and motion into a text-first product system.
+- [x] Rebuild core Home, Schedule, Class Form, Class Detail, Teachers, and Search flows around the new system.
+- [x] Align Books, Locations, More, Settings, and all entity-detail screens with the shared system and responsive/RTL/dark-mode behavior.
+- [ ] Complete closed-loop functional, visual, navigation, accessibility, responsive, and persistence validation for the Qaf-inspired redesign.
