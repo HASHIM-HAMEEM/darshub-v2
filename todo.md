@@ -94,3 +94,6 @@
 - [x] Manually inspect each tab, section, form, directory, detail screen, settings control, navigation route, and responsive state on the live interface.
 - [x] Fix all verified manual-audit defects and repeat targeted live checks.
 - [x] Run final manual and deterministic regression checks, then save the reviewed Dars release.
+- [x] Inspect the Dars Android build configuration, Expo compatibility, and available build-failure evidence.
+- [x] Repair any reproducible Android dependency or configuration issue blocking the build.
+- [x] Run Android-focused validation and confirm the build-ready project state.

@@ -92,6 +92,7 @@ const config: ExpoConfig = {
         microphonePermission: "Allow $(PRODUCT_NAME) to access your microphone.",
       },
     ],
+    "expo-font",
     [
       "expo-video",
       {
@@ -99,6 +100,7 @@ const config: ExpoConfig = {
         supportsPictureInPicture: true,
       },
     ],
+    "expo-web-browser",
     [
       "expo-splash-screen",
       {
