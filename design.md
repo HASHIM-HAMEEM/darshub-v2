@@ -41,17 +41,19 @@ Forms are built from a single scrollable, clearly sectioned surface: `Class deta
 
 Schedule uses segmented `Today / Week / Month` filtering and grouped agenda cards. Teachers use small circular portraits or letter avatars with subject tags and their next class. More becomes a clean grouped menu of books, locations, subjects, search, settings, reminders, and about. The five-tab navigation uses original doodle navigation assets with stable labels; Add is a normal destination rather than an elevated centre control.
 
-## Recovery Visual Direction: Study Journal, Not Dashboard
+## Premium Product Surface Direction
 
-The recovery pass removes the raised centre action, saturated feature-card treatment, and dashboard-like emphasis that made the experience read as financial software. DarsHub now uses a quiet paper surface and a standard five-destination navigation bar, while an original hand-drawn **study doodle language** provides warmth in empty states, setup guidance, navigation icons, and next-class context. The doodles depict books, a pencil, calendar, crescent, lantern, and restrained geometry; they are supportive accents, not decorative clutter.
+The premium rebuild discards both the dashboard treatment and the decorative doodle layer. DarsHub should feel like a considered personal workspace: neutral canvas, editorial type, controlled empty space, and tactile system controls. The design borrows broad principles from high-quality modern products—clarity, restraint, and confident structure—without reproducing any brand’s layout or assets.
 
 | System decision | Implementation rule |
 |---|---|
-| Navigation | Each destination is equal-weight, visibly labelled, and uses its matching generated doodle icon. Add is a normal destination rather than a raised financial-style control. |
-| Surfaces | Content uses ivory canvas, warm-white panels, sage washes, and hairline separation before elevation. The next class appears as an information surface rather than a saturated promo block. |
-| Hierarchy | One primary action stays visible within a local task. The time and class title lead; teacher, location, and study metadata follow. |
-| Illustration | Doodles appear only in setup, empty, navigation, or contextual moments. They contain no interface text, currency, charts, or decorative calligraphy. |
-| Arabic | Interface language is a persisted English/Arabic choice. Main destinations, Settings, Home headings, filters, dates, and time formats respond immediately; RTL direction is applied to the primary Home and Settings reading surfaces. |
+| Typography | Home uses a 30 px display title, 18 px section titles, 15 px body, and 12–13 px metadata. A screen has no more than four text roles. |
+| Navigation | Five stable labelled destinations use one consistent Material icon family. The bar is a quiet frosted surface with a precise active indicator rather than a raised centre action or illustrated decoration. |
+| Surfaces | The canvas is warm neutral. Repeated records are rows. A surface is used only for a meaningful unit such as the next class, an active form section, or a bottom sheet. |
+| Actions | One high-contrast primary action appears per local task. Secondary actions are tonal or text-only. Touch targets are 48 px with pressed-opacity feedback, not decorative scaling. |
+| Sheets | Short selections open in a bottom sheet with a drag handle, title, safe-area padding, one selected-row state, and no nested cards. |
+| Motion | Pressed feedback is 120–160 ms opacity; bottom sheets use a 240–300 ms slide. No looping, bouncing, or ornamental motion. |
+| Arabic | English and Arabic use explicit native row mirroring, text alignment, and writing direction; they do not rely on CSS-like `direction` styling. |
 
 ## Color Choices
 

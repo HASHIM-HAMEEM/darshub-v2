@@ -48,3 +48,7 @@
 - [x] Rebuild buttons, icon language, tab navigation, action placement, motion, and selection sheets into a sharper native-feeling system.
 - [x] Rework phone and tablet responsive layouts around compact hierarchy, touch ergonomics, and calmer density.
 - [x] Complete a focused visual and interaction regression audit of the stripped-back interface.
+- [x] Establish a premium DarsHub product-design system with a clear typography, spacing, color, elevation, and interaction hierarchy.
+- [x] Rebuild the core shell and Home around a refined calm study workspace rather than the current utilitarian list layout.
+- [x] Recompose navigation, controls, forms, and sheets with intentional visual weight and native-quality interaction states.
+- [x] Run a high-fidelity phone/tablet design and interaction validation pass against the premium quality bar.
