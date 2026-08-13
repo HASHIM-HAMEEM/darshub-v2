@@ -59,3 +59,7 @@
 - [x] Replace the primary workspace, agenda, navigation, controls, rows, and empty states with the new layout and content hierarchy.
 - [x] Remove nonessential copy and redundant control surfaces across the redesigned core flows.
 - [x] Validate the new layout on phone and tablet screens for hierarchy, ergonomics, and visual clarity.
+- [x] Generate and review an original five-screen DarsHub mobile UI reference before rebuilding app screens.
+- [x] Extract the reference into reusable minimal study-workspace design primitives and tokens.
+- [x] Rebuild Home, Add Class, Class Detail, Schedule, and Teachers to match the approved reference.
+- [x] Apply the new system to supporting screens and validate bilingual, theme, responsive, reminder, and interaction flows.

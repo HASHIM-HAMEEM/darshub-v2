@@ -71,6 +71,32 @@ This layout reset replaces the remaining dashboard conventions with an **editori
 
 The visual language uses warm off-white canvas, nearly-black ink, a reserved deep-green accent, 4-point spacing, 8–16 px radius only where interaction requires it, and low-elevation surfaces. The typography does the hierarchy: large title, medium list title, small metadata. Chrome must recede.
 
+## Generated Reference-Led MVP System
+
+The new UI reference set is the visual source of truth for the first MVP rebuild. It defines five original, coherent mobile mockups rather than reusing an existing product layout:
+
+| Screen | Reference image |
+|---|---|
+| Home | `/manus-storage/darshub-ui-reference-home_db0b396d.png` |
+| Add Class | `/manus-storage/darshub-ui-reference-add-class_5c07b31f.png` |
+| Class Detail | `/manus-storage/darshub-ui-reference-class-detail_9a17a034.png` |
+| Schedule | `/manus-storage/darshub-ui-reference-schedule_1f6402b9.png` |
+| Teachers | `/manus-storage/darshub-ui-reference-teachers_b79a0b25.png` |
+
+The shared language is a warm canvas (`#F7F5EF` light; dark token equivalent in dark mode), deep forest-green action color, system-first typography, and one meaningful large surface per screen. All other repeated content uses time-led or identity-led rows. Primary actions are compact header actions or one bottom action, never an additional dashboard panel.
+
+> **Visual review finding:** The generated Home master validates the intended hierarchy: an oversized friendly greeting, one quiet next-dars surface, two or three time-led upcoming rows, and a thin five-destination bottom navigation. The app implementation should preserve this proportions-first composition rather than adding secondary panels or explanatory copy.
+
+| Primitive | Reference-led rule |
+|---|---|
+| Page masthead | One 30–32 px title plus one short context line. No eyebrow, greeting plus title pair, or duplicated page description. |
+| Focal class | One large 20–24 px radius surface only when the next class needs emphasis. It contains title, teacher, time, and place—nothing else. |
+| Agenda row | 56–72 px row with a 56 px time rail, a 10–12 px timeline dot, a two-line content block, and a directional disclosure icon. |
+| Directory row | 64–72 px row with a 40 px restrained avatar/icon, name, one specialty line, and disclosure. |
+| Form step | One decision group at a time; compact step progress; fixed bottom Continue/Save affordance. |
+| Action system | Deep green filled action for only the main task; text or icon action for secondary tasks; sheets for contextual actions. |
+| Motion | 120–180 ms press fade/scale, 240–320 ms page and sheet continuity, with the reduced-motion fallback already established. |
+
 ## Color Choices
 
 | Role | Light mode | Dark mode | Intended use |
