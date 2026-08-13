@@ -9,8 +9,8 @@ import { useI18n } from "@/lib/i18n";
 function TabIcon({ name, color, focused }: { name: React.ComponentProps<typeof MaterialIcons>["name"]; color: string; focused: boolean }) { return <MaterialIcons name={name} size={focused ? 22 : 21} color={color} />; }
 
 export default function TabLayout() {
-  const colors = useColors(); const { t } = useI18n(); const insets = useSafeAreaInsets(); const bottomPadding = Platform.OS === "web" ? 10 : Math.max(insets.bottom, 10); const tabBarHeight = 66 + bottomPadding;
-  return <Tabs screenOptions={{ headerShown: false, tabBarButton: HapticTab, tabBarActiveTintColor: colors.tint, tabBarInactiveTintColor: colors.muted, tabBarActiveBackgroundColor: colors.wash, tabBarLabelStyle: styles.label, tabBarItemStyle: styles.item, tabBarStyle: [styles.bar, { height: tabBarHeight, paddingBottom: bottomPadding, backgroundColor: colors.surface, borderTopColor: colors.border, shadowColor: colors.text }] }}>
+  const colors = useColors(); const { t } = useI18n(); const insets = useSafeAreaInsets(); const bottomPadding = Platform.OS === "web" ? 10 : Math.max(insets.bottom, 10); const tabBarHeight = 64 + bottomPadding;
+  return <Tabs screenOptions={{ headerShown: false, tabBarButton: HapticTab, tabBarActiveTintColor: colors.tint, tabBarInactiveTintColor: colors.muted, tabBarActiveBackgroundColor: "transparent", tabBarLabelStyle: styles.label, tabBarItemStyle: styles.item, tabBarStyle: [styles.bar, { height: tabBarHeight, paddingBottom: bottomPadding, backgroundColor: colors.surface, borderTopColor: colors.border }] }}>
     <Tabs.Screen name="index" options={{ title: t("home"), tabBarIcon: ({ color, focused }) => <TabIcon name="home" color={color} focused={focused} /> }} />
     <Tabs.Screen name="schedule" options={{ title: t("schedule"), tabBarIcon: ({ color, focused }) => <TabIcon name="calendar-today" color={color} focused={focused} /> }} />
     <Tabs.Screen name="add" options={{ title: t("add"), tabBarIcon: ({ color, focused }) => <TabIcon name="add" color={color} focused={focused} /> }} />
@@ -19,4 +19,4 @@ export default function TabLayout() {
   </Tabs>;
 }
 
-const styles = StyleSheet.create({ bar: { borderTopWidth: StyleSheet.hairlineWidth, elevation: 0, paddingHorizontal: 8, paddingTop: 8, shadowOffset: { width: 0, height: -5 }, shadowOpacity: 0.045, shadowRadius: 14 }, item: { borderRadius: 13, marginHorizontal: 2, marginTop: 0 }, label: { fontSize: 10.5, fontWeight: "700", letterSpacing: -0.1, marginTop: 1 } });
+const styles = StyleSheet.create({ bar: { borderTopWidth: StyleSheet.hairlineWidth, elevation: 0, paddingHorizontal: 4, paddingTop: 7 }, item: { borderRadius: 0, marginHorizontal: 2, marginTop: 0 }, label: { fontSize: 10, fontWeight: "700", letterSpacing: -0.1, marginTop: 2 } });

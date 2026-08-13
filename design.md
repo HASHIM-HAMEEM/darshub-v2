@@ -55,6 +55,22 @@ The premium rebuild discards both the dashboard treatment and the decorative doo
 | Motion | Pressed feedback is 120–160 ms opacity; bottom sheets use a 240–300 ms slide. No looping, bouncing, or ornamental motion. |
 | Arabic | English and Arabic use explicit native row mirroring, text alignment, and writing direction; they do not rely on CSS-like `direction` styling. |
 
+## Modern Agenda Workspace: Final Layout Reset
+
+This layout reset replaces the remaining dashboard conventions with an **editorial agenda workspace**. It uses a single large page title, a concise date context, and a time-led vertical rhythm. The app should feel closer to a calm personal calendar and study notebook than a system of cards.
+
+| Surface | New composition rule |
+|---|---|
+| Home | A quiet `Today` masthead, compact date navigation, then a vertical class timeline. The only persistent action is a compact `+ Add class` control in the title row. No greeting, promotional card, onboarding card, or duplicated add button. |
+| Schedule | A date-first agenda. Each day has one anchored date marker and a time-led list; filters live behind one control rather than occupying the header. |
+| Class row | Time is a fixed leading rail; title and teacher take the content column; status is a tiny trailing marker. Location, book, and extra attributes are hidden until the detail view. |
+| Empty state | A single calm line, one icon, and one direct action. Do not add reassurance, setup instructions, decorative illustration, or multiple actions. |
+| Directory | Contact-list rhythm: avatar/icon, title, one supporting line, disclosure. No individual rounded cards. |
+| Navigation | A thin system-level bottom bar: clear active label, line icons, no pill background, no oversized icon containers. On tablets, move to a quiet navigation rail. |
+| Forms | Full-page, sectioned editing with a sticky save action; every field sits on the canvas rather than inside nested card groups. |
+
+The visual language uses warm off-white canvas, nearly-black ink, a reserved deep-green accent, 4-point spacing, 8–16 px radius only where interaction requires it, and low-elevation surfaces. The typography does the hierarchy: large title, medium list title, small metadata. Chrome must recede.
+
 ## Color Choices
 
 | Role | Light mode | Dark mode | Intended use |

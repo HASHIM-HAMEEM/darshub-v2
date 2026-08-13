@@ -55,3 +55,7 @@
 - [x] Audit navigation, controls, and sheets for motion opportunities and reduced-motion support.
 - [x] Add restrained native-style page transitions, press states, tab feedback, and bottom-sheet motion.
 - [x] Validate motion performance, navigation reliability, and reduced-motion-safe behavior across key DarsHub flows.
+- [x] Define and document a new, genuinely modern, copy-light DarsHub layout system rather than iterating on the current composition.
+- [x] Replace the primary workspace, agenda, navigation, controls, rows, and empty states with the new layout and content hierarchy.
+- [x] Remove nonessential copy and redundant control surfaces across the redesigned core flows.
+- [x] Validate the new layout on phone and tablet screens for hierarchy, ergonomics, and visual clarity.
