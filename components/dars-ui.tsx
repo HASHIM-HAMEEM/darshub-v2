@@ -7,6 +7,8 @@ import { formatClassDateParts, formatTime, getRef } from "@/lib/dars-utils";
 import { haptic } from "@/lib/haptics";
 import type { Book, DarsClass, Location, Teacher } from "@/lib/types/dars";
 import { useDisplayPreferences } from "@/lib/use-display-preferences";
+import { StudyDoodle } from "@/components/study-doodle";
+import { useI18n } from "@/lib/i18n";
 
 type MaterialIcon = React.ComponentProps<typeof MaterialIcons>["name"];
 
@@ -26,9 +28,9 @@ export function SearchField({ value, onChangeText, placeholder = "Search" }: { v
   return <View style={[styles.search, { backgroundColor: colors.surface, borderColor: colors.border }]}><MaterialIcons name="search" size={19} color={colors.muted} /><TextInput value={value} onChangeText={onChangeText} placeholder={placeholder} placeholderTextColor={colors.muted} style={[styles.searchInput, { color: colors.text }]} returnKeyType="done" /></View>;
 }
 
-export function FilterChips({ values, selected, onSelect }: { values: string[]; selected: string; onSelect: (value: string) => void }) {
+export function FilterChips({ values, selected, onSelect, labels }: { values: string[]; selected: string; onSelect: (value: string) => void; labels?: Partial<Record<string, string>> }) {
   const colors = useColors();
-  return <View style={styles.chips}>{values.map((item) => <Pressable key={item} onPress={() => { haptic.selection(); onSelect(item); }} style={({ pressed }) => [styles.chip, { backgroundColor: selected === item ? colors.tint : colors.surface, borderColor: selected === item ? colors.tint : colors.border, opacity: pressed ? 0.7 : 1, transform: [{ scale: pressed ? 0.96 : 1 }] }]}><Text style={[styles.chipText, { color: selected === item ? colors.background : colors.muted }]}>{item}</Text></Pressable>)}</View>;
+  return <View style={styles.chips}>{values.map((item) => <Pressable key={item} onPress={() => { haptic.selection(); onSelect(item); }} style={({ pressed }) => [styles.chip, { backgroundColor: selected === item ? colors.tint : colors.surface, borderColor: selected === item ? colors.tint : colors.border, opacity: pressed ? 0.7 : 1, transform: [{ scale: pressed ? 0.96 : 1 }] }]}><Text style={[styles.chipText, { color: selected === item ? colors.background : colors.muted }]}>{labels?.[item] ?? item}</Text></Pressable>)}</View>;
 }
 
 export function SubjectBadge({ label }: { label: string }) {
@@ -37,21 +39,21 @@ export function SubjectBadge({ label }: { label: string }) {
 }
 
 export function ClassCard({ item, teachers, books, locations, onPress, compact = false }: { item: DarsClass; teachers: Teacher[]; books: Book[]; locations: Location[]; onPress?: () => void; compact?: boolean }) {
-  const colors = useColors(); const { locale } = useDisplayPreferences(); const teacher = getRef(teachers, item.teacherId); const book = getRef(books, item.bookId); const location = getRef(locations, item.locationId); const { weekday, day } = formatClassDateParts(item.date, locale); const navigate = onPress ?? (() => router.push(`/class/${item.id}` as never));
+  const colors = useColors(); const { locale } = useDisplayPreferences(); const { isRTL, t } = useI18n(); const teacher = getRef(teachers, item.teacherId); const book = getRef(books, item.bookId); const location = getRef(locations, item.locationId); const { weekday, day } = formatClassDateParts(item.date, locale); const navigate = onPress ?? (() => router.push(`/class/${item.id}` as never));
   return <Pressable accessibilityRole="button" onPress={() => { haptic.light(); navigate(); }} style={({ pressed }) => [styles.classCard, { backgroundColor: colors.surface, borderColor: colors.border, opacity: pressed ? 0.72 : 1, transform: [{ scale: pressed ? 0.987 : 1 }] }]}>
     <View style={[styles.dateColumn, { backgroundColor: colors.wash }]}><Text style={[styles.dateDay, { color: colors.muted }]}>{weekday}</Text><Text style={[styles.dateNumber, { color: colors.text }]}>{day}</Text><Text style={[styles.dateTime, { color: colors.muted }]}>{formatTime(item.startTime, locale)}</Text></View>
-    <View style={styles.classCopy}><View style={styles.cardTopLine}><Text numberOfLines={2} style={[styles.classTitle, { color: colors.text }]}>{item.title}</Text>{!compact ? <MaterialIcons name="chevron-right" size={18} color={colors.muted} /> : null}</View><View style={styles.metaRow}><MaterialIcons name="person-outline" size={13} color={colors.muted} /><Text numberOfLines={1} style={[styles.metadata, { color: colors.muted }]}>{teacher?.name ?? "Teacher pending"}</Text></View><View style={styles.metaRow}><MaterialIcons name="location-on" size={13} color={colors.muted} /><Text numberOfLines={1} style={[styles.metadata, { color: colors.muted }]}>{location?.name ?? item.city}</Text></View>{book ? <Text numberOfLines={1} style={[styles.bookMeta, { color: colors.tint }]}>{book.name}</Text> : null}</View>
+    <View style={styles.classCopy}><View style={styles.cardTopLine}><Text numberOfLines={2} style={[styles.classTitle, { color: colors.text }]}>{item.title}</Text>{!compact ? <MaterialIcons name={isRTL ? "chevron-left" : "chevron-right"} size={18} color={colors.muted} /> : null}</View><View style={styles.metaRow}><MaterialIcons name="person-outline" size={13} color={colors.muted} /><Text numberOfLines={1} style={[styles.metadata, { color: colors.muted }]}>{teacher?.name ?? t("teacherPending")}</Text></View><View style={styles.metaRow}><MaterialIcons name="location-on" size={13} color={colors.muted} /><Text numberOfLines={1} style={[styles.metadata, { color: colors.muted }]}>{location?.name ?? item.city}</Text></View>{book ? <Text numberOfLines={1} style={[styles.bookMeta, { color: colors.tint }]}>{book.name}</Text> : null}</View>
   </Pressable>;
 }
 
 export function DirectoryRow({ icon, title, subtitle, onPress, tag }: { icon: MaterialIcon; title: string; subtitle: string; onPress: () => void; tag?: string }) {
-  const colors = useColors();
-  return <Pressable onPress={() => { haptic.light(); onPress(); }} style={({ pressed }) => [styles.directoryRow, { backgroundColor: colors.surface, borderColor: colors.border, opacity: pressed ? 0.72 : 1, transform: [{ scale: pressed ? 0.987 : 1 }] }]}><View style={[styles.directoryIcon, { backgroundColor: colors.wash }]}><MaterialIcons name={icon} size={19} color={colors.tint} /></View><View style={styles.directoryCopy}><View style={styles.directoryTop}><Text numberOfLines={1} style={[styles.directoryTitle, { color: colors.text }]}>{title}</Text>{tag ? <Text style={[styles.directoryTag, { color: colors.tint }]}>{tag}</Text> : null}</View><Text numberOfLines={1} style={[styles.metadata, { color: colors.muted }]}>{subtitle}</Text></View><MaterialIcons name="chevron-right" size={20} color={colors.muted} /></Pressable>;
+  const colors = useColors(); const { isRTL } = useI18n();
+  return <Pressable onPress={() => { haptic.light(); onPress(); }} style={({ pressed }) => [styles.directoryRow, { backgroundColor: colors.surface, borderColor: colors.border, opacity: pressed ? 0.72 : 1, transform: [{ scale: pressed ? 0.987 : 1 }] }]}><View style={[styles.directoryIcon, { backgroundColor: colors.wash }]}><MaterialIcons name={icon} size={19} color={colors.tint} /></View><View style={styles.directoryCopy}><View style={styles.directoryTop}><Text numberOfLines={1} style={[styles.directoryTitle, { color: colors.text }]}>{title}</Text>{tag ? <Text style={[styles.directoryTag, { color: colors.tint }]}>{tag}</Text> : null}</View><Text numberOfLines={1} style={[styles.metadata, { color: colors.muted }]}>{subtitle}</Text></View><MaterialIcons name={isRTL ? "chevron-left" : "chevron-right"} size={20} color={colors.muted} /></Pressable>;
 }
 
 export function EmptyState({ icon = "event-busy", title, message, actionLabel, onAction }: { icon?: MaterialIcon; title: string; message: string; actionLabel?: string; onAction?: () => void }) {
   const colors = useColors();
-  return <View style={styles.empty}><View style={[styles.emptyIcon, { backgroundColor: colors.wash }]}><MaterialIcons name={icon} size={28} color={colors.tint} /></View><Text style={[styles.emptyTitle, { color: colors.text }]}>{title}</Text><Text style={[styles.emptyText, { color: colors.muted }]}>{message}</Text>{actionLabel && onAction ? <PrimaryButton label={actionLabel} onPress={onAction} /> : null}</View>;
+  return <View style={styles.empty}><View style={[styles.emptyIcon, { backgroundColor: colors.wash }]}><StudyDoodle size={45} /></View><Text style={[styles.emptyTitle, { color: colors.text }]}>{title}</Text><Text style={[styles.emptyText, { color: colors.muted }]}>{message}</Text>{actionLabel && onAction ? <PrimaryButton label={actionLabel} onPress={onAction} /> : null}</View>;
 }
 
 export function PrimaryButton({ label, onPress, icon, disabled = false }: { label: string; onPress: () => void; icon?: MaterialIcon; disabled?: boolean }) {

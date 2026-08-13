@@ -1,6 +1,6 @@
 import "@/global.css";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { Stack } from "expo-router";
+import { Stack, router } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
@@ -11,6 +11,8 @@ import "@/lib/_core/nativewind-pressable";
 import { BrandIntro } from "@/components/brand-intro";
 import { ThemeProvider } from "@/lib/theme-provider";
 import { DarsProvider } from "@/lib/dars-context";
+import { I18nProvider } from "@/lib/i18n";
+import { observeReminderResponses } from "@/lib/reminders";
 import {
   SafeAreaFrameContext,
   SafeAreaInsetsContext,
@@ -45,6 +47,7 @@ export default function RootLayout() {
     const timer = setTimeout(() => { void SplashScreen.hideAsync(); }, 16);
     return () => clearTimeout(timer);
   }, []);
+  useEffect(() => observeReminderResponses((classId) => router.push(`/class/${classId}` as never)), []);
 
   const handleSafeAreaUpdate = useCallback((metrics: Metrics) => {
     setInsets(metrics.insets);
@@ -91,6 +94,7 @@ export default function RootLayout() {
       <trpc.Provider client={trpcClient} queryClient={queryClient}>
         <QueryClientProvider client={queryClient}>
           <DarsProvider>
+          <I18nProvider>
           {/* Default to hiding native headers so raw route segments don't appear (e.g. "(tabs)", "products/[id]"). */}
           {/* If a screen needs the native header, explicitly enable it and set a human title via Stack.Screen options. */}
           {/* in order for ios apps tab switching to work properly, use presentation: "fullScreenModal" for login page, whenever you decide to use presentation: "modal*/}
@@ -112,6 +116,7 @@ export default function RootLayout() {
           </Stack>
           <StatusBar style="auto" />
           <BrandIntro />
+          </I18nProvider>
           </DarsProvider>
         </QueryClientProvider>
       </trpc.Provider>

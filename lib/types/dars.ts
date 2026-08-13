@@ -3,6 +3,7 @@ export type ClassType = "one-time" | "recurring";
 export type DateDisplay = "gregorian" | "dual" | "hijri";
 
 export type DarsPreferences = {
+  appLanguage: "en" | "ar";
   dateDisplay: DateDisplay;
   dateLanguage: "en" | "ar";
   remindersEnabled: boolean;

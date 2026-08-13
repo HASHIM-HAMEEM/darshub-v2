@@ -5,7 +5,7 @@ const storageKeys = { classes: "darshub:classes", teachers: "darshub:teachers", 
 
 export type StoredStudySpace = { classes: DarsClass[]; teachers: Teacher[]; books: Book[]; locations: Location[]; preferences: DarsPreferences };
 
-export const defaultPreferences: DarsPreferences = { dateDisplay: "dual", dateLanguage: "en", remindersEnabled: false, reminderLeadMinutes: 30 };
+export const defaultPreferences: DarsPreferences = { appLanguage: "en", dateDisplay: "dual", dateLanguage: "en", remindersEnabled: false, reminderLeadMinutes: 30 };
 
 function parseStored<T>(value: string | null, fallback: T): T { try { return value ? JSON.parse(value) as T : fallback; } catch { return fallback; } }
 

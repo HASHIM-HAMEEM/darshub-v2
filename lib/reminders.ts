@@ -1,30 +1,13 @@
 import * as Notifications from "expo-notifications";
 import { Platform } from "react-native";
 import type { DarsClass, DarsPreferences } from "@/lib/types/dars";
+import { getReminderTime, getSchedulableClasses } from "@/lib/reminder-plan";
 
-Notifications.setNotificationHandler({ handleNotification: async () => ({ shouldShowBanner: true, shouldShowList: true, shouldPlaySound: false, shouldSetBadge: false }) });
+export type ReminderPermission = "granted" | "denied" | "undetermined" | "unavailable";
+Notifications.setNotificationHandler({ handleNotification: async () => ({ shouldShowBanner: true, shouldShowList: true, shouldPlaySound: true, shouldSetBadge: false }) });
 
-export async function requestReminderPermission() {
-  if (Platform.OS === "web") return false;
-  if (Platform.OS === "android") await Notifications.setNotificationChannelAsync("classes", { name: "Class reminders", importance: Notifications.AndroidImportance.DEFAULT, vibrationPattern: [0, 180], lightColor: "#164D3D" });
-  const current = await Notifications.getPermissionsAsync();
-  const status = current.status === "granted" ? current.status : (await Notifications.requestPermissionsAsync()).status;
-  return status === "granted";
-}
-
-const reminderTime = (item: DarsClass, lead: number) => {
-  const date = new Date(`${item.date}T${item.startTime}:00`);
-  date.setMinutes(date.getMinutes() - lead);
-  return date;
-};
-
-export async function syncClassReminders(items: DarsClass[], preferences: DarsPreferences) {
-  if (Platform.OS === "web") return;
-  const existing = await Notifications.getAllScheduledNotificationsAsync();
-  await Promise.all(existing.filter((request) => request.content.data?.source === "darshub-class").map((request) => Notifications.cancelScheduledNotificationAsync(request.identifier)));
-  if (!preferences.remindersEnabled) return;
-  const allowed = await requestReminderPermission();
-  if (!allowed) return;
-  const upcoming = items.filter((item) => item.status === "upcoming" && reminderTime(item, preferences.reminderLeadMinutes).getTime() > Date.now());
-  await Promise.all(upcoming.map((item) => Notifications.scheduleNotificationAsync({ content: { title: "DarsHub reminder", body: `${item.title} starts in ${preferences.reminderLeadMinutes} minutes.`, data: { source: "darshub-class", classId: item.id } }, trigger: { type: "date", date: reminderTime(item, preferences.reminderLeadMinutes), channelId: "classes" } as never })));
-}
+async function configureAndroidChannel() { if (Platform.OS === "android") await Notifications.setNotificationChannelAsync("classes", { name: "Class reminders", description: "Reminders before your upcoming dars", importance: Notifications.AndroidImportance.HIGH, vibrationPattern: [0, 180, 90, 180], lightColor: "#164D3D", sound: "default" }); }
+export async function getReminderPermission(): Promise<ReminderPermission> { if (Platform.OS === "web") return "unavailable"; await configureAndroidChannel(); const { status } = await Notifications.getPermissionsAsync(); return status === "granted" ? "granted" : status === "denied" ? "denied" : "undetermined"; }
+export async function requestReminderPermission(): Promise<ReminderPermission> { const current = await getReminderPermission(); if (current === "granted" || current === "unavailable" || current === "denied") return current; const { status } = await Notifications.requestPermissionsAsync(); return status === "granted" ? "granted" : status === "denied" ? "denied" : "undetermined"; }
+export async function syncClassReminders(items: DarsClass[], preferences: DarsPreferences): Promise<number> { if (Platform.OS === "web") return 0; const existing = await Notifications.getAllScheduledNotificationsAsync(); await Promise.all(existing.filter((request) => request.content.data?.source === "darshub-class").map((request) => Notifications.cancelScheduledNotificationAsync(request.identifier))); if (!preferences.remindersEnabled || await getReminderPermission() !== "granted") return 0; const upcoming = getSchedulableClasses(items, preferences.reminderLeadMinutes); await Promise.all(upcoming.map((item) => Notifications.scheduleNotificationAsync({ content: { title: "DarsHub reminder", body: `${item.title} starts in ${preferences.reminderLeadMinutes} minutes.`, sound: "default", data: { source: "darshub-class", classId: item.id } }, trigger: { type: "date", date: getReminderTime(item, preferences.reminderLeadMinutes), channelId: "classes" } as never }))); return upcoming.length; }
+export function observeReminderResponses(onOpenClass: (classId: string) => void) { if (Platform.OS === "web") return () => undefined; const open = (response: Notifications.NotificationResponse | null) => { const id = response?.notification.request.content.data?.classId; if (typeof id === "string") onOpenClass(id); }; void Notifications.getLastNotificationResponseAsync().then(open).catch(() => undefined); const subscription = Notifications.addNotificationResponseReceivedListener(open); return () => subscription.remove(); }

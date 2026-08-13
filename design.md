@@ -39,7 +39,19 @@ The experience follows five rules: **focus one primary task; use lists for repea
 
 Forms are built from a single scrollable, clearly sectioned surface: `Class details`, `Time`, `Place`, and `Notes`. Labels stay above fields, prerequisite actions appear before blocked fields, and the save action is reachable without ambiguity. Class details make the date, time, teacher, book, and location scan in hierarchy order, adding a dual Gregorian/Hijri date only where it benefits planning.
 
-Schedule uses segmented `Today / Week / Month` filtering and grouped agenda cards. Teachers use small circular portraits or letter avatars with subject tags and their next class. More becomes a clean grouped menu of books, locations, subjects, search, settings, reminders, and about. The five-tab navigation retains Google Material icons, but the selected state is deep green and the central Add action is elevated as a circular primary control.
+Schedule uses segmented `Today / Week / Month` filtering and grouped agenda cards. Teachers use small circular portraits or letter avatars with subject tags and their next class. More becomes a clean grouped menu of books, locations, subjects, search, settings, reminders, and about. The five-tab navigation uses original doodle navigation assets with stable labels; Add is a normal destination rather than an elevated centre control.
+
+## Recovery Visual Direction: Study Journal, Not Dashboard
+
+The recovery pass removes the raised centre action, saturated feature-card treatment, and dashboard-like emphasis that made the experience read as financial software. DarsHub now uses a quiet paper surface and a standard five-destination navigation bar, while an original hand-drawn **study doodle language** provides warmth in empty states, setup guidance, navigation icons, and next-class context. The doodles depict books, a pencil, calendar, crescent, lantern, and restrained geometry; they are supportive accents, not decorative clutter.
+
+| System decision | Implementation rule |
+|---|---|
+| Navigation | Each destination is equal-weight, visibly labelled, and uses its matching generated doodle icon. Add is a normal destination rather than a raised financial-style control. |
+| Surfaces | Content uses ivory canvas, warm-white panels, sage washes, and hairline separation before elevation. The next class appears as an information surface rather than a saturated promo block. |
+| Hierarchy | One primary action stays visible within a local task. The time and class title lead; teacher, location, and study metadata follow. |
+| Illustration | Doodles appear only in setup, empty, navigation, or contextual moments. They contain no interface text, currency, charts, or decorative calligraphy. |
+| Arabic | Interface language is a persisted English/Arabic choice. Main destinations, Settings, Home headings, filters, dates, and time formats respond immediately; RTL direction is applied to the primary Home and Settings reading surfaces. |
 
 ## Color Choices
 

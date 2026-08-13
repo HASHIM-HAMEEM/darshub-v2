@@ -37,3 +37,10 @@
 - [x] Add Arabic display support and Hijri dates throughout schedules and class details.
 - [x] Stress-test the redesigned feature set across phone and tablet flows before release.
 - [x] Apply the product-design system to rebuild DarsHub’s visual hierarchy, screen structure, states, and responsive layouts.
+- [x] Build a goal ledger and reproduce the broken language, controls, navigation, reminder, and responsive flows on realistic test surfaces.
+- [x] Repair Arabic language rendering and bidirectional layout behavior across every relevant calendar and class screen.
+- [x] Repair any non-working primary UI controls, settings actions, and back-navigation paths discovered by the closed-loop tests.
+- [x] Make local class reminders reliable on supported devices, including permission status, channel configuration, lead time, and schedule updates.
+- [x] Replace the finance-like visual treatment with a calm original Islamic study-journal system using generated doodle-style illustrations and icons.
+- [x] Run final phone and tablet closed-loop regressions and independently verify every repaired critical journey.
+- [ ] Confirm reminder permission and a delivered scheduled notification on a physical iOS or Android device.
