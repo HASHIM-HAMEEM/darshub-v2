@@ -72,3 +72,7 @@
 - [x] Rebuild core Home, Schedule, Class Form, Class Detail, Teachers, and Search flows around the new system.
 - [x] Align Books, Locations, More, Settings, and all entity-detail screens with the shared system and responsive/RTL/dark-mode behavior.
 - [ ] Complete closed-loop functional, visual, navigation, accessibility, responsive, and persistence validation for the Qaf-inspired redesign.
+- [x] Extract the newly supplied exact screen-preview reference into native DarsHub tokens, layouts, components, and state rules.
+- [x] Replace the Qaf-inspired visual system with the supplied warm-neutral Inter, card, chip, list, FAB, and bottom-navigation system.
+- [x] Rebuild Home, Schedule, Class Form, Class Detail, Teachers, Search, directories, details, More, and Settings to match the supplied screen compositions.
+- [ ] Validate the exact-reference redesign across navigation, persistence, reminders, Arabic/RTL, themes, accessibility, safe areas, phones, and tablets.

@@ -133,6 +133,23 @@ The Qaf-inspired reset supersedes the Durus presentation system. It adapts only 
 | Navigation | Five stable labeled destinations remain. Add opens the class form from the tab without changing selection; its affordance is compact and integrated, not raised or duplicated by a floating control. |
 | Motion | Use 140–220 ms press, page, and sheet continuity. Remove fade-up staggers, bouncing, ornamental transforms, and decorative animation. Respect reduced-motion preferences. |
 
+## Exact Screen-Preview System
+
+The user-supplied `pasted_content_2.txt` screen-preview is now the active visual source of truth. It replaces the prior Qaf-inspired and Durus presentation directions wherever they conflict. The implementation preserves DarsHub’s local class-management behavior while translating the supplied HTML compositions into native React Native controls.
+
+| Token or pattern | Native DarsHub rule |
+|---|---|
+| Canvas | Warm neutral `#F5F3EF` in light mode, with white `#FFFFFF` elevated content surfaces. |
+| Ink and accent | Text uses blue-charcoal `#2D3A3A`; metadata uses `#6B7A7A`; the only prominent action color is green `#2E6E5E`, with `#E8F0ED` as its pale surface. |
+| Geometry | Cards use 16 px corners, form controls and compact buttons use 10 px corners, chips use 20 px corners, and icon/avatar circles are 40 px. |
+| Elevation | Cards have a hairline `#E2E0DA` border and restrained `0 2px 8px rgba(0,0,0,.04)` shadow. No large ornamental panels or gradients are used. |
+| Typography | Use a compact Inter-like native sans hierarchy: 21 px/700 screen titles, 16 px/600 card titles, 13 px metadata, and 10–12 px badges/controls. |
+| Home | Greeting plus date, Today/This Week/All chips, stacked class cards, a single 52 px floating Add button, and five plain labeled bottom-navigation items. |
+| Add Class | A single scrolling form with white 16 px section cards: Class Details, Time, Place, Extra Notes, recurring switch, then Save Class. |
+| Detail | A simple back/title/share bar, one summary/status card, one ordered metadata card, and compact Edit/Map/Complete/Share buttons. |
+| Lists and directories | Teachers, books, and locations use one elevated 16 px card per entity with a 40 px round icon/avatar and concise right-side context. |
+| Search and settings | Search uses an elevated search control, source-style chips, live count, and cards. Settings use two quiet grouped cards with rows, toggles, and compact selectors. |
+
 ## Color Choices
 
 | Role | Light mode | Dark mode | Intended use |
