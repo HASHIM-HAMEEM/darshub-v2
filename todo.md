@@ -90,3 +90,7 @@
 - [x] Create a native Dars launcher icon, update app branding configuration, and add an animated launch handoff.
 - [x] Redesign the bottom navigation with stronger icon treatment and update About with Hashim and hashimhameem.site.
 - [x] Run bounded autonomous verification across navigation, creation, recurring series, export/restore, reminders, permissions, RTL, themes, and responsive states.
+- [x] Restore a stable Dars preview and create a manual page-by-page audit ledger.
+- [x] Manually inspect each tab, section, form, directory, detail screen, settings control, navigation route, and responsive state on the live interface.
+- [x] Fix all verified manual-audit defects and repeat targeted live checks.
+- [x] Run final manual and deterministic regression checks, then save the reviewed Dars release.
