@@ -54,6 +54,8 @@ export type DarsClass = {
   notes?: string;
   type: ClassType;
   recurrenceRule?: string;
+  seriesId?: string;
+  occurrenceIndex?: number;
   language?: string;
   status: ClassStatus;
   reminderId?: string;

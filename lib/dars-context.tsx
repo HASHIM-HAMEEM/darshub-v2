@@ -1,6 +1,7 @@
 import { createContext, useContext, useEffect, useMemo, useState } from "react";
 import { defaultPreferences, loadStudySpace, saveStudySpace } from "@/lib/dars-storage";
 import { syncClassReminders } from "@/lib/reminders";
+import { createRecurringOccurrences } from "@/lib/recurrence";
 import type { Book, ClassDraft, DarsClass, DarsPreferences, Location, Teacher } from "@/lib/types/dars";
 
 type DarsContextValue = {
@@ -21,7 +22,7 @@ export function DarsProvider({ children }: { children: React.ReactNode }) {
 
   const value = useMemo<DarsContextValue>(() => ({
     classes, teachers, books, locations, preferences, isHydrated,
-    saveClass: (draft, id) => { const classId = id ?? makeId("class"); const existing = classes.find((item) => item.id === classId); const entry = { ...draft, id: classId, reminderId: existing?.reminderId }; setClasses((current) => id ? current.map((item) => item.id === id ? entry : item) : [entry, ...current]); return classId; },
+    saveClass: (draft, id) => { const classId = id ?? makeId("class"); const existing = classes.find((item) => item.id === classId); const entry = { ...draft, id: classId, reminderId: existing?.reminderId, seriesId: existing?.seriesId, occurrenceIndex: existing?.occurrenceIndex }; if (id) { setClasses((current) => current.map((item) => item.id === id ? entry : item)); return classId; } if (draft.type === "recurring") { const matchingSeed = classes.find((item) => item.type === "recurring" && item.occurrenceIndex === 0 && item.title === draft.title && item.date === draft.date && item.startTime === draft.startTime && item.teacherId === draft.teacherId && item.bookId === draft.bookId && item.locationId === draft.locationId); if (matchingSeed) return matchingSeed.id; const seriesId = makeId("series"); const occurrences = createRecurringOccurrences(draft, seriesId, () => makeId("class")); setClasses((current) => [...occurrences, ...current]); return occurrences[0]?.id ?? classId; } setClasses((current) => [entry, ...current]); return classId; },
     deleteClass: (id) => setClasses((current) => current.filter((item) => item.id !== id)),
     completeClass: (id) => setClasses((current) => current.map((item) => item.id === id ? { ...item, status: "completed" } : item)),
     addTeacher: (input) => { const id = makeId("teacher"); setTeachers((current) => [...current, { ...input, id }]); return id; },

@@ -76,3 +76,8 @@
 - [x] Replace the Qaf-inspired visual system with the supplied warm-neutral Inter, card, chip, list, FAB, and bottom-navigation system.
 - [x] Rebuild Home, Schedule, Class Form, Class Detail, Teachers, Search, directories, details, More, and Settings to match the supplied screen compositions.
 - [ ] Validate the exact-reference redesign across navigation, persistence, reminders, Arabic/RTL, themes, accessibility, safe areas, phones, and tablets.
+- [x] Define local recurring-class behavior, generated occurrence data, export format, and device reminder verification states.
+- [x] Implement recurring-class scheduling with clear user controls and safe future-occurrence generation.
+- [x] Implement a privacy-preserving local data export file and native share/save flow.
+- [x] Add reminder delivery status, permission recovery, and on-device verification controls.
+- [x] Test recurring schedules, export content, reminder planning, navigation, persistence, RTL, themes, and responsive states.
