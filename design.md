@@ -97,6 +97,25 @@ The shared language is a warm canvas (`#F7F5EF` light; dark token equivalent in 
 | Action system | Deep green filled action for only the main task; text or icon action for secondary tasks; sheets for contextual actions. |
 | Motion | 120–180 ms press fade/scale, 240–320 ms page and sheet continuity, with the reduced-motion fallback already established. |
 
+## Supplied Durus Reference System
+
+The user-supplied Durus prototype now supersedes earlier visual directions. Its value is not a literal HTML or web-device clone; DarsHub will adapt its **specific visual vocabulary** to native touch patterns, dark mode, Arabic/RTL, and existing local-first functionality.
+
+| Token or pattern | Native DarsHub application |
+|---|---|
+| Canvas | `#FAF7F1` ivory in light mode, with an equivalent low-glare dark canvas in dark mode. |
+| Surfaces | White/light surface, 18 px row radius, 28 px focal-card radius, hairline `#EFE9DB` divider, restrained 3–12 px soft green shadow. |
+| Primary color | Pine `#16332B`; pine mist `#EEF3F0` for selection and secondary icon fills. |
+| Accent | Gold `#C6A15B` and gold soft `#F4EBD6` only for meaningful emphasis such as next-dars eyebrow, active date context, and hero accent. |
+| Typography | Editorial serif display treatment for greetings, titles, and class names; clean geometric sans for controls, metadata, rows, and navigation. Arabic uses a readable Arabic text face/weight rather than decorative display calligraphy. |
+| Home | Greeting + Hijri/Gregorian date, optional filter chips, deep-pine next-dars hero with subtle architectural/crescent geometry, elevated time-block rows, compose FAB above the tab bar. |
+| Add flow | Step header with circular back control, four dot-style progress rails, one form decision group at a time, and a fixed primary action over a fading bottom canvas. |
+| Detail | Deep-pine top hero with soft geometric ornament and lightweight utility icons; a lifted white information surface containing ordered metadata; compact action row. |
+| Schedule | Horizontal date strip, optional segmented day/week control, day labels, and elevated time-block class rows. |
+| Directory | Elevated white list cards with 44 px pine-mist avatars; single supporting line; optional light tag only when useful. |
+| Navigation | White five-tab bottom bar, quiet labels, centered raised pine Add affordance, light press-scale response. |
+| Motion | 300 ms fade-up entrance sequence for screen content; 150–200 ms press scale; 300 ms smooth option/tab transition; 300 ms modal or sheet rise. Reduced-motion preferences remove all nonessential transforms. |
+
 ## Color Choices
 
 | Role | Light mode | Dark mode | Intended use |

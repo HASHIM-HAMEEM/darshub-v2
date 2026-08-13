@@ -63,3 +63,7 @@
 - [x] Extract the reference into reusable minimal study-workspace design primitives and tokens.
 - [x] Rebuild Home, Add Class, Class Detail, Schedule, and Teachers to match the approved reference.
 - [x] Apply the new system to supporting screens and validate bilingual, theme, responsive, reminder, and interaction flows.
+- [x] Extract and document the supplied Durus palette, typography, surfaces, navigation, form-step, and motion rules.
+- [x] Apply the Durus design system to DarsHub’s shared tokens, controls, bottom navigation, and interaction states.
+- [x] Rebuild Home, Add Class, Class Detail, Schedule, Teachers, and supporting screens to match the supplied reference patterns.
+- [x] Validate the Durus-reference rebuild across bilingual, dark-mode, responsive, reminder, and interaction flows.
