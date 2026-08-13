@@ -1,14 +1,15 @@
 import { createContext, useContext, useEffect, useMemo, useState } from "react";
-import { defaultPreferences, loadStudySpace, saveStudySpace } from "@/lib/dars-storage";
+import { defaultPreferences, loadStudySpace, saveStudySpace, type StoredStudySpace } from "@/lib/dars-storage";
 import { syncClassReminders } from "@/lib/reminders";
 import { createRecurringOccurrences } from "@/lib/recurrence";
+import { applyRestore, type RestoreStrategy, type RestoreSummary } from "@/lib/data-import";
 import type { Book, ClassDraft, DarsClass, DarsPreferences, Location, Teacher } from "@/lib/types/dars";
 
 type DarsContextValue = {
   classes: DarsClass[]; teachers: Teacher[]; books: Book[]; locations: Location[]; preferences: DarsPreferences; isHydrated: boolean;
   saveClass: (draft: ClassDraft, id?: string) => string; deleteClass: (id: string) => void; completeClass: (id: string) => void;
   addTeacher: (input: Omit<Teacher, "id">) => string; addBook: (input: Omit<Book, "id">) => string; addLocation: (input: Omit<Location, "id">) => string;
-  updatePreferences: (patch: Partial<DarsPreferences>) => void;
+  updatePreferences: (patch: Partial<DarsPreferences>) => void; updateFutureSeries: (seriesId: string, fromOccurrenceIndex: number, draft: ClassDraft) => void; cancelFutureSeries: (seriesId: string, fromOccurrenceIndex: number) => void; restoreStudySpace: (space: StoredStudySpace, strategy: RestoreStrategy) => RestoreSummary;
 };
 
 const DarsContext = createContext<DarsContextValue | null>(null);
@@ -18,7 +19,8 @@ export function DarsProvider({ children }: { children: React.ReactNode }) {
   const [classes, setClasses] = useState<DarsClass[]>([]); const [teachers, setTeachers] = useState<Teacher[]>([]); const [books, setBooks] = useState<Book[]>([]); const [locations, setLocations] = useState<Location[]>([]); const [preferences, setPreferences] = useState<DarsPreferences>(defaultPreferences); const [isHydrated, setIsHydrated] = useState(false);
 
   useEffect(() => { let active = true; void loadStudySpace().then((saved) => { if (!active) return; setClasses(saved.classes); setTeachers(saved.teachers); setBooks(saved.books); setLocations(saved.locations); setPreferences(saved.preferences); setIsHydrated(true); }).catch(() => setIsHydrated(true)); return () => { active = false; }; }, []);
-  useEffect(() => { if (!isHydrated) return; void saveStudySpace({ classes, teachers, books, locations, preferences }); void syncClassReminders(classes, preferences).catch(() => undefined); }, [books, classes, isHydrated, locations, preferences, teachers]);
+  useEffect(() => { if (!isHydrated) return; void saveStudySpace({ classes, teachers, books, locations, preferences }); }, [books, classes, isHydrated, locations, preferences, teachers]);
+  useEffect(() => { if (!isHydrated) return; void syncClassReminders(classes, preferences).catch(() => undefined); }, [classes, isHydrated, preferences]);
 
   const value = useMemo<DarsContextValue>(() => ({
     classes, teachers, books, locations, preferences, isHydrated,
@@ -29,6 +31,9 @@ export function DarsProvider({ children }: { children: React.ReactNode }) {
     addBook: (input) => { const id = makeId("book"); setBooks((current) => [...current, { ...input, id }]); return id; },
     addLocation: (input) => { const id = makeId("location"); setLocations((current) => [...current, { ...input, id }]); return id; },
     updatePreferences: (patch) => setPreferences((current) => ({ ...current, ...patch })),
+    updateFutureSeries: (seriesId, fromOccurrenceIndex, draft) => { const { status: _status, ...seriesDraft } = draft; setClasses((current) => current.map((item) => item.seriesId === seriesId && (item.occurrenceIndex ?? 0) >= fromOccurrenceIndex && item.status === "upcoming" ? { ...item, ...seriesDraft, id: item.id, date: item.date, status: item.status, seriesId, occurrenceIndex: item.occurrenceIndex, type: "recurring" } : item)); },
+    cancelFutureSeries: (seriesId, fromOccurrenceIndex) => setClasses((current) => current.map((item) => item.seriesId === seriesId && (item.occurrenceIndex ?? 0) >= fromOccurrenceIndex && item.status === "upcoming" ? { ...item, status: "cancelled" } : item)),
+    restoreStudySpace: (space, strategy) => { const result = applyRestore({ classes, teachers, books, locations, preferences }, space, strategy); setClasses(result.space.classes); setTeachers(result.space.teachers); setBooks(result.space.books); setLocations(result.space.locations); setPreferences(result.space.preferences); return result.summary; },
   }), [books, classes, isHydrated, locations, preferences, teachers]);
   return <DarsContext.Provider value={value}>{children}</DarsContext.Provider>;
 }

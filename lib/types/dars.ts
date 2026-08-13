@@ -59,6 +59,7 @@ export type DarsClass = {
   language?: string;
   status: ClassStatus;
   reminderId?: string;
+  reminderLeadMinutes?: 10 | 30 | 60;
 };
 
 export type ClassDraft = Omit<DarsClass, "id">;

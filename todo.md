@@ -81,3 +81,8 @@
 - [x] Implement a privacy-preserving local data export file and native share/save flow.
 - [x] Add reminder delivery status, permission recovery, and on-device verification controls.
 - [x] Test recurring schedules, export content, reminder planning, navigation, persistence, RTL, themes, and responsive states.
+- [x] Define safe series-wide edits/cancellations, restore conflicts, and per-class reminder override data behavior.
+- [x] Implement future-occurrence series edit and cancel controls for recurring classes.
+- [x] Implement JSON restore with validation, conflict preview, and safe merge actions.
+- [x] Implement per-class reminder lead-time overrides and reminder scheduling integration.
+- [x] Test series management, restore conflicts, per-class reminders, navigation, persistence, RTL, themes, and responsive states.
