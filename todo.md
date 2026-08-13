@@ -86,3 +86,7 @@
 - [x] Implement JSON restore with validation, conflict preview, and safe merge actions.
 - [x] Implement per-class reminder lead-time overrides and reminder scheduling integration.
 - [x] Test series management, restore conflicts, per-class reminders, navigation, persistence, RTL, themes, and responsive states.
+- [x] Define Dars brand assets, Hashim About content, refreshed navigation acceptance criteria, and autonomous verification ledger.
+- [x] Create a native Dars launcher icon, update app branding configuration, and add an animated launch handoff.
+- [x] Redesign the bottom navigation with stronger icon treatment and update About with Hashim and hashimhameem.site.
+- [x] Run bounded autonomous verification across navigation, creation, recurring series, export/restore, reminders, permissions, RTL, themes, and responsive states.

@@ -28,11 +28,11 @@ const schemeFromBundleId = `manus${timestamp}`;
 
 const env = {
   // App branding - update these values directly (do not use env vars)
-  appName: "DarsHub",
+  appName: "Dars",
   appSlug: "darshub-v2",
   // S3 URL of the app logo - set this to the URL returned by generate_image when creating custom logo
   // Leave empty to use the default icon from assets/images/icon.png
-  logoUrl: "/manus-storage/darshub-arabic-logo_e7eb7d88.png",
+  logoUrl: "/manus-storage/dars-launcher-icon_a61aa1ff.png",
   scheme: schemeFromBundleId,
   iosBundleId: bundleId,
   androidPackage: bundleId,
@@ -43,7 +43,7 @@ const config: ExpoConfig = {
   slug: env.appSlug,
   version: "1.0.0",
   orientation: "portrait",
-  icon: env.logoUrl,
+  icon: "./assets/images/icon.png",
   scheme: env.scheme,
   userInterfaceStyle: "automatic",
   newArchEnabled: true,
@@ -56,10 +56,10 @@ const config: ExpoConfig = {
   },
   android: {
     adaptiveIcon: {
-      backgroundColor: "#225E52",
-      foregroundImage: env.logoUrl,
+      backgroundColor: "#1E5B4F",
+      foregroundImage: "./assets/images/android-icon-foreground.png",
       backgroundImage: "./assets/images/android-icon-background.png",
-      monochromeImage: env.logoUrl,
+      monochromeImage: "./assets/images/android-icon-monochrome.png",
     },
     edgeToEdgeEnabled: true,
     predictiveBackGestureEnabled: false,
@@ -82,7 +82,7 @@ const config: ExpoConfig = {
   web: {
     bundler: "metro",
     output: "static",
-    favicon: env.logoUrl,
+    favicon: "./assets/images/favicon.png",
   },
   plugins: [
     "expo-router",
@@ -102,13 +102,13 @@ const config: ExpoConfig = {
     [
       "expo-splash-screen",
       {
-        image: env.logoUrl,
+        image: "./assets/images/splash-icon.png",
         imageWidth: 156,
         resizeMode: "contain",
-        backgroundColor: "#FAF8F2",
+        backgroundColor: "#1E5B4F",
         dark: {
-          image: env.logoUrl,
-          backgroundColor: "#101817",
+          image: "./assets/images/splash-icon.png",
+          backgroundColor: "#173D35",
         },
       },
     ],
