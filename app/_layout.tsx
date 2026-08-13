@@ -98,16 +98,16 @@ export default function RootLayout() {
           {/* Default to hiding native headers so raw route segments don't appear (e.g. "(tabs)", "products/[id]"). */}
           {/* If a screen needs the native header, explicitly enable it and set a human title via Stack.Screen options. */}
           {/* in order for ios apps tab switching to work properly, use presentation: "fullScreenModal" for login page, whenever you decide to use presentation: "modal*/}
-          <Stack screenOptions={{ headerShown: false }}>
+          <Stack screenOptions={{ headerShown: false, animation: Platform.OS === "ios" ? "ios_from_right" : "slide_from_right", animationDuration: 280, gestureEnabled: true, fullScreenGestureEnabled: true }}>
             <Stack.Screen name="(tabs)" />
             <Stack.Screen name="class/[id]" />
-            <Stack.Screen name="class/form" />
+            <Stack.Screen name="class/form" options={{ presentation: "modal", animation: "slide_from_bottom", animationDuration: 320 }} />
             <Stack.Screen name="teacher/[id]" />
-            <Stack.Screen name="teacher/form" />
+            <Stack.Screen name="teacher/form" options={{ presentation: "modal", animation: "slide_from_bottom", animationDuration: 320 }} />
             <Stack.Screen name="book/[id]" />
-            <Stack.Screen name="book/form" />
+            <Stack.Screen name="book/form" options={{ presentation: "modal", animation: "slide_from_bottom", animationDuration: 320 }} />
             <Stack.Screen name="location/[id]" />
-            <Stack.Screen name="location/form" />
+            <Stack.Screen name="location/form" options={{ presentation: "modal", animation: "slide_from_bottom", animationDuration: 320 }} />
             <Stack.Screen name="books" />
             <Stack.Screen name="locations" />
             <Stack.Screen name="search" />

@@ -52,3 +52,6 @@
 - [x] Rebuild the core shell and Home around a refined calm study workspace rather than the current utilitarian list layout.
 - [x] Recompose navigation, controls, forms, and sheets with intentional visual weight and native-quality interaction states.
 - [x] Run a high-fidelity phone/tablet design and interaction validation pass against the premium quality bar.
+- [x] Audit navigation, controls, and sheets for motion opportunities and reduced-motion support.
+- [x] Add restrained native-style page transitions, press states, tab feedback, and bottom-sheet motion.
+- [x] Validate motion performance, navigation reliability, and reduced-motion-safe behavior across key DarsHub flows.

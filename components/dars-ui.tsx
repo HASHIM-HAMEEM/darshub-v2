@@ -1,20 +1,21 @@
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import { router } from "expo-router";
 import { ReactNode } from "react";
-import { Pressable, StyleSheet, Text, TextInput, View } from "react-native";
+import { StyleSheet, Text, TextInput, View } from "react-native";
 import { useColors } from "@/hooks/use-colors";
 import { formatClassDateParts, formatTime, getRef } from "@/lib/dars-utils";
 import { haptic } from "@/lib/haptics";
 import type { Book, DarsClass, Location, Teacher } from "@/lib/types/dars";
 import { useDisplayPreferences } from "@/lib/use-display-preferences";
 import { useI18n } from "@/lib/i18n";
+import { MotionPressable } from "@/components/motion-pressable";
 
 type MaterialIcon = React.ComponentProps<typeof MaterialIcons>["name"];
 
 export function IconButton({ icon, label, onPress, tone = "quiet" }: { icon: MaterialIcon; label: string; onPress: () => void; tone?: "quiet" | "primary" }) {
   const colors = useColors(); const primary = tone === "primary";
   const closeStyleAction = icon === "close" || label.toLowerCase().startsWith("close");
-  return <Pressable accessibilityRole="button" accessibilityLabel={label} onPress={() => { haptic.light(); if (closeStyleAction && !router.canGoBack()) { router.replace("/" as never); return; } onPress(); }} style={({ pressed }) => [styles.iconButton, { backgroundColor: primary ? colors.tint : colors.wash, opacity: pressed ? 0.68 : 1 }]}><MaterialIcons name={icon} size={20} color={primary ? colors.background : colors.tint} /></Pressable>;
+  return <MotionPressable accessibilityRole="button" accessibilityLabel={label} onPress={() => { haptic.light(); if (closeStyleAction && !router.canGoBack()) { router.replace("/" as never); return; } onPress(); }} style={({ pressed }) => [styles.iconButton, { backgroundColor: primary ? colors.tint : colors.wash, opacity: pressed ? 0.68 : 1 }]}><MaterialIcons name={icon} size={20} color={primary ? colors.background : colors.tint} /></MotionPressable>;
 }
 
 export function ScreenTitle({ eyebrow, title, action }: { eyebrow?: string; title: string; action?: ReactNode }) {
@@ -29,7 +30,7 @@ export function SearchField({ value, onChangeText, placeholder = "Search" }: { v
 
 export function FilterChips({ values, selected, onSelect, labels }: { values: string[]; selected: string; onSelect: (value: string) => void; labels?: Partial<Record<string, string>> }) {
   const colors = useColors(); const { isRTL } = useI18n();
-  return <View style={[styles.chips, isRTL && styles.rowReverse]}>{values.map((item) => <Pressable key={item} onPress={() => { haptic.selection(); onSelect(item); }} style={({ pressed }) => [styles.chip, { backgroundColor: selected === item ? colors.tint : colors.wash, opacity: pressed ? 0.68 : 1 }]}><Text style={[styles.chipText, { color: selected === item ? colors.background : colors.muted }]}>{labels?.[item] ?? item}</Text></Pressable>)}</View>;
+  return <View style={[styles.chips, isRTL && styles.rowReverse]}>{values.map((item) => <MotionPressable key={item} onPress={() => { haptic.selection(); onSelect(item); }} style={({ pressed }) => [styles.chip, { backgroundColor: selected === item ? colors.tint : colors.wash, opacity: pressed ? 0.68 : 1 }]}><Text style={[styles.chipText, { color: selected === item ? colors.background : colors.muted }]}>{labels?.[item] ?? item}</Text></MotionPressable>)}</View>;
 }
 
 export function SubjectBadge({ label }: { label: string }) {
@@ -39,15 +40,15 @@ export function SubjectBadge({ label }: { label: string }) {
 
 export function ClassCard({ item, teachers, books, locations, onPress, compact = false }: { item: DarsClass; teachers: Teacher[]; books: Book[]; locations: Location[]; onPress?: () => void; compact?: boolean }) {
   const colors = useColors(); const { locale } = useDisplayPreferences(); const { isRTL, t } = useI18n(); const teacher = getRef(teachers, item.teacherId); const book = getRef(books, item.bookId); const location = getRef(locations, item.locationId); const { weekday, day } = formatClassDateParts(item.date, locale); const navigate = onPress ?? (() => router.push(`/class/${item.id}` as never));
-  return <Pressable accessibilityRole="button" onPress={() => { haptic.light(); navigate(); }} style={({ pressed }) => [styles.classCard, isRTL && styles.rowReverse, { borderColor: colors.border, opacity: pressed ? 0.66 : 1 }]}>
+  return <MotionPressable accessibilityRole="button" onPress={() => { haptic.light(); navigate(); }} style={({ pressed }) => [styles.classCard, isRTL && styles.rowReverse, { borderColor: colors.border, opacity: pressed ? 0.66 : 1 }]}>
     <View style={styles.dateColumn}><Text style={[styles.dateDay, { color: colors.muted }]}>{weekday}</Text><Text style={[styles.dateNumber, { color: colors.text }]}>{day}</Text><Text style={[styles.dateTime, { color: colors.muted }]}>{formatTime(item.startTime, locale)}</Text></View>
     <View style={styles.classCopy}><View style={[styles.cardTopLine, isRTL && styles.rowReverse]}><Text numberOfLines={2} style={[styles.classTitle, { color: colors.text, textAlign: isRTL ? "right" : "left", writingDirection: isRTL ? "rtl" : "ltr" }]}>{item.title}</Text>{!compact ? <MaterialIcons name={isRTL ? "chevron-left" : "chevron-right"} size={18} color={colors.muted} /> : null}</View><View style={[styles.metaRow, isRTL && styles.rowReverse]}><MaterialIcons name="person-outline" size={13} color={colors.muted} /><Text numberOfLines={1} style={[styles.metadata, { color: colors.muted, textAlign: isRTL ? "right" : "left", writingDirection: isRTL ? "rtl" : "ltr" }]}>{teacher?.name ?? t("teacherPending")}</Text></View><View style={[styles.metaRow, isRTL && styles.rowReverse]}><MaterialIcons name="location-on" size={13} color={colors.muted} /><Text numberOfLines={1} style={[styles.metadata, { color: colors.muted, textAlign: isRTL ? "right" : "left", writingDirection: isRTL ? "rtl" : "ltr" }]}>{location?.name ?? item.city}</Text></View>{book ? <Text numberOfLines={1} style={[styles.bookMeta, { color: colors.tint, textAlign: isRTL ? "right" : "left", writingDirection: isRTL ? "rtl" : "ltr" }]}>{book.name}</Text> : null}</View>
-  </Pressable>;
+  </MotionPressable>;
 }
 
 export function DirectoryRow({ icon, title, subtitle, onPress, tag }: { icon: MaterialIcon; title: string; subtitle: string; onPress: () => void; tag?: string }) {
   const colors = useColors(); const { isRTL } = useI18n();
-  return <Pressable onPress={() => { haptic.light(); onPress(); }} style={({ pressed }) => [styles.directoryRow, isRTL && styles.rowReverse, { borderColor: colors.border, opacity: pressed ? 0.66 : 1 }]}><View style={[styles.directoryIcon, { backgroundColor: colors.wash }]}><MaterialIcons name={icon} size={19} color={colors.tint} /></View><View style={styles.directoryCopy}><View style={[styles.directoryTop, isRTL && styles.rowReverse]}><Text numberOfLines={1} style={[styles.directoryTitle, { color: colors.text, textAlign: isRTL ? "right" : "left", writingDirection: isRTL ? "rtl" : "ltr" }]}>{title}</Text>{tag ? <Text style={[styles.directoryTag, { color: colors.tint }]}>{tag}</Text> : null}</View><Text numberOfLines={1} style={[styles.metadata, { color: colors.muted, textAlign: isRTL ? "right" : "left", writingDirection: isRTL ? "rtl" : "ltr" }]}>{subtitle}</Text></View><MaterialIcons name={isRTL ? "chevron-left" : "chevron-right"} size={20} color={colors.muted} /></Pressable>;
+  return <MotionPressable onPress={() => { haptic.light(); onPress(); }} style={({ pressed }) => [styles.directoryRow, isRTL && styles.rowReverse, { borderColor: colors.border, opacity: pressed ? 0.66 : 1 }]}><View style={[styles.directoryIcon, { backgroundColor: colors.wash }]}><MaterialIcons name={icon} size={19} color={colors.tint} /></View><View style={styles.directoryCopy}><View style={[styles.directoryTop, isRTL && styles.rowReverse]}><Text numberOfLines={1} style={[styles.directoryTitle, { color: colors.text, textAlign: isRTL ? "right" : "left", writingDirection: isRTL ? "rtl" : "ltr" }]}>{title}</Text>{tag ? <Text style={[styles.directoryTag, { color: colors.tint }]}>{tag}</Text> : null}</View><Text numberOfLines={1} style={[styles.metadata, { color: colors.muted, textAlign: isRTL ? "right" : "left", writingDirection: isRTL ? "rtl" : "ltr" }]}>{subtitle}</Text></View><MaterialIcons name={isRTL ? "chevron-left" : "chevron-right"} size={20} color={colors.muted} /></MotionPressable>;
 }
 
 export function EmptyState({ icon = "event-busy", title, message, actionLabel, onAction }: { icon?: MaterialIcon; title: string; message: string; actionLabel?: string; onAction?: () => void }) {
@@ -57,7 +58,7 @@ export function EmptyState({ icon = "event-busy", title, message, actionLabel, o
 
 export function PrimaryButton({ label, onPress, icon, disabled = false }: { label: string; onPress: () => void; icon?: MaterialIcon; disabled?: boolean }) {
   const colors = useColors(); const { isRTL } = useI18n();
-  return <Pressable disabled={disabled} onPress={() => { haptic.medium(); onPress(); }} style={({ pressed }) => [styles.primaryButton, isRTL && styles.rowReverse, { backgroundColor: colors.tint, opacity: disabled ? 0.4 : pressed ? 0.76 : 1 }]}>{icon ? <MaterialIcons name={icon} size={18} color={colors.background} /> : null}<Text style={[styles.primaryButtonText, { color: colors.background, writingDirection: isRTL ? "rtl" : "ltr" }]}>{label}</Text></Pressable>;
+  return <MotionPressable disabled={disabled} onPress={() => { haptic.medium(); onPress(); }} style={({ pressed }) => [styles.primaryButton, isRTL && styles.rowReverse, { backgroundColor: colors.tint, opacity: disabled ? 0.4 : pressed ? 0.76 : 1 }]}>{icon ? <MaterialIcons name={icon} size={18} color={colors.background} /> : null}<Text style={[styles.primaryButtonText, { color: colors.background, writingDirection: isRTL ? "rtl" : "ltr" }]}>{label}</Text></MotionPressable>;
 }
 
 export const styles = StyleSheet.create({
