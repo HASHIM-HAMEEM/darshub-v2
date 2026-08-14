@@ -32,7 +32,7 @@ const env = {
   appSlug: "darshub-v2",
   // S3 URL of the app logo - set this to the URL returned by generate_image when creating custom logo
   // Leave empty to use the default icon from assets/images/icon.png
-  logoUrl: "/manus-storage/dars-launcher-icon_a61aa1ff.png",
+  logoUrl: "/manus-storage/dars-adaptive-launcher-fullbleed_e08e148e.png",
   scheme: schemeFromBundleId,
   iosBundleId: bundleId,
   androidPackage: bundleId,
@@ -58,8 +58,6 @@ const config: ExpoConfig = {
     adaptiveIcon: {
       backgroundColor: "#1E5B4F",
       foregroundImage: "./assets/images/android-icon-foreground.png",
-      backgroundImage: "./assets/images/android-icon-background.png",
-      monochromeImage: "./assets/images/android-icon-monochrome.png",
     },
     edgeToEdgeEnabled: true,
     predictiveBackGestureEnabled: false,
@@ -110,7 +108,7 @@ const config: ExpoConfig = {
         backgroundColor: "#1E5B4F",
         dark: {
           image: "./assets/images/splash-icon.png",
-          backgroundColor: "#173D35",
+          backgroundColor: "#1E5B4F",
         },
       },
     ],

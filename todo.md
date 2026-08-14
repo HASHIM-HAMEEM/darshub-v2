@@ -103,3 +103,5 @@
 - [x] Replace the screenshot-confirmed invisible empty-state and form primary actions with explicit solid mobile button surfaces.
 - [x] Repair the More destination rows so icon, label, and chevron remain aligned in one horizontal tap target in both themes.
 - [ ] Re-test the screenshot-confirmed Home, Teachers, Add Teacher, Add Class, and More states in light and dark mode after the layout repair.
+- [x] Replace the Android adaptive launcher icon so Dars appears as a deliberate full-bleed drawer icon rather than a circular ring.
+- [x] Unify the Android launcher, native splash, and in-app handoff around the same Dars mark with one smooth opening transition.
