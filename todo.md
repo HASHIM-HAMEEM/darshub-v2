@@ -100,3 +100,6 @@
 - [x] Audit and repair light/dark mobile text, button, and icon contrast across all Dars screens.
 - [x] Rebuild the More screen’s icon layout so destinations and tap targets render clearly on mobile.
 - [ ] Verify buttons and interactive controls remain visible and usable on physical mobile themes.
+- [x] Replace the screenshot-confirmed invisible empty-state and form primary actions with explicit solid mobile button surfaces.
+- [x] Repair the More destination rows so icon, label, and chevron remain aligned in one horizontal tap target in both themes.
+- [ ] Re-test the screenshot-confirmed Home, Teachers, Add Teacher, Add Class, and More states in light and dark mode after the layout repair.
