@@ -105,3 +105,10 @@
 - [ ] Re-test the screenshot-confirmed Home, Teachers, Add Teacher, Add Class, and More states in light and dark mode after the layout repair.
 - [x] Replace the Android adaptive launcher icon so Dars appears as a deliberate full-bleed drawer icon rather than a circular ring.
 - [x] Unify the Android launcher, native splash, and in-app handoff around the same Dars mark with one smooth opening transition.
+- [x] Audit existing teacher, book, and location lifecycle flows, linked-class behavior, and storage edge cases.
+- [x] Add normalized validation, duplicate protection, edit operations, and linked-record deletion guards for teachers, books, and locations.
+- [x] Rebuild teacher, book, and location forms and detail pages with clear create/edit, linked-class, and safe delete behavior.
+- [x] Integrate add-and-return reference management into class creation and editing with location-city synchronization.
+- [ ] Add deterministic tests and complete a focused light/dark, RTL, responsive, persistence, and mutation regression pass.
+- [x] Prioritize low-friction mobile interaction, clear feedback, preserved context, and efficient class-planning handoffs across all reference flows.
+- [ ] Verify teacher, book, and location class-planning handoffs on a freshly built Android APK in light and dark mode.
