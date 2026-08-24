@@ -112,3 +112,9 @@
 - [ ] Add deterministic tests and complete a focused light/dark, RTL, responsive, persistence, and mutation regression pass.
 - [x] Prioritize low-friction mobile interaction, clear feedback, preserved context, and efficient class-planning handoffs across all reference flows.
 - [ ] Verify teacher, book, and location class-planning handoffs on a freshly built Android APK in light and dark mode.
+- [x] Add a hydration gate and serialized local persistence with visible save-recovery status.
+- [x] Consolidate validated reference and class mutation commands, including dangling-reference and date/time safeguards.
+- [x] Replace implicit newest-item selection with explicit create-and-return reference results that preserve class drafts.
+- [x] Rebuild class entry, date/time, keyboard, and incomplete-library interactions for low-friction mobile use.
+- [x] Standardize teacher and location directory rows, touch targets, secondary map actions, and RTL behavior.
+- [ ] Add regression coverage for hydration, write ordering, explicit handoffs, class validation, and native-focused interaction journeys.

@@ -5,6 +5,8 @@ const storageKeys = { classes: "darshub:classes", teachers: "darshub:teachers", 
 
 export type StoredStudySpace = { classes: DarsClass[]; teachers: Teacher[]; books: Book[]; locations: Location[]; preferences: DarsPreferences };
 
+export type SerializedTaskQueue = { run: <T>(task: () => Promise<T>) => Promise<T> };
+
 export const defaultPreferences: DarsPreferences = { appLanguage: "en", dateDisplay: "dual", dateLanguage: "en", remindersEnabled: false, reminderLeadMinutes: 30 };
 
 function parseStored<T>(value: string | null, fallback: T): T { try { return value ? JSON.parse(value) as T : fallback; } catch { return fallback; } }
@@ -15,3 +17,14 @@ export async function loadStudySpace(): Promise<StoredStudySpace> {
 }
 
 export function saveStudySpace(space: StoredStudySpace) { return AsyncStorage.multiSet([[storageKeys.classes, JSON.stringify(space.classes)], [storageKeys.teachers, JSON.stringify(space.teachers)], [storageKeys.books, JSON.stringify(space.books)], [storageKeys.locations, JSON.stringify(space.locations)], [storageKeys.preferences, JSON.stringify(space.preferences)]]); }
+
+export function createSerializedTaskQueue(): SerializedTaskQueue {
+  let tail: Promise<void> = Promise.resolve();
+  return {
+    run<T>(task: () => Promise<T>) {
+      const next = tail.then(task);
+      tail = next.then(() => undefined, () => undefined);
+      return next;
+    },
+  };
+}

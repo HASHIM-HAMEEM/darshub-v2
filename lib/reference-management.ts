@@ -1,7 +1,8 @@
-import type { Book, DarsClass, Location, Teacher } from "@/lib/types/dars";
+import type { Book, ClassDraft, DarsClass, Location, Teacher } from "@/lib/types/dars";
 
 export type ReferenceMutationResult = { ok: true; id: string } | { ok: false; message: string };
 export type ReferenceDeleteResult = { ok: boolean; linkedClasses: number; message?: string };
+export type ClassMutationResult = { ok: true; id: string; draft: ClassDraft } | { ok: false; message: string };
 
 export type TeacherInput = Omit<Teacher, "id">;
 export type BookInput = Omit<Book, "id">;
@@ -58,4 +59,22 @@ export function linkedClassCount(classes: DarsClass[], reference: "teacher" | "b
 
 export function syncLocationCity(classes: DarsClass[], locationId: string, city: string) {
   return classes.map((entry) => entry.locationId === locationId ? { ...entry, city } : entry);
+}
+
+const isoDate = /^\d{4}-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01])$/;
+const timeOfDay = /^([01]\d|2[0-3]):[0-5]\d$/;
+
+export function validateClassDraft(input: ClassDraft, references: { teachers: Teacher[]; books: Book[]; locations: Location[] }): { ok: true; draft: ClassDraft } | { ok: false; message: string } {
+  const title = cleanText(input.title);
+  if (!title) return { ok: false, message: "Add a class title." };
+  if (!references.teachers.some((item) => item.id === input.teacherId)) return { ok: false, message: "Choose a saved teacher before continuing." };
+  if (!references.books.some((item) => item.id === input.bookId)) return { ok: false, message: "Choose a saved book before continuing." };
+  const location = references.locations.find((item) => item.id === input.locationId);
+  if (!location) return { ok: false, message: "Choose a saved location before continuing." };
+  if (!isoDate.test(input.date)) return { ok: false, message: "Use a valid date in YYYY-MM-DD format." };
+  if (!timeOfDay.test(input.startTime)) return { ok: false, message: "Use a valid start time in HH:MM format." };
+  const endTime = cleanText(input.endTime);
+  if (endTime && !timeOfDay.test(endTime)) return { ok: false, message: "Use a valid end time in HH:MM format." };
+  if (endTime && endTime <= input.startTime) return { ok: false, message: "End time must be later than start time." };
+  return { ok: true, draft: { ...input, title, city: location.city, endTime: endTime || undefined, notes: cleanText(input.notes) || undefined, recurrenceRule: input.type === "recurring" ? input.recurrenceRule || "Weekly" : undefined } };
 }

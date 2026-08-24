@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { cleanLocation, isValidMapLink, linkedClassCount, syncLocationCity, validateBook, validateLocation, validateTeacher } from "../lib/reference-management";
+import { cleanLocation, isValidMapLink, linkedClassCount, syncLocationCity, validateBook, validateClassDraft, validateLocation, validateTeacher } from "../lib/reference-management";
 
 describe("reference management", () => {
   it("rejects duplicate teacher and book identities while allowing edits to retain their own record", () => {
@@ -29,5 +29,14 @@ describe("reference management", () => {
   it("keeps linked class cities synchronized when a location is corrected", () => {
     const classes = [{ id: "class-1", locationId: "location-1", city: "Cairo" }, { id: "class-2", locationId: "location-2", city: "Alexandria" }] as never;
     expect(syncLocationCity(classes, "location-1", "Giza")).toMatchObject([{ id: "class-1", city: "Giza" }, { id: "class-2", city: "Alexandria" }]);
+  });
+
+  it("requires live references and well-formed class time values while deriving the city from location", () => {
+    const references = { teachers: [{ id: "teacher-1", name: "Shaykh", subjects: ["Hadith"] }], books: [{ id: "book-1", name: "Book", author: "Author", subject: "Hadith" }], locations: [{ id: "location-1", name: "Masjid", address: "", city: "Giza", area: "Dokki" }] };
+    const base = { title: "Lesson", subject: "Hadith", teacherId: "teacher-1", bookId: "book-1", locationId: "location-1", city: "Wrong city", date: "2026-08-15", startTime: "19:00", endTime: "20:00", type: "one-time" as const, status: "upcoming" as const };
+    expect(validateClassDraft(base, references)).toMatchObject({ ok: true, draft: { city: "Giza" } });
+    expect(validateClassDraft({ ...base, teacherId: "missing" }, references)).toMatchObject({ ok: false });
+    expect(validateClassDraft({ ...base, startTime: "7pm" }, references)).toMatchObject({ ok: false });
+    expect(validateClassDraft({ ...base, endTime: "18:30" }, references)).toMatchObject({ ok: false });
   });
 });

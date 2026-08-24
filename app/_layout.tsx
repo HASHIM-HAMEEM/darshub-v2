@@ -9,6 +9,7 @@ import { Platform } from "react-native";
 import * as SplashScreen from "expo-splash-screen";
 import "@/lib/_core/nativewind-pressable";
 import { BrandIntro } from "@/components/brand-intro";
+import { StudySpaceGate } from "@/components/study-space-gate";
 import { ThemeProvider } from "@/lib/theme-provider";
 import { DarsProvider } from "@/lib/dars-context";
 import { I18nProvider } from "@/lib/i18n";
@@ -95,6 +96,7 @@ export default function RootLayout() {
         <QueryClientProvider client={queryClient}>
           <DarsProvider>
           <I18nProvider>
+          <StudySpaceGate>
           {/* Default to hiding native headers so raw route segments don't appear (e.g. "(tabs)", "products/[id]"). */}
           {/* If a screen needs the native header, explicitly enable it and set a human title via Stack.Screen options. */}
           {/* in order for ios apps tab switching to work properly, use presentation: "fullScreenModal" for login page, whenever you decide to use presentation: "modal*/}
@@ -116,6 +118,7 @@ export default function RootLayout() {
           </Stack>
           <StatusBar style="auto" />
           <BrandIntro />
+          </StudySpaceGate>
           </I18nProvider>
           </DarsProvider>
         </QueryClientProvider>

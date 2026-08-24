@@ -8,7 +8,7 @@ const storage = vi.hoisted(() => {
 });
 vi.mock("@react-native-async-storage/async-storage", () => ({ default: { multiGet: storage.multiGet, multiSet: storage.multiSet } }));
 
-import { defaultPreferences, loadStudySpace, saveStudySpace } from "../lib/dars-storage";
+import { createSerializedTaskQueue, defaultPreferences, loadStudySpace, saveStudySpace } from "../lib/dars-storage";
 
 describe("Dars local persistence", () => {
   beforeEach(() => { storage.values.clear(); storage.multiGet.mockClear(); storage.multiSet.mockClear(); });
@@ -29,5 +29,15 @@ describe("Dars local persistence", () => {
   it("recovers safely from malformed persisted values", async () => {
     storage.values.set("darshub:classes", "not-json");
     await expect(loadStudySpace()).resolves.toMatchObject({ classes: [], preferences: defaultPreferences });
+  });
+
+  it("serializes writes so an older snapshot cannot finish after a newer snapshot", async () => {
+    const queue = createSerializedTaskQueue(); const order: string[] = []; let releaseFirst: (() => void) | undefined;
+    const first = queue.run(async () => { order.push("first-start"); await new Promise<void>((resolve) => { releaseFirst = resolve; }); order.push("first-end"); });
+    const second = queue.run(async () => { order.push("second"); });
+    await Promise.resolve();
+    expect(order).toEqual(["first-start"]);
+    releaseFirst?.(); await Promise.all([first, second]);
+    expect(order).toEqual(["first-start", "first-end", "second"]);
   });
 });
