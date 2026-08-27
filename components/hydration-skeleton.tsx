@@ -1,0 +1,17 @@
+import { useEffect, useRef, useState } from "react";
+import { AccessibilityInfo, Animated, StyleSheet, View } from "react-native";
+import { useColors } from "@/hooks/use-colors";
+
+function Bone({ style }: { style?: object }) {
+  const colors = useColors(); const [reduceMotion, setReduceMotion] = useState(false); const opacity = useRef(new Animated.Value(0.42)).current;
+  useEffect(() => { void AccessibilityInfo.isReduceMotionEnabled().then(setReduceMotion); const subscription = AccessibilityInfo.addEventListener("reduceMotionChanged", setReduceMotion); return () => subscription.remove(); }, []);
+  useEffect(() => { if (reduceMotion) { opacity.setValue(0.56); return; } const animation = Animated.loop(Animated.sequence([Animated.timing(opacity, { duration: 720, toValue: 0.88, useNativeDriver: true }), Animated.timing(opacity, { duration: 720, toValue: 0.42, useNativeDriver: true })])); animation.start(); return () => animation.stop(); }, [opacity, reduceMotion]);
+  return <Animated.View style={[styles.bone, { backgroundColor: colors.wash, opacity }, style]} />;
+}
+
+export function HydrationSkeleton() {
+  const colors = useColors();
+  return <View accessibilityLabel="Loading your study space" accessibilityRole="progressbar" style={[styles.screen, { backgroundColor: colors.background }]}><View style={styles.header}><Bone style={styles.eyebrow} /><Bone style={styles.title} /><Bone style={styles.circle} /></View><View style={styles.body}><Bone style={styles.section} /><View style={[styles.primaryCard, { backgroundColor: colors.surface, borderColor: colors.border }]}><View style={styles.row}><Bone style={styles.icon} /><View style={styles.copy}><Bone style={styles.lineWide} /><Bone style={styles.lineShort} /></View><Bone style={styles.time} /></View></View><Bone style={styles.section} /><View style={styles.days}>{Array.from({ length: 7 }, (_, index) => <View key={index} style={styles.day}><Bone style={styles.dayName} /><Bone style={styles.dayNumber} /><Bone style={styles.dot} /></View>)}</View><Bone style={styles.section} /><View style={styles.list}>{Array.from({ length: 3 }, (_, index) => <View key={index} style={styles.row}><Bone style={styles.icon} /><View style={styles.copy}><Bone style={styles.lineWide} /><Bone style={styles.lineShort} /></View></View>)}</View></View></View>;
+}
+
+const styles = StyleSheet.create({ screen: { flex: 1, paddingHorizontal: 22, paddingTop: 18 }, header: { minHeight: 92, paddingTop: 8, position: "relative" }, body: { gap: 14 }, bone: { borderRadius: 8 }, eyebrow: { height: 10, width: 126 }, title: { height: 30, marginTop: 9, width: 172 }, circle: { borderRadius: 22, height: 42, position: "absolute", right: 0, top: 8, width: 42 }, section: { height: 10, marginTop: 8, width: 96 }, primaryCard: { borderRadius: 18, borderWidth: StyleSheet.hairlineWidth, paddingHorizontal: 16, paddingVertical: 5 }, row: { alignItems: "center", flexDirection: "row", gap: 13, minHeight: 62 }, icon: { borderRadius: 13, height: 42, width: 42 }, copy: { flex: 1, gap: 8 }, lineWide: { height: 13, maxWidth: 214, width: "90%" }, lineShort: { height: 10, width: "58%" }, time: { height: 22, width: 52 }, days: { flexDirection: "row", gap: 6 }, day: { alignItems: "center", flex: 1, gap: 7, paddingVertical: 9 }, dayName: { height: 8, width: 13 }, dayNumber: { height: 12, width: 16 }, dot: { borderRadius: 3, height: 5, width: 5 }, list: { gap: 1 } });

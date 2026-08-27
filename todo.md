@@ -118,3 +118,11 @@
 - [x] Rebuild class entry, date/time, keyboard, and incomplete-library interactions for low-friction mobile use.
 - [x] Standardize teacher and location directory rows, touch targets, secondary map actions, and RTL behavior.
 - [ ] Add regression coverage for hydration, write ordering, explicit handoffs, class validation, and native-focused interaction journeys.
+- [x] Extract the supplied Dars visual and interactive prototype rules into shared mobile layouts, controls, transitions, and loading states.
+- [x] Add a reduced-motion-aware skeleton animation while the local study space hydrates.
+- [x] Rebuild core Dars screens to match the approved prototype hierarchy and interaction behavior without breaking local-first workflows.
+- [ ] Validate prototype-aligned navigation, light/dark themes, local data states, and Android interaction readiness.
+- [x] Extract the supplied V1 Dars reference into reusable mobile layout, hierarchy, surface, navigation, and loading-state rules.
+- [x] Add a reduced-motion-aware shimmer skeleton while the local study space hydrates.
+- [x] Apply the approved reference-led structure consistently across Dars core screens without disrupting local-first class management.
+- [ ] Validate the reference-led mobile experience in light/dark themes and prepare a fresh Android build checkpoint.
