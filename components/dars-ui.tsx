@@ -703,7 +703,7 @@ export function Fab({ label, icon = "add", onPress }: { label: string; icon?: Ma
 
 export const styles = StyleSheet.create({
   flex: { flex: 1 },
-  center: { textAlign: "center" },
+  center: { alignSelf: "stretch", textAlign: "center" },
   rowReverse: { flexDirection: "row-reverse" },
   alignEnd: { alignItems: "flex-end" },
   selfCenter: { alignSelf: "center" },
@@ -747,7 +747,7 @@ export const styles = StyleSheet.create({
   directoryRow: { alignItems: "center", flexDirection: "row", gap: space.md, minHeight: 70, paddingHorizontal: space.lg, paddingVertical: space.md },
   count: { alignItems: "center", borderRadius: 12, borderWidth: 1.4, justifyContent: "center", minWidth: 26, paddingHorizontal: 7, paddingVertical: 2, transform: [{ rotate: "3deg" }] },
   empty: { alignItems: "center", gap: space.sm, justifyContent: "center", paddingHorizontal: space.xxl, paddingVertical: 36 },
-  emptyText: { maxWidth: 300 },
+  emptyText: { alignSelf: "center", maxWidth: 300 },
   emptyAction: { marginTop: space.sm },
   button: { alignItems: "center", flexDirection: "row", gap: space.sm, justifyContent: "center", minHeight: 54, paddingHorizontal: space.xl },
   buttonCompact: { minHeight: 46, paddingHorizontal: space.lg },
