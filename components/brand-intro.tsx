@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Platform, StyleSheet, Text } from "react-native";
 import Animated, { Easing, runOnJS, useAnimatedStyle, useReducedMotion, useSharedValue, withDelay, withSpring, withTiming } from "react-native-reanimated";
-import { LanternDoodle, PaperDots, Squiggle } from "@/components/doodle";
+import { LogoMark, PaperDots, Squiggle } from "@/components/doodle";
 import { fonts } from "@/constants/design";
 import { useColors } from "@/hooks/use-colors";
 
@@ -26,7 +26,7 @@ export function BrandIntro() {
     <Animated.View pointerEvents="none" style={[styles.overlay, { backgroundColor: colors.background }, overlay]}>
       <PaperDots />
       <Animated.View style={[styles.center, mark]}>
-        <LanternDoodle size={132} />
+        <LogoMark size={148} />
         <Text accessibilityRole="header" style={[styles.word, { color: colors.text }]}>DarsHub</Text>
         <Squiggle width={150} height={12} delay={260} strokeWidth={3.4} />
       </Animated.View>
@@ -37,5 +37,5 @@ export function BrandIntro() {
 const styles = StyleSheet.create({
   overlay: { alignItems: "center", bottom: 0, justifyContent: "center", left: 0, position: "absolute", right: 0, top: 0, zIndex: 50 },
   center: { alignItems: "center" },
-  word: { fontFamily: fonts.hand, fontSize: 54, lineHeight: 60, marginTop: 4 },
+  word: { fontFamily: fonts.hand, fontSize: 54, lineHeight: 64, marginTop: 8, paddingHorizontal: 12 },
 });

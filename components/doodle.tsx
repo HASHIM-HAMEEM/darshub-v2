@@ -402,6 +402,26 @@ export function LanternDoodle({ size = 120 }: { size?: number }) {
   );
 }
 
+export function LogoMark({ size = 140 }: { size?: number }) {
+  const colors = useColors();
+  const float = useFloat(3, 2400);
+  return (
+    <Animated.View style={[{ height: size, width: size }, float]}>
+      <Svg width={size} height={size} viewBox="170 110 700 720">
+        <Path d="M188 520 C 250 430, 780 410, 850 470 C 880 560, 860 700, 800 760 C 640 800, 330 810, 200 760 C 150 690, 160 590, 188 520 Z" fill={colors.highlight} transform="rotate(-6 512 600)" />
+        <Path d="M512 470 C 440 420, 320 400, 210 420 L 214 770 C 320 752, 440 770, 512 820 Z" fill={colors.surface} stroke={colors.line} strokeWidth={30} strokeLinejoin="round" strokeLinecap="round" />
+        <Path d="M512 470 C 584 420, 704 400, 814 420 L 810 770 C 704 752, 584 770, 512 820 Z" fill={colors.surface} stroke={colors.line} strokeWidth={30} strokeLinejoin="round" strokeLinecap="round" />
+        <Path d="M512 478 L 512 812" stroke={colors.line} strokeWidth={22} strokeLinecap="round" />
+        <Path d="M270 500 C 330 490, 400 496, 452 516 M270 572 C 330 562, 400 568, 452 588 M270 644 C 320 636, 370 640, 410 654 M572 516 C 624 496, 694 490, 754 500 M572 588 C 624 568, 694 562, 754 572" stroke={colors.muted} strokeWidth={18} strokeLinecap="round" fill="none" />
+        <Path d="M640 640 L 640 760 L 668 732 L 696 760 L 696 640 Z" fill={colors.tint} stroke={colors.line} strokeWidth={18} strokeLinejoin="round" />
+        <Path d="M560 150 A 110 110 0 1 0 660 330 A 88 88 0 1 1 560 150 Z" fill={colors.tint} stroke={colors.line} strokeWidth={22} strokeLinejoin="round" />
+        <Path d="M705 170 L720 212 L764 214 L730 240 L742 283 L705 258 L668 283 L680 240 L646 214 L690 212 Z" fill={colors.coral} stroke={colors.line} strokeWidth={18} strokeLinejoin="round" />
+        <Path d="M262 300 L 262 350 M237 325 L 287 325 M820 350 L 850 330 M800 318 L 812 286" stroke={colors.line} strokeWidth={16} strokeLinecap="round" />
+      </Svg>
+    </Animated.View>
+  );
+}
+
 export function BooksDoodle({ size = 120 }: { size?: number }) {
   const colors = useColors();
   const float = useFloat(3, 2200);
