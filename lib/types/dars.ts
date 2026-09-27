@@ -1,6 +1,7 @@
 export type ClassStatus = "upcoming" | "completed" | "cancelled";
 export type ClassType = "one-time" | "recurring";
 export type DateDisplay = "gregorian" | "dual" | "hijri";
+export type ThemeMode = "system" | "light" | "dark";
 
 export type DarsPreferences = {
   appLanguage: "en" | "ar";
@@ -8,6 +9,7 @@ export type DarsPreferences = {
   dateLanguage: "en" | "ar";
   remindersEnabled: boolean;
   reminderLeadMinutes: 10 | 30 | 60;
+  themeMode?: ThemeMode;
 };
 
 export type Teacher = {

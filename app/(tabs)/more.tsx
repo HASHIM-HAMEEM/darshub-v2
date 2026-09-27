@@ -1,19 +1,26 @@
-import MaterialIcons from "@expo/vector-icons/MaterialIcons";
-import { router } from "expo-router";
-import { ScrollView, StyleSheet, Text, View } from "react-native";
-import { MotionPressable } from "@/components/motion-pressable";
+import { ScrollView, StyleSheet } from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { ScreenTitle } from "@/components/dars-ui";
 import { ScreenContainer } from "@/components/screen-container";
-import { useColors } from "@/hooks/use-colors";
-import { useDars } from "@/lib/dars-context";
+import { SettingsContent } from "@/components/settings-content";
+import { space } from "@/constants/design";
 import { useI18n } from "@/lib/i18n";
 import { getTabListBottomPadding } from "@/lib/responsive-layout";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
 
-type SettingRow = { icon: React.ComponentProps<typeof MaterialIcons>["name"]; title: string; subtitle?: string };
 export default function MoreScreen() {
-  const colors = useColors(); const insets = useSafeAreaInsets(); const { preferences } = useDars(); const { isRTL, language } = useI18n(); const writing = { textAlign: isRTL ? "right" as const : "left" as const, writingDirection: isRTL ? "rtl" as const : "ltr" as const }; const preferencesRows: SettingRow[] = [{ icon: "brightness-6", title: language === "ar" ? "المظهر" : "Appearance", subtitle: language === "ar" ? "فاتح أو داكن" : "Light or dark" }, { icon: "language", title: language === "ar" ? "اللغة" : "Language", subtitle: language === "ar" ? "العربية" : "English" }, { icon: "notifications-none", title: language === "ar" ? "تذكيرات الدروس" : "Class reminders", subtitle: preferences.remindersEnabled ? (language === "ar" ? `قبل ${preferences.reminderLeadMinutes} دقيقة` : `${preferences.reminderLeadMinutes} minutes before`) : (language === "ar" ? "متوقفة" : "Off") }]; const dataRows: SettingRow[] = [{ icon: "file-download", title: language === "ar" ? "تصدير JSON" : "Export JSON", subtitle: language === "ar" ? "نسخة احتياطية أو نقل المكتبة" : "Back up or move your library" }, { icon: "layers", title: language === "ar" ? "استعادة نسخة احتياطية" : "Restore backup", subtitle: language === "ar" ? "دمج أو استبدال مع تأكيد" : "Merge or replace, always confirmed" }];
-  const row = (item: SettingRow) => <MotionPressable key={item.title} accessibilityRole="button" accessibilityLabel={item.title} onPress={() => router.push("/settings" as never)} style={({ pressed }) => [styles.row, isRTL && styles.rowReverse, { borderColor: colors.border, opacity: pressed ? 0.65 : 1 }]}><View style={[styles.icon, { backgroundColor: colors.wash }]}><MaterialIcons name={item.icon} size={19} color={colors.tint} /></View><View style={styles.copy}><Text style={[styles.itemTitle, { color: colors.text }, writing]}>{item.title}</Text>{item.subtitle ? <Text style={[styles.itemSubtitle, { color: colors.muted }, writing]}>{item.subtitle}</Text> : null}</View><MaterialIcons name={isRTL ? "chevron-left" : "chevron-right"} size={18} color={colors.muted} /></MotionPressable>;
-  return <ScreenContainer edges={["top", "left", "right"]}><ScrollView contentContainerStyle={[styles.content, { paddingBottom: getTabListBottomPadding(insets.bottom) + 16 }]} showsVerticalScrollIndicator={false}><ScreenTitle eyebrow={language === "ar" ? "المزيد" : "More"} title={language === "ar" ? "الإعدادات" : "Settings"} /><Text style={[styles.section, { color: colors.muted }, writing]}>{language === "ar" ? "التفضيلات" : "Preferences"}</Text><View style={[styles.group, { backgroundColor: colors.surface, borderColor: colors.border }]}>{preferencesRows.map(row)}</View><Text style={[styles.section, { color: colors.muted }, writing]}>{language === "ar" ? "البيانات — على هذا الجهاز فقط" : "Data — on this device only"}</Text><View style={[styles.group, { backgroundColor: colors.surface, borderColor: colors.border }]}>{dataRows.map(row)}</View><Text style={[styles.about, { color: colors.muted }, writing]}>{language === "ar" ? "Dars · محلي أولاً · بلا حساب أو خادم" : "Dars · local-first · no account, no server"}</Text></ScrollView></ScreenContainer>;
+  const insets = useSafeAreaInsets();
+  const { language } = useI18n();
+  return (
+    <ScreenContainer edges={["top", "left", "right"]}>
+      <ScrollView
+        contentContainerStyle={[styles.content, { paddingBottom: getTabListBottomPadding(insets.bottom) + space.lg }]}
+        showsVerticalScrollIndicator={false}
+      >
+        <ScreenTitle title={language === "ar" ? "الإعدادات" : "Settings"} />
+        <SettingsContent />
+      </ScrollView>
+    </ScreenContainer>
+  );
 }
-const styles = StyleSheet.create({ content: { gap: 12, paddingHorizontal: 22, paddingTop: 8 }, rowReverse: { flexDirection: "row-reverse" }, section: { fontFamily: "monospace", fontSize: 10.5, fontWeight: "500", letterSpacing: 0.7, marginTop: 4, textTransform: "uppercase" }, group: { borderRadius: 18, borderWidth: StyleSheet.hairlineWidth, paddingHorizontal: 16 }, row: { alignItems: "center", borderBottomWidth: StyleSheet.hairlineWidth, flexDirection: "row", gap: 13, minHeight: 68, paddingVertical: 11 }, icon: { alignItems: "center", borderRadius: 13, height: 42, justifyContent: "center", width: 42 }, copy: { flex: 1, minWidth: 0 }, itemTitle: { fontSize: 15, fontWeight: "500", lineHeight: 20 }, itemSubtitle: { fontSize: 12.5, lineHeight: 18, marginTop: 2 }, about: { fontSize: 12, lineHeight: 18, paddingHorizontal: 8, paddingTop: 4, textAlign: "center" } });
+
+const styles = StyleSheet.create({ content: { paddingHorizontal: space.gutter, paddingTop: space.sm } });

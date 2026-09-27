@@ -1,16 +1,43 @@
-import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import { router, useLocalSearchParams } from "expo-router";
-import { Alert, Linking, FlatList, Pressable, StyleSheet, Text, View } from "react-native";
-import { ClassCard, EmptyState, IconButton, PrimaryButton, ScreenTitle } from "@/components/dars-ui";
-import { ScreenContainer } from "@/components/screen-container";
-import { useColors } from "@/hooks/use-colors";
+import { Alert, Linking } from "react-native";
+import { ReferenceDetail, ReferenceMissing, type InfoRow } from "@/components/reference-screens";
 import { useDars } from "@/lib/dars-context";
+import { useI18n } from "@/lib/i18n";
 import { goBackOrHome } from "@/lib/navigation";
 
 export default function LocationDetailScreen() {
-  const { id } = useLocalSearchParams<{ id: string }>(); const colors = useColors(); const { locations, classes, teachers, books, deleteLocation } = useDars(); const location = locations.find((item) => item.id === id); const linked = classes.filter((item) => item.locationId === id);
-  const remove = () => Alert.alert(linked.length ? "Location is in use" : "Delete location?", linked.length ? `${linked.length} class${linked.length === 1 ? "" : "es"} still uses this location. Update or remove those classes first.` : "This removes the location from your local directory.", linked.length ? [{ text: "OK" }] : [{ text: "Cancel", style: "cancel" }, { text: "Delete", style: "destructive", onPress: () => { if (deleteLocation(id).ok) router.replace("/locations" as never); } }]);
-  if (!location) return <ScreenContainer><EmptyState title="Location not found" message="This place is no longer in your location list." actionLabel="Back to locations" onAction={() => router.replace("/locations" as never)} /></ScreenContainer>;
-  return <ScreenContainer><FlatList data={linked} keyExtractor={(item) => item.id} contentContainerStyle={styles.content} renderItem={({ item }) => <View style={styles.item}><ClassCard item={item} teachers={teachers} books={books} locations={locations} /></View>} ListHeaderComponent={<View style={styles.header}><ScreenTitle eyebrow="Class location" title={location.name} action={<IconButton icon="close" label="Close location" onPress={goBackOrHome} />} /><View style={[styles.hero, { backgroundColor: colors.surface, borderColor: colors.border }]}><View style={styles.addressRow}><MaterialIcons name="location-on" size={20} color={colors.tint} /><Text style={[styles.address, { color: colors.text }]}>{location.area}, {location.city}</Text></View>{location.address ? <Text style={[styles.addressNote, { color: colors.muted }]}>{location.address}</Text> : null}{location.notes ? <Text style={[styles.notes, { color: colors.text }]}>{location.notes}</Text> : null}<PrimaryButton label="Edit location" icon="edit" onPress={() => router.push(`/location/form?id=${location.id}` as never)} />{location.mapLink ? <Pressable accessibilityRole="button" accessibilityLabel="Open map" onPress={() => void Linking.openURL(location.mapLink!)} style={({ pressed }) => [styles.secondaryAction, { borderColor: colors.border, opacity: pressed ? 0.65 : 1 }]}><Text style={[styles.secondaryText, { color: colors.tint }]}>Open map</Text></Pressable> : null}<Pressable accessibilityRole="button" accessibilityLabel="Delete location" onPress={remove} style={({ pressed }) => [styles.secondaryAction, { borderColor: colors.border, opacity: pressed ? 0.65 : 1 }]}><Text style={[styles.deleteText, { color: colors.error }]}>{linked.length ? `Used by ${linked.length} class${linked.length === 1 ? "" : "es"}` : "Delete location"}</Text></Pressable></View><Text style={[styles.heading, { color: colors.text }]}>Classes here</Text></View>} ListEmptyComponent={<EmptyState icon="location-on" title="No linked classes" message="Classes held at this location will appear here." />} /></ScreenContainer>;
+  const { id } = useLocalSearchParams<{ id: string }>();
+  const { locations, classes, deleteLocation } = useDars();
+  const { language } = useI18n();
+  const ar = language === "ar";
+  const location = locations.find((item) => item.id === id);
+  if (!location) return <ReferenceMissing title={ar ? "المكان غير موجود" : "Place not found"} message={ar ? "لم يعد هذا المكان في مكتبتك." : "This place is no longer in your library."} />;
+  const openMap = async () => {
+    const query = [location.name, location.address, location.area, location.city].filter(Boolean).join(", ");
+    try {
+      await Linking.openURL(location.mapLink || `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(query)}`);
+    } catch {
+      Alert.alert(ar ? "الخريطة غير متاحة" : "Map unavailable", ar ? "تعذر فتح تطبيق الخرائط." : "Could not open a maps app.");
+    }
+  };
+  const rows: InfoRow[] = [
+    ...(location.address ? [{ icon: "signpost" as const, title: location.address, detail: ar ? "العنوان" : "Address" }] : []),
+    { icon: "map", title: ar ? "فتح في الخرائط" : "Open in Maps", detail: location.mapLink ? undefined : ar ? "بحث بالاسم والعنوان" : "Search by name and address", onPress: () => void openMap() },
+    ...(location.notes ? [{ icon: "notes" as const, title: location.notes, detail: ar ? "ملاحظات" : "Notes" }] : []),
+  ];
+  return (
+    <ReferenceDetail
+      icon="location-on"
+      kind={ar ? "مكان" : "Place"}
+      title={location.name}
+      subtitle={[location.area, location.city].filter(Boolean).join(", ")}
+      rows={rows}
+      linked={classes.filter((item) => item.locationId === location.id)}
+      deleteLabel={ar ? "حذف المكان" : "Delete place"}
+      onEdit={() => router.push(`/location/form?id=${location.id}` as never)}
+      onDelete={() => {
+        if (deleteLocation(location.id).ok) goBackOrHome();
+      }}
+    />
+  );
 }
-const styles = StyleSheet.create({ content: { padding: 16, paddingBottom: 36 }, header: { gap: 16, paddingBottom: 8 }, hero: { borderRadius: 16, borderWidth: StyleSheet.hairlineWidth, gap: 11, padding: 16, shadowColor: "#000", shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.04, shadowRadius: 8 }, addressRow: { alignItems: "center", flexDirection: "row", gap: 8 }, address: { fontSize: 15, fontWeight: "600" }, addressNote: { fontSize: 13 }, notes: { fontSize: 13.5, lineHeight: 20 }, heading: { fontSize: 14, fontWeight: "600", marginTop: 2 }, item: { marginTop: 12 }, secondaryAction: { alignItems: "center", borderRadius: 12, borderWidth: StyleSheet.hairlineWidth, minHeight: 46, justifyContent: "center" }, secondaryText: { fontSize: 13, fontWeight: "700" }, deleteText: { fontSize: 13, fontWeight: "700" } });

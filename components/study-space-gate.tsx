@@ -1,14 +1,75 @@
-import { Pressable, StyleSheet, Text, View } from "react-native";
+import MaterialIcons from "@expo/vector-icons/MaterialIcons";
+import { StyleSheet, Text, View } from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { PrimaryButton } from "@/components/dars-ui";
+import { HydrationSkeleton } from "@/components/hydration-skeleton";
+import { MotionPressable } from "@/components/motion-pressable";
+import { directional, radius, space, type } from "@/constants/design";
 import { useColors } from "@/hooks/use-colors";
 import { useDars } from "@/lib/dars-context";
-import { HydrationSkeleton } from "@/components/hydration-skeleton";
+import { useI18n } from "@/lib/i18n";
+import { getTabListBottomPadding } from "@/lib/responsive-layout";
 
 export function StudySpaceGate({ children }: { children: React.ReactNode }) {
-  const colors = useColors(); const { dataStatus, saveStatus, saveError, retryHydration, retrySave } = useDars();
-  if (dataStatus === "ready") return <>{children}{saveStatus === "error" ? <View style={[styles.saveNotice, { backgroundColor: colors.surface, borderColor: colors.error }]}><Text style={[styles.saveText, { color: colors.text }]}>Your latest change has not been saved.</Text><Pressable accessibilityRole="button" onPress={retrySave} style={({ pressed }) => [styles.retry, { opacity: pressed ? 0.65 : 1 }]}><Text style={[styles.retryText, { color: colors.tint }]}>Retry</Text></Pressable></View> : null}</>;
-  const failed = dataStatus === "error";
-  if (!failed) return <HydrationSkeleton />;
-  return <View style={[styles.container, { backgroundColor: colors.background }]}><View style={styles.content}><Text style={[styles.title, { color: colors.text }]}>Dars could not load your study space</Text><Text style={[styles.message, { color: colors.muted }]}>{saveError ?? "Your data is still on this device. Try again before making changes."}</Text><Pressable accessibilityRole="button" onPress={retryHydration} style={({ pressed }) => [styles.action, { backgroundColor: colors.tint, opacity: pressed ? 0.76 : 1 }]}><Text style={[styles.actionText, { color: colors.onPrimary }]}>Try again</Text></Pressable></View></View>;
+  const colors = useColors();
+  const insets = useSafeAreaInsets();
+  const { dataStatus, saveStatus, saveError, retryHydration, retrySave } = useDars();
+  const { isRTL, language } = useI18n();
+  const ar = language === "ar";
+  if (dataStatus === "ready")
+    return (
+      <>
+        {children}
+        {saveStatus === "error" ? (
+          <View
+            accessibilityLiveRegion="polite"
+            style={[styles.snackbar, isRTL && styles.rowReverse, { backgroundColor: colors.text, bottom: getTabListBottomPadding(insets.bottom) }]}
+          >
+            <MaterialIcons name="cloud-off" size={18} color={colors.background} />
+            <Text style={[type.meta, styles.flex, { color: colors.background }, directional(isRTL)]}>
+              {ar ? "لم يُحفظ آخر تعديل." : "Your latest change wasn't saved."}
+            </Text>
+            <MotionPressable accessibilityRole="button" rippleBorderless hitSlop={10} onPress={retrySave} style={styles.retry}>
+              <Text style={[type.label, { color: colors.background }]}>{ar ? "إعادة المحاولة" : "Retry"}</Text>
+            </MotionPressable>
+          </View>
+        ) : null}
+      </>
+    );
+  if (dataStatus !== "error") return <HydrationSkeleton />;
+  return (
+    <View style={[styles.container, { backgroundColor: colors.background }]}>
+      <View style={[styles.icon, { backgroundColor: colors.subtle }]}>
+        <MaterialIcons name="sync-problem" size={32} color={colors.error} />
+      </View>
+      <Text style={[type.title, styles.center, { color: colors.text }]}>{ar ? "تعذر تحميل بياناتك" : "Couldn't load your study space"}</Text>
+      <Text style={[type.body, styles.center, styles.message, { color: colors.muted }]}>
+        {saveError ?? (ar ? "بياناتك ما زالت على هذا الجهاز. حاول مرة أخرى قبل إجراء أي تغيير." : "Your data is still on this device. Try again before making changes.")}
+      </Text>
+      <PrimaryButton icon="refresh" label={ar ? "حاول مرة أخرى" : "Try again"} onPress={retryHydration} />
+    </View>
+  );
 }
 
-const styles = StyleSheet.create({ container: { flex: 1, justifyContent: "center", padding: 28 }, content: { alignItems: "center", gap: 12 }, title: { fontSize: 19, fontWeight: "700", textAlign: "center" }, message: { fontSize: 14, lineHeight: 20, maxWidth: 300, textAlign: "center" }, action: { alignItems: "center", borderRadius: 12, justifyContent: "center", marginTop: 4, minHeight: 46, minWidth: 132, paddingHorizontal: 16 }, actionText: { fontSize: 14, fontWeight: "700" }, saveNotice: { alignItems: "center", borderRadius: 12, borderWidth: StyleSheet.hairlineWidth, bottom: 18, flexDirection: "row", gap: 12, left: 16, paddingHorizontal: 14, paddingVertical: 11, position: "absolute", right: 16, shadowColor: "#000", shadowOffset: { width: 0, height: 3 }, shadowOpacity: 0.12, shadowRadius: 10 }, saveText: { flex: 1, fontSize: 12.5, fontWeight: "600" }, retry: { minHeight: 32, justifyContent: "center" }, retryText: { fontSize: 13, fontWeight: "700" } });
+const styles = StyleSheet.create({
+  flex: { flex: 1 },
+  center: { textAlign: "center" },
+  rowReverse: { flexDirection: "row-reverse" },
+  container: { alignItems: "center", flex: 1, gap: space.md, justifyContent: "center", padding: space.xxl },
+  icon: { alignItems: "center", borderRadius: radius.pill, height: 72, justifyContent: "center", marginBottom: space.sm, width: 72 },
+  message: { marginBottom: space.md, maxWidth: 320 },
+  snackbar: {
+    alignItems: "center",
+    borderRadius: radius.md,
+    elevation: 6,
+    flexDirection: "row",
+    gap: space.md,
+    left: space.lg,
+    minHeight: 48,
+    paddingHorizontal: space.lg,
+    paddingVertical: space.sm,
+    position: "absolute",
+    right: space.lg,
+  },
+  retry: { justifyContent: "center", minHeight: 36 },
+});

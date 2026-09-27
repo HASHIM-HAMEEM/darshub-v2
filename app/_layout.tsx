@@ -10,6 +10,7 @@ import * as SplashScreen from "expo-splash-screen";
 import "@/lib/_core/nativewind-pressable";
 import { BrandIntro } from "@/components/brand-intro";
 import { StudySpaceGate } from "@/components/study-space-gate";
+import { ThemePreferenceSync } from "@/components/theme-preference-sync";
 import { ThemeProvider } from "@/lib/theme-provider";
 import { DarsProvider } from "@/lib/dars-context";
 import { I18nProvider } from "@/lib/i18n";
@@ -95,6 +96,7 @@ export default function RootLayout() {
       <trpc.Provider client={trpcClient} queryClient={queryClient}>
         <QueryClientProvider client={queryClient}>
           <DarsProvider>
+          <ThemePreferenceSync />
           <I18nProvider>
           <StudySpaceGate>
           {/* Default to hiding native headers so raw route segments don't appear (e.g. "(tabs)", "products/[id]"). */}

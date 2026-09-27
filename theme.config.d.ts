@@ -3,6 +3,7 @@ export const themeColors: {
   onPrimary: { light: string; dark: string };
   background: { light: string; dark: string };
   surface: { light: string; dark: string };
+  subtle: { light: string; dark: string };
   wash: { light: string; dark: string };
   foreground: { light: string; dark: string };
   muted: { light: string; dark: string };
