@@ -133,6 +133,7 @@ export default function RootLayout() {
             <Stack.Screen name="books" />
             <Stack.Screen name="locations" />
             <Stack.Screen name="settings" />
+            <Stack.Screen name="ai-import" />
             <Stack.Screen name="oauth/callback" />
           </Stack>
           <StatusBar style="auto" />

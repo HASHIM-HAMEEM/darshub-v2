@@ -57,6 +57,9 @@ export type DarsClass = {
   notes?: string;
   type: ClassType;
   recurrenceRule?: string;
+  recurrenceDays?: number[];
+  recurrenceEnd?: RecurrenceEnd;
+  seriesStart?: string;
   seriesId?: string;
   occurrenceIndex?: number;
   language?: string;
@@ -64,6 +67,8 @@ export type DarsClass = {
   reminderId?: string;
   reminderLeadMinutes?: 10 | 30 | 60;
 };
+
+export type RecurrenceEnd = { kind: "ongoing" } | { kind: "count"; count: number } | { kind: "until"; date: string };
 
 export type ClassDraft = Omit<DarsClass, "id">;
 

@@ -61,3 +61,8 @@ export const getNextClass = (items: DarsClass[]) => getUpcomingClasses(items)[0]
 export const getRef = <T extends { id: string }>(items: T[], id: string) => items.find((item) => item.id === id);
 export const classMatchesQuery = (item: DarsClass, refs: DarsReferences, query: string) => [item.title, item.subject, item.city, item.status, getRef(refs.teachers, item.teacherId)?.name ?? "", getRef(refs.books, item.bookId)?.name ?? "", getRef(refs.locations, item.locationId)?.name ?? ""].join(" ").toLocaleLowerCase().includes(query.trim().toLocaleLowerCase());
 export const dayDifference = (isoDate: string) => { const start = new Date(); start.setHours(12, 0, 0, 0); return Math.round((toDate(isoDate).getTime() - start.getTime()) / 86400000); };
+
+export function weekdayNames(locale: string) {
+  const format = new Intl.DateTimeFormat(locale, { weekday: "short" });
+  return Array.from({ length: 7 }, (_, day) => format.format(new Date(2024, 0, 7 + day)));
+}

@@ -1,4 +1,5 @@
 import type { Book, ClassDraft, DarsClass, Location, Teacher } from "@/lib/types/dars";
+import { normalizeRecurrenceDays, normalizeRecurrenceEnd, usesWeekdays } from "./recurrence";
 
 export type ReferenceMutationResult = { ok: true; id: string } | { ok: false; message: string };
 export type ReferenceDeleteResult = { ok: boolean; linkedClasses: number; message?: string };
@@ -76,5 +77,5 @@ export function validateClassDraft(input: ClassDraft, references: { teachers: Te
   const endTime = cleanText(input.endTime);
   if (endTime && !timeOfDay.test(endTime)) return { ok: false, message: "Use a valid end time in HH:MM format." };
   if (endTime && endTime <= input.startTime) return { ok: false, message: "End time must be later than start time." };
-  return { ok: true, draft: { ...input, title, city: location.city, endTime: endTime || undefined, notes: cleanText(input.notes) || undefined, recurrenceRule: input.type === "recurring" ? input.recurrenceRule || "Weekly" : undefined } };
+  return { ok: true, draft: { ...input, title, city: location.city, endTime: endTime || undefined, notes: cleanText(input.notes) || undefined, recurrenceRule: input.type === "recurring" ? input.recurrenceRule || "Weekly" : undefined, recurrenceDays: input.type === "recurring" && usesWeekdays(input.recurrenceRule) ? normalizeRecurrenceDays(input.recurrenceDays, input.date) : undefined, recurrenceEnd: input.type === "recurring" && input.recurrenceEnd ? normalizeRecurrenceEnd(input.recurrenceEnd, input.date) : undefined } };
 }

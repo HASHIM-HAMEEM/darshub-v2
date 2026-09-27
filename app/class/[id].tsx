@@ -4,16 +4,17 @@ import { useState } from "react";
 import { Linking, ScrollView, Share, StyleSheet, Text, View } from "react-native";
 import { showAlert } from "@/lib/alert";
 import { EmptyState, IconButton, ListGroup, ListItem, PrimaryButton, SectionHeader, StatusPill, SubjectBadge, TopBar } from "@/components/dars-ui";
-import { BottomSheet, OptionList } from "@/components/form-ui";
+import { BottomSheet, OptionList, SeriesEndFields } from "@/components/form-ui";
 import { ScreenContainer } from "@/components/screen-container";
 import { directional, radius, space, type } from "@/constants/design";
 import { useColors } from "@/hooks/use-colors";
 import { useDars } from "@/lib/dars-context";
-import { formatClassDate, formatTime, getRef } from "@/lib/dars-utils";
+import { formatClassDate, formatTime, getRef, weekdayNames } from "@/lib/dars-utils";
 import { haptic } from "@/lib/haptics";
 import { useI18n } from "@/lib/i18n";
 import { goBackOrHome } from "@/lib/navigation";
-import type { DarsClass } from "@/lib/types/dars";
+import type { DarsClass, RecurrenceEnd } from "@/lib/types/dars";
+import { seriesEnd } from "@/lib/recurrence";
 import { useDisplayPreferences } from "@/lib/use-display-preferences";
 
 type Lead = "global" | "10" | "30" | "60";
@@ -21,10 +22,11 @@ type Lead = "global" | "10" | "30" | "60";
 export default function ClassDetailScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const colors = useColors();
-  const { classes, teachers, books, locations, preferences, saveClass, deleteClass, cancelFutureSeries } = useDars();
+  const { classes, teachers, books, locations, preferences, saveClass, deleteClass, cancelFutureSeries, changeSeriesEnd } = useDars();
   const { dateDisplay, locale } = useDisplayPreferences();
   const { isRTL, language } = useI18n();
   const [reminderOpen, setReminderOpen] = useState(false);
+  const [endDraft, setEndDraft] = useState<RecurrenceEnd | null>(null);
   const ar = language === "ar";
   const item = classes.find((entry) => entry.id === id);
   if (!item)
@@ -43,6 +45,16 @@ export default function ClassDetailScreen() {
   const book = getRef(books, item.bookId);
   const location = getRef(locations, item.locationId);
   const when = `${formatClassDate(item.date, dateDisplay, locale)}`;
+  const seriesItems = item.seriesId ? classes.filter((entry) => entry.seriesId === item.seriesId) : [];
+  const currentEnd = item.seriesId ? seriesEnd(seriesItems) : undefined;
+  const sessionTotal = Math.max(0, ...seriesItems.map((entry) => (entry.occurrenceIndex ?? 0) + 1));
+  const endDetail = !currentEnd ? "" : currentEnd.kind === "ongoing"
+    ? ar ? "غير محدد بعد · تُضاف مواعيد تلقائياً" : "Not decided yet · adds classes automatically"
+    : currentEnd.kind === "count" ? ar ? `بعد ${currentEnd.count} حصة` : `After ${currentEnd.count} sessions`
+    : ar ? `في ${formatClassDate(currentEnd.date, dateDisplay, locale)}` : `On ${formatClassDate(currentEnd.date, dateDisplay, locale)}`;
+  const sessionLabel = item.seriesId ? (currentEnd?.kind === "ongoing" ? (ar ? `الحصة ${(item.occurrenceIndex ?? 0) + 1}` : `Session ${(item.occurrenceIndex ?? 0) + 1}`) : ar ? `الحصة ${(item.occurrenceIndex ?? 0) + 1} من ${currentEnd?.kind === "count" ? currentEnd.count : sessionTotal}` : `Session ${(item.occurrenceIndex ?? 0) + 1} of ${currentEnd?.kind === "count" ? currentEnd.count : sessionTotal}`) : "";
+  const names = weekdayNames(locale);
+  const repeatLabel = [ar ? "متكرر" : "Recurring", sessionLabel, ...(item.recurrenceDays && item.recurrenceDays.length > 1 ? [item.recurrenceDays.map((day) => names[day]).join(ar ? "، " : ", ")] : [])].join(" · ");
   const time = `${formatTime(item.startTime, locale)}${item.endTime ? ` – ${formatTime(item.endTime, locale)}` : ""}`;
   const place = [location?.name, location?.area, location?.city ?? item.city].filter(Boolean).join(", ");
 
@@ -157,7 +169,7 @@ export default function ClassDetailScreen() {
             {item.seriesId ? (
               <View style={[styles.repeat, isRTL && styles.rowReverse, { backgroundColor: colors.subtle }]}>
                 <Icon name="repeat" size={13} color={colors.muted} />
-                <Text style={[type.caption, { color: colors.muted }]}>{ar ? "متكرر" : "Recurring"}</Text>
+                <Text style={[type.caption, { color: colors.muted }]}>{repeatLabel}</Text>
               </View>
             ) : null}
           </View>
@@ -221,6 +233,8 @@ export default function ClassDetailScreen() {
                 title={ar ? "تعديل المواعيد القادمة" : "Edit future occurrences"}
                 onPress={() => router.push({ pathname: "/class/form", params: { id: item.id, scope: "series" } } as never)}
               />
+              <ListItem icon="event-available" title={ar ? "نهاية الدورة" : "Course end"} detail={endDetail} onPress={() => setEndDraft(currentEnd ?? { kind: "ongoing" })} />
+              <ListItem icon="add" title={ar ? "إضافة حصة إضافية" : "Add extra session"} onPress={() => router.push({ pathname: "/class/form", params: { extraFor: item.id } } as never)} />
               <ListItem icon="event-busy" title={ar ? "إلغاء المواعيد القادمة" : "Cancel future occurrences"} onPress={cancelSeries} last />
             </>
           ) : null}
@@ -247,6 +261,29 @@ export default function ClassDetailScreen() {
           ]}
         />
       </BottomSheet>
+      <BottomSheet
+        visible={endDraft !== null}
+        title={ar ? "نهاية الدورة" : "Course end"}
+        onClose={() => setEndDraft(null)}
+        footer={
+          <PrimaryButton
+            label={ar ? "حفظ" : "Save"}
+            onPress={() => {
+              if (!endDraft || !item.seriesId) return;
+              changeSeriesEnd(item.seriesId, endDraft);
+              haptic.success();
+              setEndDraft(null);
+            }}
+          />
+        }
+      >
+        <View style={styles.endSheet}>
+          <Text style={[type.meta, { color: colors.muted }, directional(isRTL)]}>
+            {ar ? "تُضاف أو تُزال الحصص القادمة لتطابق النهاية. الحصص السابقة والمحضورة لا تتغير." : "Upcoming sessions are added or removed to match. Past and attended sessions never change."}
+          </Text>
+          {endDraft ? <SeriesEndFields value={endDraft} onChange={setEndDraft} minDate={seriesItems.reduce((min, entry) => (entry.seriesStart ?? entry.date) < min ? entry.seriesStart ?? entry.date : min, item.date)} /> : null}
+        </View>
+      </BottomSheet>
     </ScreenContainer>
   );
 }
@@ -258,4 +295,5 @@ const styles = StyleSheet.create({
   badges: { flexDirection: "row", flexWrap: "wrap", gap: space.sm },
   repeat: { alignItems: "center", borderRadius: radius.sm, flexDirection: "row", gap: 4, paddingHorizontal: 8, paddingVertical: 3 },
   danger: { marginTop: space.xxl },
+  endSheet: { gap: space.md, paddingBottom: space.md },
 });

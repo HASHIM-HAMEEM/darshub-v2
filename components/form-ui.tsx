@@ -7,11 +7,13 @@ import { Icon, ScribbleCircle, SketchSurface, Squiggle } from "@/components/dood
 import { MotionPressable } from "@/components/motion-pressable";
 import { directional, fonts, handStyle, radius, space, touchTarget, type } from "@/constants/design";
 import { useColors } from "@/hooks/use-colors";
-import { formatClassDate, formatTime } from "@/lib/dars-utils";
+import { formatClassDate, formatTime, weekdayNames } from "@/lib/dars-utils";
 import { haptic } from "@/lib/haptics";
 import { useI18n } from "@/lib/i18n";
 import { localizeMessage } from "@/lib/validation-copy";
+import { maxSeriesSessions } from "@/lib/recurrence";
 import { useDisplayPreferences } from "@/lib/use-display-preferences";
+import type { RecurrenceEnd } from "@/lib/types/dars";
 
 type MaterialIcon = React.ComponentProps<typeof MaterialIcons>["name"];
 
@@ -53,7 +55,7 @@ export function TextField({
   placeholder?: string;
   multiline?: boolean;
   required?: boolean;
-  keyboardType?: "default" | "url";
+  keyboardType?: "default" | "url" | "number-pad";
   autoCapitalize?: "none" | "sentences" | "words";
 }) {
   const colors = useColors();
@@ -659,6 +661,89 @@ export function SwitchRow({
   );
 }
 
+export function WeekdayPicker({ label, value, onChange }: { label: string; value: number[]; onChange: (days: number[]) => void }) {
+  const colors = useColors();
+  const { isRTL, language } = useI18n();
+  const order = language === "ar" ? [6, 0, 1, 2, 3, 4, 5] : [0, 1, 2, 3, 4, 5, 6];
+  const names = useMemo(() => weekdayNames(language === "ar" ? "ar" : "en-US"), [language]);
+  const toggle = (day: number) => {
+    const active = value.includes(day);
+    if (active && value.length === 1) {
+      haptic.medium();
+      return;
+    }
+    haptic.selection();
+    onChange(active ? value.filter((item) => item !== day) : [...value, day].sort((a, b) => a - b));
+  };
+  return (
+    <View style={styles.weekdayPicker}>
+      <Text style={[type.label, { color: colors.muted }, directional(isRTL)]}>{label}</Text>
+      <View style={[styles.weekdayRow, isRTL && styles.rowReverse]}>
+        {order.map((day) => {
+          const active = value.includes(day);
+          return (
+            <MotionPressable
+              key={day}
+              accessibilityRole="checkbox"
+              accessibilityLabel={names[day]}
+              accessibilityState={{ checked: active }}
+              squish={0.88}
+              tilt={-4}
+              onPress={() => toggle(day)}
+              style={styles.weekdayCell}
+            >
+              <SketchSurface corner={14} seed={day + 60} shadow={active} fill={active ? colors.highlight : colors.surface} stroke={active ? colors.line : colors.border} style={styles.weekdayChip}>
+                <Text numberOfLines={1} adjustsFontSizeToFit style={[type.label, { color: active ? colors.onHighlight : colors.text }]}>{names[day]}</Text>
+              </SketchSurface>
+            </MotionPressable>
+          );
+        })}
+      </View>
+    </View>
+  );
+}
+
+export function SeriesEndFields({ value, onChange, minDate }: { value: RecurrenceEnd; onChange: (end: RecurrenceEnd) => void; minDate: string }) {
+  const { language } = useI18n();
+  const ar = language === "ar";
+  const [countText, setCountText] = useState(value.kind === "count" ? String(value.count) : "10");
+  useEffect(() => {
+    if (value.kind === "count") setCountText((current) => (Number(current) === value.count ? current : String(value.count)));
+  }, [value]);
+  const kinds: { label: string; value: RecurrenceEnd["kind"] }[] = [
+    { label: ar ? "غير محدد بعد (مستمر)" : "Not decided yet (keeps going)", value: "ongoing" },
+    { label: ar ? "بعد عدد من الحصص" : "After a number of sessions", value: "count" },
+    { label: ar ? "في تاريخ محدد" : "On a date", value: "until" },
+  ];
+  return (
+    <>
+      <PickerField
+        label={ar ? "ينتهي" : "Ends"}
+        value={value.kind}
+        options={kinds}
+        onSelect={(kind) =>
+          onChange(kind === "count" ? { kind, count: Math.max(1, Number(countText) || 10) } : kind === "until" ? { kind, date: value.kind === "until" ? value.date : minDate } : { kind: "ongoing" })
+        }
+      />
+      {value.kind === "count" ? (
+        <TextField
+          label={ar ? "عدد الحصص" : "Number of sessions"}
+          value={countText}
+          keyboardType="number-pad"
+          onChangeText={(text) => {
+            const digits = text.replace(/[^0-9٠-٩]/g, "").replace(/[٠-٩]/g, (digit) => String("٠١٢٣٤٥٦٧٨٩".indexOf(digit))).slice(0, 3);
+            setCountText(digits);
+            if (Number(digits) > 0) onChange({ kind: "count", count: Math.min(maxSeriesSessions, Number(digits)) });
+          }}
+        />
+      ) : null}
+      {value.kind === "until" ? (
+        <DateField label={ar ? "آخر يوم" : "Last day"} value={value.date} onChange={(date) => onChange({ kind: "until", date: date < minDate ? minDate : date })} />
+      ) : null}
+    </>
+  );
+}
+
 export function FormNotice({ message, tone = "error" }: { message: string; tone?: "error" | "info" }) {
   const colors = useColors();
   const { isRTL, language } = useI18n();
@@ -745,6 +830,10 @@ const styles = StyleSheet.create({
   monthHand: { fontFamily: fonts.hand, fontSize: 26, lineHeight: 30 },
   optionMark: { borderBottomLeftRadius: 22, borderBottomRightRadius: 14, borderTopLeftRadius: 14, borderTopRightRadius: 22, bottom: 4, left: 0, position: "absolute", right: 0, top: 4, transform: [{ rotate: "-0.6deg" }] },
   week: { flexDirection: "row" },
+  weekdayPicker: { gap: space.sm },
+  weekdayRow: { flexDirection: "row", gap: 6 },
+  weekdayCell: { flex: 1 },
+  weekdayChip: { alignItems: "center", justifyContent: "center", minHeight: touchTarget, paddingHorizontal: 2 },
   weekday: { flex: 1, paddingVertical: space.sm, textAlign: "center" },
   dayCell: { alignItems: "center", flex: 1, height: touchTarget, justifyContent: "center" },
   dayDot: { alignItems: "center", borderRadius: radius.pill, height: 40, justifyContent: "center", width: 40 },

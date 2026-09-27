@@ -1,3 +1,4 @@
+import { router } from "expo-router";
 import { useCallback, useEffect, useState } from "react";
 import { Linking, StyleSheet, Text, View } from "react-native";
 import { showAlert } from "@/lib/alert";
@@ -215,6 +216,12 @@ export function SettingsContent() {
 
       <SectionHeader title={ar ? "البيانات" : "Your data"} />
       <ListGroup>
+        <ListItem
+          icon="notes"
+          title={ar ? "استيراد الدروس بالذكاء الاصطناعي" : "AI import"}
+          detail={ar ? "دع ChatGPT يكتب جدولك ثم الصقه هنا" : "Let ChatGPT build your schedule, then paste it here"}
+          onPress={() => router.push("/ai-import" as never)}
+        />
         <ListItem
           icon="ios-share"
           title={ar ? "تصدير نسخة احتياطية" : "Export backup"}
