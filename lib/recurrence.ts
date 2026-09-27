@@ -110,6 +110,14 @@ export function seriesEnd(items: DarsClass[]): RecurrenceEnd {
  * Applies a new end to an existing series. Past, attended and cancelled sessions are kept; upcoming sessions beyond the
  * new end are removed; missing sessions after the latest existing one are added from `today` onwards.
  */
+export function removeOccurrence(classes: DarsClass[], id: string): DarsClass[] {
+  const target = classes.find((item) => item.id === id);
+  const rest = classes.filter((item) => item.id !== id);
+  if (!target?.seriesId || target.occurrenceIndex === undefined) return rest;
+  const index = target.occurrenceIndex;
+  return rest.map((item) => item.seriesId === target.seriesId ? { ...item, skippedOccurrences: [...new Set([...(item.skippedOccurrences ?? []), index])] } : item);
+}
+
 export function resizeSeries(classes: DarsClass[], seriesId: string, end: RecurrenceEnd, today: string, createId: () => string): DarsClass[] {
   const items = classes.filter((item) => item.seriesId === seriesId);
   if (!items.length) return classes;
@@ -123,13 +131,15 @@ export function resizeSeries(classes: DarsClass[], seriesId: string, end: Recurr
   const kept = classes
     .filter((item) => item.seriesId !== seriesId || item.status !== "upcoming" || item.date < today || inRange(item.occurrenceIndex ?? 0, item.date))
     .map((item) => item.seriesId === seriesId ? { ...item, recurrenceEnd: nextEnd, seriesStart: seed, recurrenceDays: days } : item);
+  const present = new Set(kept.filter((item) => item.seriesId === seriesId).map((item) => item.occurrenceIndex ?? 0));
+  const skipped = new Set(items.flatMap((item) => item.skippedOccurrences ?? []));
   const lastIndex = latest.occurrenceIndex ?? 0;
   const { id: _id, reminderId: _reminderId, ...template } = latest;
   const additions: DarsClass[] = [];
   let index = 0;
   for (const date of candidateDates(seed, rule, days)) {
-    if (!inRange(index, date) || (nextEnd.kind === "ongoing" && date > horizon) || index > lastIndex + maxSeriesSessions) break;
-    if (index > lastIndex && date >= today) additions.push({ ...template, id: createId(), date, status: "upcoming", seriesId, seriesStart: seed, recurrenceEnd: nextEnd, recurrenceDays: days, occurrenceIndex: index });
+    if (!inRange(index, date) || (nextEnd.kind === "ongoing" && date > horizon) || index >= Math.max(lastIndex + 1, maxSeriesSessions)) break;
+    if (date >= today && !present.has(index) && !skipped.has(index)) additions.push({ ...template, id: createId(), date, status: "upcoming", seriesId, seriesStart: seed, recurrenceEnd: nextEnd, recurrenceDays: days, occurrenceIndex: index });
     index += 1;
   }
   return [...kept, ...additions];

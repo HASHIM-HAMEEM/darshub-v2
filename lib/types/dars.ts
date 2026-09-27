@@ -62,6 +62,7 @@ export type DarsClass = {
   seriesStart?: string;
   seriesId?: string;
   occurrenceIndex?: number;
+  skippedOccurrences?: number[];
   language?: string;
   status: ClassStatus;
   reminderId?: string;

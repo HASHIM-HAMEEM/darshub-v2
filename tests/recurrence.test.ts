@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { createRecurringOccurrences, extendOngoingSeries, getOccurrenceDate, getSeriesDates, normalizeRecurrenceDays, normalizeRecurrenceEnd, resizeSeries } from "../lib/recurrence";
+import { createRecurringOccurrences, extendOngoingSeries, getOccurrenceDate, getSeriesDates, normalizeRecurrenceDays, normalizeRecurrenceEnd, removeOccurrence, resizeSeries } from "../lib/recurrence";
 import type { ClassDraft } from "../lib/types/dars";
 
 const draft: ClassDraft = { title: "Riyad", subject: "Hadith", teacherId: "teacher-1", bookId: "book-1", date: "2026-08-28", startTime: "19:00", locationId: "location-1", city: "Cairo", type: "recurring", recurrenceRule: "Weekly", status: "upcoming" };
@@ -123,5 +123,27 @@ describe("series safety", () => {
   it("new series without an explicit end are ongoing", () => {
     const [first] = createRecurringOccurrences(draft, "o", () => "id", 1);
     expect(first.recurrenceEnd).toEqual({ kind: "ongoing" });
+  });
+});
+
+describe("series gaps", () => {
+  const ids = () => { let index = 0; return () => `g-${++index}`; };
+  const sunday: ClassDraft = { ...draft, date: "2026-09-20", recurrenceDays: [0], recurrenceEnd: { kind: "count", count: 10 } };
+
+  it("restores upcoming sessions removed by shortening when the course is extended again", () => {
+    const series = createRecurringOccurrences(sunday, "w", ids()).map((item) => item.date === "2026-10-11" ? { ...item, status: "completed" as const } : item);
+    const shortened = resizeSeries(series, "w", { kind: "until", date: "2026-09-27" }, "2026-09-28", ids());
+    expect(shortened.map((item) => item.date)).toEqual(["2026-09-20", "2026-09-27", "2026-10-11"]);
+    const reopened = resizeSeries(shortened, "w", { kind: "ongoing" }, "2026-09-28", ids()).map((item) => item.date).sort();
+    expect(reopened.slice(0, 5)).toEqual(["2026-09-20", "2026-09-27", "2026-10-04", "2026-10-11", "2026-10-18"]);
+    expect(new Set(reopened).size).toBe(reopened.length);
+  });
+
+  it("does not bring back a session the user deleted", () => {
+    const series = createRecurringOccurrences(sunday, "w", ids());
+    const deleted = removeOccurrence(series, series.find((item) => item.date === "2026-10-04")!.id);
+    const extended = resizeSeries(deleted, "w", { kind: "count", count: 12 }, "2026-09-28", ids());
+    expect(extended.some((item) => item.date === "2026-10-04")).toBe(false);
+    expect(extended).toHaveLength(11);
   });
 });
