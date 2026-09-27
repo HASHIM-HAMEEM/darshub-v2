@@ -3,7 +3,7 @@ import { type ReactNode, useEffect, useMemo, useState } from "react";
 import { Modal, Pressable, ScrollView, StyleSheet, Text, TextInput, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import Animated, { useAnimatedStyle, useSharedValue, withSpring } from "react-native-reanimated";
-import { HighlightBlob, Icon, ScribbleCircle, SketchSurface, Squiggle } from "@/components/doodle";
+import { Icon, ScribbleCircle, SketchSurface, Squiggle } from "@/components/doodle";
 import { MotionPressable } from "@/components/motion-pressable";
 import { directional, fonts, handStyle, radius, space, touchTarget, type } from "@/constants/design";
 import { useColors } from "@/hooks/use-colors";
@@ -225,9 +225,7 @@ export function OptionList({
             style={[styles.option, isRTL && styles.rowReverse]}
           >
             {active ? (
-              <View style={[styles.optionMark, isRTL ? styles.optionMarkRtl : styles.optionMarkLtr]}>
-                <HighlightBlob width={220} height={40} />
-              </View>
+              <View pointerEvents="none" style={[styles.optionMark, { backgroundColor: colors.highlight }]} />
             ) : null}
             {option.icon ? <Icon name={option.icon} size={20} color={active ? colors.onHighlight : colors.muted} /> : null}
             <View style={styles.flex}>
@@ -238,7 +236,7 @@ export function OptionList({
                 <Text style={[type.meta, { color: colors.muted }, directional(isRTL)]}>{option.detail}</Text>
               ) : null}
             </View>
-            {active ? <Icon name="check" size={22} color={colors.tint} strokeWidth={2.8} /> : null}
+            {active ? <Icon name="check" size={22} color={colors.onHighlight} strokeWidth={2.8} /> : null}
           </MotionPressable>
         );
       })}
@@ -745,9 +743,7 @@ const styles = StyleSheet.create({
   monthNav: { alignItems: "center", height: touchTarget, justifyContent: "center", width: touchTarget },
   monthLabel: { flex: 1, textAlign: "center" },
   monthHand: { fontFamily: fonts.hand, fontSize: 26, lineHeight: 30 },
-  optionMark: { bottom: 0, justifyContent: "center", position: "absolute", top: 0 },
-  optionMarkLtr: { left: 4 },
-  optionMarkRtl: { right: 4 },
+  optionMark: { borderBottomLeftRadius: 22, borderBottomRightRadius: 14, borderTopLeftRadius: 14, borderTopRightRadius: 22, bottom: 4, left: 0, position: "absolute", right: 0, top: 4, transform: [{ rotate: "-0.6deg" }] },
   week: { flexDirection: "row" },
   weekday: { flex: 1, paddingVertical: space.sm, textAlign: "center" },
   dayCell: { alignItems: "center", flex: 1, height: touchTarget, justifyContent: "center" },
