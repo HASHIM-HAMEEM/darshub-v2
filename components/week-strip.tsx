@@ -1,7 +1,9 @@
 import { StyleSheet, Text, View } from "react-native";
+import { HighlightBlob, ScribbleCircle } from "@/components/doodle";
 import { MotionPressable } from "@/components/motion-pressable";
-import { radius, type } from "@/constants/design";
+import { fonts, type } from "@/constants/design";
 import { useColors } from "@/hooks/use-colors";
+import { haptic } from "@/lib/haptics";
 import { useI18n } from "@/lib/i18n";
 import type { DarsClass } from "@/lib/types/dars";
 import { useDisplayPreferences } from "@/lib/use-display-preferences";
@@ -37,24 +39,38 @@ export function WeekStrip({
         const value = iso(date);
         const selected = value === selectedDate;
         const isToday = value === today;
-        const hasClass = classes.some((item) => item.date === value && item.status === "upcoming");
-        const numberColor = selected ? colors.onPrimary : isToday ? colors.tint : colors.text;
+        const count = classes.filter((item) => item.date === value && item.status === "upcoming").length;
         return (
           <MotionPressable
             key={value}
             accessibilityRole="button"
             accessibilityState={{ selected }}
             accessibilityLabel={date.toLocaleDateString(locale, { weekday: "long", day: "numeric", month: "long" })}
-            onPress={() => onSelect(value)}
+            squish={0.86}
+            tilt={-6}
+            onPress={() => {
+              haptic.selection();
+              onSelect(value);
+            }}
             style={styles.day}
           >
-            <Text style={[type.caption, { color: selected || isToday ? colors.tint : colors.muted }]}>
+            <Text style={[type.caption, { color: selected || isToday ? colors.text : colors.muted }]}>
               {date.toLocaleDateString(locale, { weekday: "short" })}
             </Text>
-            <View style={[styles.number, selected && { backgroundColor: colors.tint }]}>
-              <Text style={[type.numeric, { color: numberColor }]}>{date.getDate()}</Text>
+            <View style={styles.number}>
+              {selected ? (
+                <View style={styles.blob}>
+                  <HighlightBlob width={38} height={38} seed={date.getDate()} />
+                </View>
+              ) : null}
+              <ScribbleCircle size={42} active={selected || isToday} color={selected ? colors.line : colors.tint} seed={date.getDate() + 2} strokeWidth={selected ? 2.4 : 1.6} />
+              <Text style={[styles.numeral, { color: selected ? colors.line : colors.text }]}>{date.getDate()}</Text>
             </View>
-            <View style={[styles.dot, { backgroundColor: hasClass ? colors.tint : "transparent" }]} />
+            <View style={styles.dots}>
+              {Array.from({ length: Math.min(count, 3) }, (_, index) => (
+                <View key={index} style={[styles.dot, { backgroundColor: colors.tint }]} />
+              ))}
+            </View>
           </MotionPressable>
         );
       })}
@@ -65,7 +81,10 @@ export function WeekStrip({
 const styles = StyleSheet.create({
   strip: { flexDirection: "row", justifyContent: "space-between" },
   rowReverse: { flexDirection: "row-reverse" },
-  day: { alignItems: "center", borderRadius: radius.md, flex: 1, gap: 6, overflow: "hidden", paddingVertical: 6 },
-  number: { alignItems: "center", borderRadius: radius.pill, height: 38, justifyContent: "center", width: 38 },
-  dot: { borderRadius: 3, height: 5, width: 5 },
+  day: { alignItems: "center", flex: 1, gap: 4, paddingVertical: 6 },
+  number: { alignItems: "center", height: 42, justifyContent: "center", width: 42 },
+  blob: { left: 2, position: "absolute", top: 2 },
+  numeral: { fontFamily: fonts.hand, fontSize: 24, lineHeight: 28 },
+  dots: { flexDirection: "row", gap: 3, height: 6 },
+  dot: { borderRadius: 3, height: 5, transform: [{ rotate: "20deg" }], width: 5 },
 });

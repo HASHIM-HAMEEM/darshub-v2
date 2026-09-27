@@ -1,4 +1,4 @@
-import MaterialIcons from "@expo/vector-icons/MaterialIcons";
+import { Icon } from "@/components/doodle";
 import { router } from "expo-router";
 import { useMemo, useState } from "react";
 import { ScrollView, StyleSheet, Text, View } from "react-native";
@@ -58,7 +58,7 @@ function NextClassCard({ item }: { item: DarsClass }) {
         <Text style={[type.caption, styles.nextEyebrow, { color: colors.onPrimary }]}>
           {language === "ar" ? "الدرس القادم" : "NEXT CLASS"}
         </Text>
-        <MaterialIcons name={isRTL ? "arrow-back" : "arrow-forward"} size={20} color={colors.onPrimary} />
+        <Icon name={isRTL ? "arrow-back" : "arrow-forward"} size={20} color={colors.onPrimary} />
       </View>
       <Text numberOfLines={2} style={[type.title, { color: colors.onPrimary }, directional(isRTL)]}>
         {item.title}

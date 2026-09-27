@@ -1,9 +1,11 @@
-import MaterialIcons from "@expo/vector-icons/MaterialIcons";
+import type MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import { type ReactNode, useEffect, useMemo, useState } from "react";
 import { Modal, Pressable, ScrollView, StyleSheet, Text, TextInput, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { MotionPressable, pressedOpacity } from "@/components/motion-pressable";
-import { directional, radius, space, touchTarget, type } from "@/constants/design";
+import Animated, { useAnimatedStyle, useSharedValue, withSpring } from "react-native-reanimated";
+import { HighlightBlob, Icon, ScribbleCircle, SketchSurface, Squiggle } from "@/components/doodle";
+import { MotionPressable } from "@/components/motion-pressable";
+import { directional, fonts, handStyle, radius, space, touchTarget, type } from "@/constants/design";
 import { useColors } from "@/hooks/use-colors";
 import { formatClassDate, formatTime } from "@/lib/dars-utils";
 import { haptic } from "@/lib/haptics";
@@ -18,7 +20,7 @@ export function FormSection({ title, children }: { title: string; children: Reac
   const { isRTL } = useI18n();
   return (
     <View style={styles.section}>
-      <Text style={[type.label, { color: colors.muted }, directional(isRTL)]}>{title}</Text>
+      <Text style={[handStyle(title, styles.sectionTitle), { color: colors.text }, directional(isRTL)]}>{title}</Text>
       <View style={styles.sectionBody}>{children}</View>
     </View>
   );
@@ -60,6 +62,7 @@ export function TextField({
   return (
     <View style={styles.field}>
       <FieldLabel label={label} required={required} />
+      <SketchSurface corner={16} seed={label.length + 5} shadow={focused} stroke={focused ? colors.tint : colors.line} strokeWidth={focused ? 2.2 : 1.6}>
       <TextInput
         value={value}
         onChangeText={onChangeText}
@@ -78,16 +81,12 @@ export function TextField({
           type.body,
           styles.input,
           multiline && styles.textarea,
-          {
-            color: colors.text,
-            backgroundColor: colors.surface,
-            borderColor: focused ? colors.tint : colors.border,
-            borderWidth: focused ? 1.5 : 1,
-          },
+          { color: colors.text },
           directional(isRTL),
         ]}
         returnKeyType={multiline ? "default" : "done"}
       />
+      </SketchSurface>
     </View>
   );
 }
@@ -115,16 +114,15 @@ function FieldTrigger({
         haptic.light();
         onPress();
       }}
-      style={({ pressed }) => [
-        styles.picker,
-        isRTL && styles.rowReverse,
-        { backgroundColor: colors.surface, borderColor: colors.border, opacity: pressedOpacity(pressed) },
-      ]}
+      squish={0.97}
+      tilt={-0.5}
     >
-      <Text numberOfLines={1} style={[type.body, styles.flex, { color: display ? colors.text : colors.muted }, directional(isRTL)]}>
-        {display ?? placeholder}
-      </Text>
-      <MaterialIcons name={icon} size={20} color={colors.muted} />
+      <SketchSurface corner={16} seed={label.length + 9} strokeWidth={1.6} shadow={false} style={[styles.picker, isRTL && styles.rowReverse]}>
+        <Text numberOfLines={1} style={[type.body, styles.flex, { color: display ? colors.text : colors.muted }, directional(isRTL)]}>
+          {display ?? placeholder}
+        </Text>
+        <Icon name={icon} size={21} color={colors.text} />
+      </SketchSurface>
     </MotionPressable>
   );
 }
@@ -150,19 +148,23 @@ export function BottomSheet({
     <Modal transparent visible={visible} animationType="slide" statusBarTranslucent navigationBarTranslucent onRequestClose={onClose}>
       <View style={styles.shade}>
         <Pressable accessibilityLabel={closeLabel} onPress={onClose} style={StyleSheet.absoluteFill} />
-        <View style={[styles.sheet, { backgroundColor: colors.surface, paddingBottom: Math.max(insets.bottom, space.lg) }]}>
-          <View style={[styles.handle, { backgroundColor: colors.border }]} />
+        <View style={[styles.sheet, { backgroundColor: colors.background, borderColor: colors.line, paddingBottom: Math.max(insets.bottom, space.lg) }]}>
+          <View style={styles.handle}>
+            <Squiggle width={52} height={8} delay={60} strokeWidth={3} color={colors.muted} />
+          </View>
           <View style={[styles.sheetHeader, isRTL && styles.rowReverse]}>
-            <Text style={[type.title, styles.flex, { color: colors.text }, directional(isRTL)]}>{title}</Text>
+            <Text style={[handStyle(title, type.title), styles.flex, { color: colors.text }, directional(isRTL)]}>{title}</Text>
             <MotionPressable
               accessibilityRole="button"
               accessibilityLabel={closeLabel}
               onPress={onClose}
-              rippleBorderless
               hitSlop={8}
-              style={[styles.close, { backgroundColor: colors.subtle }]}
+              squish={0.85}
+              tilt={-8}
             >
-              <MaterialIcons name="close" size={20} color={colors.text} />
+              <SketchSurface corner={18} seed={13} shadow={false} style={styles.close}>
+                <Icon name="close" size={18} color={colors.text} strokeWidth={2.2} />
+              </SketchSurface>
             </MotionPressable>
           </View>
           {children}
@@ -179,17 +181,15 @@ function SheetButton({ label, onPress, primary = false }: { label: string; onPre
     <MotionPressable
       accessibilityRole="button"
       accessibilityLabel={label}
-      android_ripple={{ color: primary ? "rgba(255,255,255,0.18)" : colors.border, foreground: true }}
       onPress={() => {
         haptic.selection();
         onPress();
       }}
-      style={({ pressed }) => [
-        styles.sheetButton,
-        { backgroundColor: primary ? colors.tint : colors.subtle, opacity: pressedOpacity(pressed, 0.8) },
-      ]}
+      style={styles.flex}
     >
-      <Text style={[type.bodyStrong, { color: primary ? colors.onPrimary : colors.text }]}>{label}</Text>
+      <SketchSurface corner={16} seed={label.length + 2} fill={primary ? colors.tint : colors.surface} style={styles.sheetButton}>
+        <Text style={[type.headline, { color: primary ? colors.onPrimary : colors.text }]}>{label}</Text>
+      </SketchSurface>
     </MotionPressable>
   );
 }
@@ -220,22 +220,25 @@ export function OptionList({
               haptic.selection();
               onSelect(option.value);
             }}
-            style={({ pressed }) => [
-              styles.option,
-              isRTL && styles.rowReverse,
-              { backgroundColor: active ? colors.wash : "transparent", opacity: pressedOpacity(pressed) },
-            ]}
+            squish={0.98}
+            tilt={0}
+            style={[styles.option, isRTL && styles.rowReverse]}
           >
-            {option.icon ? <MaterialIcons name={option.icon} size={20} color={active ? colors.tint : colors.muted} /> : null}
+            {active ? (
+              <View style={styles.optionMark}>
+                <HighlightBlob width={220} height={40} />
+              </View>
+            ) : null}
+            {option.icon ? <Icon name={option.icon} size={20} color={active ? colors.tint : colors.muted} /> : null}
             <View style={styles.flex}>
-              <Text style={[active ? type.bodyStrong : type.body, { color: active ? colors.tint : colors.text }, directional(isRTL)]}>
+              <Text style={[active ? type.bodyStrong : type.body, { color: colors.text }, directional(isRTL)]}>
                 {option.label}
               </Text>
               {option.detail ? (
                 <Text style={[type.meta, { color: colors.muted }, directional(isRTL)]}>{option.detail}</Text>
               ) : null}
             </View>
-            {active ? <MaterialIcons name="check" size={20} color={colors.tint} /> : null}
+            {active ? <Icon name="check" size={22} color={colors.tint} strokeWidth={2.8} /> : null}
           </MotionPressable>
         );
       })}
@@ -299,20 +302,15 @@ export function OptionPicker({
             haptic.light();
             setVisible(true);
           }}
-          style={({ pressed }) => [
-            styles.chip,
-            isRTL && styles.rowReverse,
-            {
-              backgroundColor: active ? colors.wash : colors.surface,
-              borderColor: active ? colors.tint : colors.border,
-              opacity: pressedOpacity(pressed),
-            },
-          ]}
+          squish={0.9}
+          tilt={-3}
         >
-          <Text numberOfLines={1} style={[type.label, styles.chipText, { color: active ? colors.tint : colors.text }]}>
-            {active ? selected?.label : placeholder}
-          </Text>
-          <MaterialIcons name="expand-more" size={18} color={active ? colors.tint : colors.muted} />
+          <SketchSurface corner={16} seed={sheetTitle.length + 31} shadow={active} fill={active ? colors.highlight : colors.surface} stroke={active ? colors.line : colors.border} style={[styles.chip, isRTL && styles.rowReverse]}>
+            <Text numberOfLines={1} style={[type.label, styles.chipText, { color: active ? colors.line : colors.text }]}>
+              {active ? selected?.label : placeholder}
+            </Text>
+            <Icon name="expand-more" size={16} color={active ? colors.line : colors.muted} strokeWidth={2.2} />
+          </SketchSurface>
         </MotionPressable>
       ) : (
         <FieldTrigger
@@ -413,9 +411,9 @@ export function DateField({
               onPress={() => shift(-1)}
               style={styles.monthNav}
             >
-              <MaterialIcons name={isRTL ? "chevron-right" : "chevron-left"} size={24} color={colors.text} />
+              <Icon name={isRTL ? "chevron-right" : "chevron-left"} size={24} color={colors.text} />
             </MotionPressable>
-            <Text style={[type.headline, styles.monthLabel, { color: colors.text }]}>
+            <Text style={[styles.monthLabel, styles.monthHand, { color: colors.text }]}>
               {new Intl.DateTimeFormat(locale, { month: "long", year: "numeric" }).format(month)}
             </Text>
             <MotionPressable
@@ -425,7 +423,7 @@ export function DateField({
               onPress={() => shift(1)}
               style={styles.monthNav}
             >
-              <MaterialIcons name={isRTL ? "chevron-left" : "chevron-right"} size={24} color={colors.text} />
+              <Icon name={isRTL ? "chevron-left" : "chevron-right"} size={24} color={colors.text} />
             </MotionPressable>
           </View>
           <View style={[styles.week, isRTL && styles.rowReverse]}>
@@ -452,18 +450,13 @@ export function DateField({
                     onPress={() => pick(iso)}
                     style={styles.dayCell}
                   >
-                    <View
-                      style={[
-                        styles.dayDot,
-                        isSelected && { backgroundColor: colors.tint },
-                        !isSelected && isToday && { borderColor: colors.tint, borderWidth: 1 },
-                      ]}
-                    >
+                    <View style={[styles.dayDot, isSelected && { backgroundColor: colors.highlight }]}>
+                      {isSelected || isToday ? <ScribbleCircle size={40} color={isSelected ? colors.line : colors.tint} seed={day.getDate()} /> : null}
                       <Text
                         style={[
                           type.numeric,
                           {
-                            color: isSelected ? colors.onPrimary : inMonth ? colors.text : colors.muted,
+                            color: isSelected ? colors.line : inMonth ? colors.text : colors.muted,
                             opacity: inMonth || isSelected ? 1 : 0.5,
                           },
                         ]}
@@ -513,7 +506,8 @@ export function TimeField({
   const valid = /^([01]\d|2[0-3]):[0-5]\d$/.test(value);
   const cell = (active: boolean) => [
     styles.timeCell,
-    { backgroundColor: active ? colors.tint : colors.subtle },
+    { backgroundColor: active ? colors.highlight : colors.surface, borderColor: active ? colors.line : colors.border },
+    active && styles.timeActive,
   ];
   return (
     <View style={styles.field}>
@@ -565,7 +559,7 @@ export function TimeField({
                 }}
                 style={cell(item === hour)}
               >
-                <Text style={[type.numeric, { color: item === hour ? colors.onPrimary : colors.text }]}>
+                <Text style={[type.numeric, { color: item === hour ? colors.line : colors.text }]}>
                   {formatTime(`${pad(item)}:00`, locale).replace(/[:٫.]00/, "")}
                 </Text>
               </MotionPressable>
@@ -584,13 +578,50 @@ export function TimeField({
                 }}
                 style={cell(item === minute)}
               >
-                <Text style={[type.numeric, { color: item === minute ? colors.onPrimary : colors.text }]}>:{pad(item)}</Text>
+                <Text style={[type.numeric, { color: item === minute ? colors.line : colors.text }]}>:{pad(item)}</Text>
               </MotionPressable>
             ))}
           </View>
         </ScrollView>
       </BottomSheet>
     </View>
+  );
+}
+
+function DoodleToggle({ value, isRTL }: { value: boolean; isRTL: boolean }) {
+  const colors = useColors();
+  const progress = useSharedValue(value ? 1 : 0);
+  useEffect(() => {
+    progress.value = withSpring(value ? 1 : 0, { damping: 12, stiffness: 260 });
+  }, [progress, value]);
+  const direction = isRTL ? -1 : 1;
+  const thumb = useAnimatedStyle(() => ({ transform: [{ translateX: direction * 22 * progress.value }, { rotate: `${progress.value * 180}deg` }] }));
+  return (
+    <SketchSurface corner={15} seed={value ? 3 : 4} shadow={false} fill={value ? colors.tint : colors.subtle} style={[styles.track, isRTL && styles.trackRtl]}>
+      <Animated.View style={[styles.thumb, { backgroundColor: value ? colors.highlight : colors.surface, borderColor: colors.line }, thumb]}>
+        {value ? <Icon name="check" size={13} color={colors.line} strokeWidth={3} /> : null}
+      </Animated.View>
+    </SketchSurface>
+  );
+}
+
+export function DoodleSwitch({ label, value, onValueChange }: { label: string; value: boolean; onValueChange: (value: boolean) => void }) {
+  const { isRTL } = useI18n();
+  return (
+    <MotionPressable
+      accessibilityRole="switch"
+      accessibilityLabel={label}
+      accessibilityState={{ checked: value }}
+      hitSlop={8}
+      squish={0.9}
+      tilt={0}
+      onPress={() => {
+        haptic.selection();
+        onValueChange(!value);
+      }}
+    >
+      <DoodleToggle value={value} isRTL={isRTL} />
+    </MotionPressable>
   );
 }
 
@@ -616,19 +647,16 @@ export function SwitchRow({
         haptic.selection();
         onValueChange(!value);
       }}
-      style={({ pressed }) => [
-        styles.switchRow,
-        isRTL && styles.rowReverse,
-        { backgroundColor: colors.surface, borderColor: colors.border, opacity: pressedOpacity(pressed) },
-      ]}
+      squish={0.98}
+      tilt={0}
     >
-      <View style={styles.flex}>
-        <Text style={[type.body, { color: colors.text }, directional(isRTL)]}>{label}</Text>
-        {detail ? <Text style={[type.meta, { color: colors.muted }, directional(isRTL)]}>{detail}</Text> : null}
-      </View>
-      <View style={[styles.track, { backgroundColor: value ? colors.tint : colors.border }, value !== isRTL && styles.trackOn]}>
-        <View style={[styles.thumb, { backgroundColor: value ? colors.onPrimary : colors.surface }]} />
-      </View>
+      <SketchSurface corner={18} seed={label.length + 17} shadow={false} style={[styles.switchRow, isRTL && styles.rowReverse]}>
+        <View style={styles.flex}>
+          <Text style={[type.bodyStrong, { color: colors.text }, directional(isRTL)]}>{label}</Text>
+          {detail ? <Text style={[type.meta, { color: colors.muted }, directional(isRTL)]}>{detail}</Text> : null}
+        </View>
+        <DoodleToggle value={value} isRTL={isRTL} />
+      </SketchSurface>
     </MotionPressable>
   );
 }
@@ -638,13 +666,18 @@ export function FormNotice({ message, tone = "error" }: { message: string; tone?
   const { isRTL, language } = useI18n();
   const color = tone === "error" ? colors.error : colors.tint;
   return (
-    <View
-      accessibilityLiveRegion="polite"
-      style={[styles.notice, isRTL && styles.rowReverse, { backgroundColor: colors.subtle, borderColor: color }]}
+    <SketchSurface
+      corner={14}
+      seed={9}
+      shadow={false}
+      dashed
+      stroke={color}
+      fill={colors.surface}
+      style={[styles.notice, isRTL && styles.rowReverse]}
     >
-      <MaterialIcons name={tone === "error" ? "error-outline" : "info-outline"} size={20} color={color} />
+      <Icon name={tone === "error" ? "error-outline" : "info-outline"} size={20} color={color} />
       <Text style={[type.meta, styles.flex, { color: colors.text }, directional(isRTL)]}>{localizeMessage(message, language)}</Text>
-    </View>
+    </SketchSurface>
   );
 }
 
@@ -659,9 +692,9 @@ export function InlineLink({ label, icon = "add", onPress }: { label: string; ic
         haptic.light();
         onPress();
       }}
-      style={({ pressed }) => [styles.inlineLink, isRTL && styles.rowReverse, isRTL && styles.selfEnd, { opacity: pressedOpacity(pressed) }]}
+      style={() => [styles.inlineLink, isRTL && styles.rowReverse, isRTL && styles.selfEnd]}
     >
-      <MaterialIcons name={icon} size={18} color={colors.tint} />
+      <Icon name={icon} size={18} color={colors.tint} />
       <Text style={[type.label, { color: colors.tint }]}>{label}</Text>
     </MotionPressable>
   );
@@ -674,43 +707,31 @@ const styles = StyleSheet.create({
   section: { gap: space.md },
   sectionBody: { gap: space.lg },
   field: { gap: 6 },
-  label: { fontWeight: "500" },
-  input: { borderRadius: radius.md, minHeight: touchTarget + 4, paddingHorizontal: 14, paddingVertical: 12 },
+  label: { fontFamily: fonts.bold },
+  sectionTitle: { fontFamily: fonts.hand, fontSize: 26, lineHeight: 30 },
+  input: { minHeight: touchTarget + 4, paddingHorizontal: 16, paddingVertical: 12 },
   textarea: { minHeight: 104, textAlignVertical: "top" },
-  picker: {
-    alignItems: "center",
-    borderRadius: radius.md,
-    borderWidth: 1,
-    flexDirection: "row",
-    gap: space.sm,
-    minHeight: touchTarget + 4,
-    overflow: "hidden",
-    paddingHorizontal: 14,
-  },
+  picker: { alignItems: "center", flexDirection: "row", gap: space.sm, minHeight: touchTarget + 4, paddingHorizontal: 16 },
   chip: {
     alignItems: "center",
-    borderRadius: radius.pill,
-    borderWidth: 1,
     flexDirection: "row",
     gap: 2,
     maxWidth: 200,
-    minHeight: 36,
-    overflow: "hidden",
+    minHeight: 38,
     paddingLeft: 14,
     paddingRight: 8,
   },
   chipText: { flexShrink: 1 },
   shade: { backgroundColor: "rgba(8,10,9,0.42)", flex: 1, justifyContent: "flex-end" },
-  sheet: { borderTopLeftRadius: radius.xl + 4, borderTopRightRadius: radius.xl + 4, maxHeight: "86%", overflow: "hidden", paddingTop: 10 },
-  handle: { alignSelf: "center", borderRadius: radius.pill, height: 4, marginBottom: space.sm, width: 36 },
+  sheet: { borderTopLeftRadius: radius.xl + 6, borderTopRightRadius: radius.xl + 6, borderLeftWidth: 2, borderRightWidth: 2, borderTopWidth: 2, maxHeight: "86%", overflow: "hidden", paddingTop: 10 },
+  handle: { alignSelf: "center", marginBottom: space.sm },
   sheetHeader: { alignItems: "center", flexDirection: "row", gap: space.md, paddingBottom: space.md, paddingHorizontal: space.gutter, paddingTop: space.xs },
   sheetFooter: { flexDirection: "row", gap: space.sm, paddingHorizontal: space.gutter, paddingTop: space.md },
-  sheetButton: { alignItems: "center", borderRadius: radius.md, flex: 1, justifyContent: "center", minHeight: touchTarget, overflow: "hidden", paddingHorizontal: space.lg },
-  close: { alignItems: "center", borderRadius: radius.pill, height: 36, justifyContent: "center", overflow: "hidden", width: 36 },
+  sheetButton: { alignItems: "center", justifyContent: "center", minHeight: touchTarget + 2, paddingHorizontal: space.lg },
+  close: { alignItems: "center", height: 38, justifyContent: "center", width: 38 },
   optionList: { paddingBottom: space.sm },
   option: {
     alignItems: "center",
-    borderRadius: radius.md,
     flexDirection: "row",
     gap: space.md,
     marginHorizontal: space.md,
@@ -723,27 +744,27 @@ const styles = StyleSheet.create({
   monthRow: { alignItems: "center", flexDirection: "row", marginBottom: space.sm },
   monthNav: { alignItems: "center", height: touchTarget, justifyContent: "center", width: touchTarget },
   monthLabel: { flex: 1, textAlign: "center" },
+  monthHand: { fontFamily: fonts.hand, fontSize: 26, lineHeight: 30 },
+  optionMark: { bottom: 0, justifyContent: "center", left: 4, position: "absolute", top: 0 },
   week: { flexDirection: "row" },
   weekday: { flex: 1, paddingVertical: space.sm, textAlign: "center" },
   dayCell: { alignItems: "center", flex: 1, height: touchTarget, justifyContent: "center" },
   dayDot: { alignItems: "center", borderRadius: radius.pill, height: 40, justifyContent: "center", width: 40 },
   timeBody: { gap: space.md, paddingHorizontal: space.gutter },
   timeGrid: { flexDirection: "row", flexWrap: "wrap", gap: space.sm },
-  timeCell: { alignItems: "center", borderRadius: radius.md, justifyContent: "center", minHeight: 44, minWidth: 64, overflow: "hidden", paddingHorizontal: space.sm },
+  timeCell: { alignItems: "center", borderRadius: 14, borderWidth: 1.5, justifyContent: "center", minHeight: 44, minWidth: 64, paddingHorizontal: space.sm },
+  timeActive: { transform: [{ rotate: "-3deg" }, { scale: 1.06 }] },
   switchRow: {
     alignItems: "center",
-    borderRadius: radius.md,
-    borderWidth: 1,
     flexDirection: "row",
     gap: space.md,
-    minHeight: 60,
-    overflow: "hidden",
-    paddingHorizontal: 14,
+    minHeight: 62,
+    paddingHorizontal: 16,
     paddingVertical: space.sm,
   },
-  track: { borderRadius: radius.pill, height: 28, justifyContent: "center", paddingHorizontal: 3, width: 48 },
-  trackOn: { alignItems: "flex-end" },
-  thumb: { borderRadius: radius.pill, elevation: 1, height: 22, width: 22 },
-  notice: { alignItems: "flex-start", borderRadius: radius.md, borderWidth: 1, flexDirection: "row", gap: space.sm, padding: space.md },
+  track: { alignItems: "flex-start", height: 30, justifyContent: "center", paddingHorizontal: 4, width: 54 },
+  trackRtl: { alignItems: "flex-end" },
+  thumb: { alignItems: "center", borderRadius: 12, borderWidth: 1.6, height: 22, justifyContent: "center", width: 22 },
+  notice: { alignItems: "flex-start", flexDirection: "row", gap: space.sm, padding: space.md },
   inlineLink: { alignItems: "center", alignSelf: "flex-start", flexDirection: "row", gap: 4, minHeight: 40 },
 });

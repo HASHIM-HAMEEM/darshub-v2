@@ -1,8 +1,8 @@
 import { useCallback, useEffect, useState } from "react";
-import { Linking, Platform, StyleSheet, Switch, Text, View } from "react-native";
+import { Linking, StyleSheet, Text, View } from "react-native";
 import { showAlert } from "@/lib/alert";
 import { ListGroup, ListItem, SectionHeader } from "@/components/dars-ui";
-import { BottomSheet, OptionList, type SheetOption } from "@/components/form-ui";
+import { BottomSheet, DoodleSwitch, OptionList, type SheetOption } from "@/components/form-ui";
 import { directional, space, type } from "@/constants/design";
 import { useColors } from "@/hooks/use-colors";
 import { useDars } from "@/lib/dars-context";
@@ -154,7 +154,6 @@ export function SettingsContent() {
     },
   };
   const active = sheet ? sheets[sheet] : null;
-  const switchColors = { trackColor: { false: colors.border, true: colors.tint }, thumbColor: Platform.OS === "android" ? colors.surface : undefined };
 
   return (
     <View>
@@ -172,11 +171,10 @@ export function SettingsContent() {
           title={ar ? "تذكيرات الدروس" : "Class reminders"}
           detail={ar ? "إشعار قبل بدء كل درس" : "Get notified before each class"}
           trailing={
-            <Switch
-              accessibilityLabel={ar ? "تذكيرات الدروس" : "Class reminders"}
+            <DoodleSwitch
+              label={ar ? "تذكيرات الدروس" : "Class reminders"}
               value={preferences.remindersEnabled}
               onValueChange={(value) => void setReminders(value)}
-              {...switchColors}
             />
           }
           last={!preferences.remindersEnabled}

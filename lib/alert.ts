@@ -11,8 +11,13 @@ export function showAlert(title: string, message?: string, buttons?: AlertButton
     window.alert(text);
     return;
   }
+  if (actions.length === 1 && buttons!.length === 1) {
+    window.alert(text);
+    actions[0].onPress?.();
+    return;
+  }
   if (actions.length === 1) {
-    if (buttons!.length === 1 || window.confirm(text)) actions[0].onPress?.();
+    if (window.confirm(text)) actions[0].onPress?.();
     return;
   }
   const choice = window.prompt(`${text}\n\n${actions.map((button, index) => `${index + 1}. ${button.text}`).join("\n")}`, "1");

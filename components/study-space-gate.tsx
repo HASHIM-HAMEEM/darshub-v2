@@ -1,4 +1,4 @@
-import MaterialIcons from "@expo/vector-icons/MaterialIcons";
+import { Icon } from "@/components/doodle";
 import { StyleSheet, Text, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { PrimaryButton } from "@/components/dars-ui";
@@ -25,7 +25,7 @@ export function StudySpaceGate({ children }: { children: React.ReactNode }) {
             accessibilityLiveRegion="polite"
             style={[styles.snackbar, isRTL && styles.rowReverse, { backgroundColor: colors.text, bottom: getTabListBottomPadding(insets.bottom) }]}
           >
-            <MaterialIcons name="cloud-off" size={18} color={colors.background} />
+            <Icon name="cloud-off" size={18} color={colors.background} />
             <Text style={[type.meta, styles.flex, { color: colors.background }, directional(isRTL)]}>
               {ar ? "لم يُحفظ آخر تعديل." : "Your latest change wasn't saved."}
             </Text>
@@ -40,7 +40,7 @@ export function StudySpaceGate({ children }: { children: React.ReactNode }) {
   return (
     <View style={[styles.container, { backgroundColor: colors.background }]}>
       <View style={[styles.icon, { backgroundColor: colors.subtle }]}>
-        <MaterialIcons name="sync-problem" size={32} color={colors.error} />
+        <Icon name="sync-problem" size={32} color={colors.error} />
       </View>
       <Text style={[type.title, styles.center, { color: colors.text }]}>{ar ? "تعذر تحميل بياناتك" : "Couldn't load your study space"}</Text>
       <Text style={[type.body, styles.center, styles.message, { color: colors.muted }]}>

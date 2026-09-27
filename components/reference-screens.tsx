@@ -1,7 +1,8 @@
 import { type ComponentProps, type ReactNode } from "react";
+import type MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import { FlatList, KeyboardAvoidingView, Platform, ScrollView, StyleSheet, Text, View } from "react-native";
 import { showAlert } from "@/lib/alert";
-import MaterialIcons from "@expo/vector-icons/MaterialIcons";
+import { Icon } from "@/components/doodle";
 import { ClassCard, EmptyState, IconButton, ListGroup, ListItem, PrimaryButton, SectionHeader, TopBar } from "@/components/dars-ui";
 import { FormNotice } from "@/components/form-ui";
 import { ScreenContainer } from "@/components/screen-container";
@@ -85,7 +86,7 @@ export function ReferenceDetail({
     <View>
       <View style={[styles.hero, isRTL && styles.rowReverse]}>
         <View style={[styles.heroIcon, { backgroundColor: colors.wash }]}>
-          <MaterialIcons name={icon} size={28} color={colors.tint} />
+          <Icon name={icon} size={28} color={colors.tint} />
         </View>
         <View style={styles.flex}>
           <Text style={[type.label, { color: colors.muted }, directional(isRTL)]}>{kind}</Text>

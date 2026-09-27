@@ -1,4 +1,4 @@
-import MaterialIcons from "@expo/vector-icons/MaterialIcons";
+import { Icon } from "@/components/doodle";
 import { router, useLocalSearchParams } from "expo-router";
 import { useState } from "react";
 import { Linking, ScrollView, Share, StyleSheet, Text, View } from "react-native";
@@ -156,7 +156,7 @@ export default function ClassDetailScreen() {
             <StatusPill status={item.status} />
             {item.seriesId ? (
               <View style={[styles.repeat, isRTL && styles.rowReverse, { backgroundColor: colors.subtle }]}>
-                <MaterialIcons name="repeat" size={13} color={colors.muted} />
+                <Icon name="repeat" size={13} color={colors.muted} />
                 <Text style={[type.caption, { color: colors.muted }]}>{ar ? "متكرر" : "Recurring"}</Text>
               </View>
             ) : null}

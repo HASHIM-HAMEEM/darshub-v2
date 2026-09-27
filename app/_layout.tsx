@@ -7,6 +7,10 @@ import { GestureHandlerRootView } from "react-native-gesture-handler";
 import "react-native-reanimated";
 import { Platform } from "react-native";
 import * as SplashScreen from "expo-splash-screen";
+import { useFonts } from "expo-font";
+import { Caveat_600SemiBold, Caveat_700Bold } from "@expo-google-fonts/caveat";
+import { ArefRuqaa_700Bold } from "@expo-google-fonts/aref-ruqaa";
+import { Nunito_400Regular, Nunito_600SemiBold, Nunito_700Bold, Nunito_800ExtraBold } from "@expo-google-fonts/nunito";
 import "@/lib/_core/nativewind-pressable";
 import { BrandIntro } from "@/components/brand-intro";
 import { StudySpaceGate } from "@/components/study-space-gate";
@@ -43,12 +47,26 @@ export default function RootLayout() {
   const [insets, setInsets] = useState<EdgeInsets>(initialInsets);
   const [frame, setFrame] = useState<Rect>(initialFrame);
 
+  const [fontsLoaded, fontError] = useFonts({
+    Caveat_600SemiBold,
+    Caveat_700Bold,
+    ArefRuqaa_700Bold,
+    Nunito_400Regular,
+    Nunito_600SemiBold,
+    Nunito_700Bold,
+    Nunito_800ExtraBold,
+  });
+  const fontsReady = fontsLoaded || Boolean(fontError);
+
   // Initialize Manus runtime for cookie injection from parent container
   useEffect(() => {
     initManusRuntime();
+  }, []);
+  useEffect(() => {
+    if (!fontsReady) return;
     const timer = setTimeout(() => { void SplashScreen.hideAsync(); }, 16);
     return () => clearTimeout(timer);
-  }, []);
+  }, [fontsReady]);
   useEffect(() => observeReminderResponses((classId) => router.push(`/class/${classId}` as never)), []);
 
   const handleSafeAreaUpdate = useCallback((metrics: Metrics) => {
@@ -129,6 +147,8 @@ export default function RootLayout() {
   );
 
   const shouldOverrideSafeArea = Platform.OS === "web";
+
+  if (!fontsReady) return null;
 
   if (shouldOverrideSafeArea) {
     return (
