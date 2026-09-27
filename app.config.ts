@@ -125,9 +125,13 @@ const config: ExpoConfig = {
         android: {
           buildArchs: ["armeabi-v7a", "arm64-v8a"],
           minSdkVersion: 24,
+          enableMinifyInReleaseBuilds: true,
+          enableShrinkResourcesInReleaseBuilds: true,
+          useLegacyPackaging: true,
         },
       },
     ],
+    "./plugins/with-release-signing",
   ],
   experiments: {
     typedRoutes: true,
