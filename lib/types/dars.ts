@@ -10,6 +10,7 @@ export type DarsPreferences = {
   remindersEnabled: boolean;
   reminderLeadMinutes: 10 | 30 | 60;
   themeMode?: ThemeMode;
+  reminderAlarm?: boolean;
 };
 
 export type Teacher = {

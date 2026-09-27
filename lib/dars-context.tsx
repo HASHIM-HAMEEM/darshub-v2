@@ -1,4 +1,5 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
+import { AppState } from "react-native";
 import { createSerializedTaskQueue, defaultPreferences, loadStudySpace, saveStudySpace, type StoredStudySpace } from "@/lib/dars-storage";
 import { syncClassReminders } from "@/lib/reminders";
 import { createRecurringOccurrences } from "@/lib/recurrence";
@@ -25,7 +26,9 @@ export function DarsProvider({ children }: { children: React.ReactNode }) {
   const hydrate = useCallback(() => { let active = true; setDataStatus("hydrating"); setIsHydrated(false); void loadStudySpace().then((saved) => { if (!active) return; setClasses(saved.classes); setTeachers(saved.teachers); setBooks(saved.books); setLocations(saved.locations); setPreferences(saved.preferences); setDataStatus("ready"); setIsHydrated(true); }).catch((error: unknown) => { if (!active) return; setDataStatus("error"); setSaveError(error instanceof Error ? error.message : "Dars could not read local study data."); }); return () => { active = false; }; }, []);
   useEffect(() => hydrate(), [hydrate]);
   useEffect(() => { if (!isHydrated) return; const snapshot: StoredStudySpace = { classes, teachers, books, locations, preferences }; setSaveStatus("saving"); void queue.run(() => saveStudySpace(snapshot)).then(() => { setSaveStatus("idle"); setSaveError(undefined); }).catch((error: unknown) => { setSaveStatus("error"); setSaveError(error instanceof Error ? error.message : "Dars could not save your latest changes locally."); }); }, [books, classes, isHydrated, locations, preferences, queue, saveRevision, teachers]);
-  useEffect(() => { if (!isHydrated) return; void syncClassReminders(classes, preferences).catch(() => undefined); }, [classes, isHydrated, preferences]);
+  const [reminderEpoch, setReminderEpoch] = useState(0);
+  useEffect(() => { const subscription = AppState.addEventListener("change", (state) => { if (state === "active") setReminderEpoch((value) => value + 1); }); return () => subscription.remove(); }, []);
+  useEffect(() => { if (!isHydrated) return; void syncClassReminders(classes, preferences, locations).catch(() => undefined); }, [classes, isHydrated, locations, preferences, reminderEpoch]);
 
   const value = useMemo<DarsContextValue>(() => ({
     classes, teachers, books, locations, preferences, isHydrated, dataStatus, saveStatus, saveError, classReferenceResult, retryHydration: () => { void hydrate(); }, retrySave: () => setSaveRevision((current) => current + 1), returnToClassWithReference: (kind, id) => setClassReferenceResult({ kind, id }), clearClassReferenceResult: () => setClassReferenceResult(null),
@@ -41,7 +44,7 @@ export function DarsProvider({ children }: { children: React.ReactNode }) {
     updatePreferences: (patch) => setPreferences((current) => ({ ...current, ...patch })),
     updateFutureSeries: (seriesId, fromOccurrenceIndex, draft) => { const checked = validateClassDraft(draft, { teachers, books, locations }); if (!checked.ok) return checked; const { status: _status, ...seriesDraft } = checked.draft; const first = classes.find((item) => item.seriesId === seriesId && (item.occurrenceIndex ?? 0) >= fromOccurrenceIndex && item.status === "upcoming"); if (!first) return { ok: false, message: "There are no upcoming classes left in this series." }; setClasses((current) => current.map((item) => item.seriesId === seriesId && (item.occurrenceIndex ?? 0) >= fromOccurrenceIndex && item.status === "upcoming" ? { ...item, ...seriesDraft, id: item.id, date: item.date, status: item.status, seriesId, occurrenceIndex: item.occurrenceIndex, type: "recurring" } : item)); return { ok: true, id: first.id, draft: checked.draft }; },
     cancelFutureSeries: (seriesId, fromOccurrenceIndex) => setClasses((current) => current.map((item) => item.seriesId === seriesId && (item.occurrenceIndex ?? 0) >= fromOccurrenceIndex && item.status === "upcoming" ? { ...item, status: "cancelled" } : item)),
-    restoreStudySpace: (space, strategy) => { const result = applyRestore({ classes, teachers, books, locations, preferences }, space, strategy); setClasses(result.space.classes); setTeachers(result.space.teachers); setBooks(result.space.books); setLocations(result.space.locations); setPreferences(result.space.preferences); return result.summary; },
+    restoreStudySpace: (space, strategy) => { const result = applyRestore({ classes, teachers, books, locations, preferences }, space, strategy); setClasses(result.space.classes); setTeachers(result.space.teachers); setBooks(result.space.books); setLocations(result.space.locations); setPreferences({ ...defaultPreferences, ...result.space.preferences }); return result.summary; },
   }), [books, classReferenceResult, classes, dataStatus, hydrate, isHydrated, locations, preferences, saveError, saveStatus, teachers]);
   return <DarsContext.Provider value={value}>{children}</DarsContext.Provider>;
 }

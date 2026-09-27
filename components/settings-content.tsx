@@ -65,7 +65,7 @@ export function SettingsContent() {
   };
 
   const verifyReminder = async () => {
-    const permission = await scheduleReminderVerification();
+    const permission = await scheduleReminderVerification({ alarm: preferences.reminderAlarm === true, language });
     refreshDiagnostics();
     if (permission !== "granted") {
       permissionAlert(permission);
@@ -182,6 +182,18 @@ export function SettingsContent() {
         {preferences.remindersEnabled ? (
           <>
             <ListItem icon="schedule" title={ar ? "وقت التذكير" : "Remind me"} value={labelOf(leadOptions, String(preferences.reminderLeadMinutes))} onPress={() => setSheet("lead")} />
+            <ListItem
+              icon="alarm"
+              title={ar ? "منبّه عند بدء الدرس" : "Alarm at class time"}
+              detail={ar ? "تنبيه عالٍ يتجاوز وضع عدم الإزعاج" : "A loud alert that can break through Do Not Disturb"}
+              trailing={
+                <DoodleSwitch
+                  label={ar ? "منبّه عند بدء الدرس" : "Alarm at class time"}
+                  value={preferences.reminderAlarm === true}
+                  onValueChange={(value) => updatePreferences({ reminderAlarm: value })}
+                />
+              }
+            />
             <ListItem
               icon="verified"
               title={ar ? "إرسال تذكير تجريبي" : "Send a test reminder"}

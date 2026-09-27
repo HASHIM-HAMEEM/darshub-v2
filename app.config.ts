@@ -62,7 +62,7 @@ const config: ExpoConfig = {
     edgeToEdgeEnabled: true,
     predictiveBackGestureEnabled: false,
     package: env.androidPackage,
-    permissions: ["POST_NOTIFICATIONS"],
+    permissions: ["POST_NOTIFICATIONS", "RECEIVE_BOOT_COMPLETED", "VIBRATE", "WAKE_LOCK", "USE_EXACT_ALARM", "SCHEDULE_EXACT_ALARM"],
     intentFilters: [
       {
         action: "VIEW",
