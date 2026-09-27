@@ -9,7 +9,7 @@ import { ScreenContainer } from "@/components/screen-container";
 import { directional, space, type } from "@/constants/design";
 import { useColors } from "@/hooks/use-colors";
 import { showAlert } from "@/lib/alert";
-import { buildAiPrompt, parseAiImport, type AiClassPlan } from "@/lib/ai-import";
+import { buildAiPrompt, localizeAiIssue, parseAiImport, type AiClassPlan } from "@/lib/ai-import";
 import { useDars } from "@/lib/dars-context";
 import { formatClassDate, formatTime, weekdayNames } from "@/lib/dars-utils";
 import { haptic } from "@/lib/haptics";
@@ -80,7 +80,10 @@ export default function AiImportScreen() {
   ].filter(Boolean).join(" · ");
 
   const writing = directional(isRTL);
-  const issueText = (index: number, message: string) => (index < 0 ? message : `${ar ? "الدرس" : "Class"} ${index + 1}: ${message}`);
+  const issueText = (index: number, message: string) => {
+    const localized = localizeAiIssue(message, language);
+    return index < 0 ? localized : `${ar ? "الدرس" : "Class"} ${index + 1}: ${localized}`;
+  };
 
   return (
     <ScreenContainer>

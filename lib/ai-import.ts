@@ -248,3 +248,26 @@ export function buildAiPrompt(refs: Refs, today: Date, language: "en" | "ar") {
     "- One entry per class; do not list every session separately.",
   ].filter(Boolean).join("\n");
 }
+
+const arabicIssues: Record<string, string> = {
+  "This doesn't look like JSON. Paste the full reply from the AI.": "هذا لا يبدو JSON. الصق رد الذكاء الاصطناعي كاملاً.",
+  "The JSON needs a \"classes\" list.": "يجب أن يحتوي JSON على قائمة \"classes\".",
+  "The \"classes\" list is empty.": "قائمة \"classes\" فارغة.",
+  [`Import up to ${maxAiImportClasses} classes at a time.`]: `يمكن استيراد ${maxAiImportClasses} درس كحد أقصى في كل مرة.`,
+  "Each class must be an object.": "يجب أن يكون كل درس كائناً.",
+  "Missing \"title\".": "العنوان \"title\" مفقود.",
+  "Missing \"teacher\".": "المعلم \"teacher\" مفقود.",
+  "Missing \"book\".": "الكتاب \"book\" مفقود.",
+  "Missing \"location\".": "المكان \"location\" مفقود.",
+  "\"date\" must be YYYY-MM-DD.": "يجب أن يكون \"date\" بصيغة YYYY-MM-DD.",
+  "\"startTime\" must be HH:MM (24-hour).": "يجب أن يكون \"startTime\" بصيغة HH:MM (٢٤ ساعة).",
+  "\"endTime\" must be HH:MM (24-hour).": "يجب أن يكون \"endTime\" بصيغة HH:MM (٢٤ ساعة).",
+  "\"endTime\" must be after \"startTime\".": "يجب أن يكون \"endTime\" بعد \"startTime\".",
+  "\"repeat\" must be none, weekly, every-2-weeks or monthly.": "يجب أن يكون \"repeat\" واحداً من: none أو weekly أو every-2-weeks أو monthly.",
+  "\"days\" must use names like \"mon\" or \"saturday\".": "استخدم في \"days\" أسماء مثل \"mon\" أو \"saturday\".",
+  "\"ends\" must be ongoing, {\"type\":\"sessions\",\"count\":N} or {\"type\":\"date\",\"date\":\"YYYY-MM-DD\"}.": "يجب أن يكون \"ends\" إما ongoing أو {\"type\":\"sessions\",\"count\":N} أو {\"type\":\"date\",\"date\":\"YYYY-MM-DD\"}.",
+};
+
+export function localizeAiIssue(message: string, language: "en" | "ar") {
+  return language === "ar" ? arabicIssues[message] ?? message : message;
+}

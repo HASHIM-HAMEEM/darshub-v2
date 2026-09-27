@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { buildAiPrompt, extractJson, parseAiImport, parseTime, planToDraft } from "../lib/ai-import";
+import { buildAiPrompt, extractJson, localizeAiIssue, parseAiImport, parseTime, planToDraft } from "../lib/ai-import";
 import type { Book, Location, Teacher } from "../lib/types/dars";
 
 const refs = {
@@ -67,5 +67,19 @@ describe("AI import", () => {
     expect(prompt).toContain("darshub-ai-classes");
     expect(prompt).toContain("Today is 2026-09-27 (Sunday)");
     expect(parseAiImport(prompt, refs).plans).toHaveLength(3);
+  });
+});
+
+describe("AI import localization", () => {
+  it("has an Arabic message for every validation error", () => {
+    const samples = ["nope", "{\"foo\":1}", "[]", "[1]", "[{}]", JSON.stringify([{ title: "A" }]), JSON.stringify([{ title: "A", teacher: "T" }]), JSON.stringify([{ title: "A", teacher: "T", book: "B" }]), JSON.stringify([{ title: "A", teacher: "T", book: "B", location: "L" }]),
+      JSON.stringify([{ title: "A", teacher: "T", book: "B", location: "L", date: "2026-10-01" }]), JSON.stringify([{ title: "A", teacher: "T", book: "B", location: "L", date: "2026-10-01", startTime: "10:00", endTime: "x" }]),
+      JSON.stringify([{ title: "A", teacher: "T", book: "B", location: "L", date: "2026-10-01", startTime: "10:00", endTime: "09:00" }]), JSON.stringify([{ title: "A", teacher: "T", book: "B", location: "L", date: "2026-10-01", startTime: "10:00", repeat: "yearly" }]),
+      JSON.stringify([{ title: "A", teacher: "T", book: "B", location: "L", date: "2026-10-01", startTime: "10:00", repeat: "weekly", days: ["xyz"] }]), JSON.stringify([{ title: "A", teacher: "T", book: "B", location: "L", date: "2026-10-01", startTime: "10:00", repeat: "weekly", ends: { type: "sessions", count: -1 } }])];
+    for (const sample of samples) {
+      const [issue] = parseAiImport(sample, refs).issues;
+      expect(issue, sample).toBeDefined();
+      expect(localizeAiIssue(issue.message, "ar"), issue.message).not.toBe(issue.message);
+    }
   });
 });
