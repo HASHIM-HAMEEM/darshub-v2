@@ -225,13 +225,13 @@ export function OptionList({
             style={[styles.option, isRTL && styles.rowReverse]}
           >
             {active ? (
-              <View style={styles.optionMark}>
+              <View style={[styles.optionMark, isRTL ? styles.optionMarkRtl : styles.optionMarkLtr]}>
                 <HighlightBlob width={220} height={40} />
               </View>
             ) : null}
-            {option.icon ? <Icon name={option.icon} size={20} color={active ? colors.tint : colors.muted} /> : null}
+            {option.icon ? <Icon name={option.icon} size={20} color={active ? colors.onHighlight : colors.muted} /> : null}
             <View style={styles.flex}>
-              <Text style={[active ? type.bodyStrong : type.body, { color: colors.text }, directional(isRTL)]}>
+              <Text style={[active ? type.bodyStrong : type.body, { color: active ? colors.onHighlight : colors.text }, directional(isRTL)]}>
                 {option.label}
               </Text>
               {option.detail ? (
@@ -745,7 +745,9 @@ const styles = StyleSheet.create({
   monthNav: { alignItems: "center", height: touchTarget, justifyContent: "center", width: touchTarget },
   monthLabel: { flex: 1, textAlign: "center" },
   monthHand: { fontFamily: fonts.hand, fontSize: 26, lineHeight: 30 },
-  optionMark: { bottom: 0, justifyContent: "center", left: 4, position: "absolute", top: 0 },
+  optionMark: { bottom: 0, justifyContent: "center", position: "absolute", top: 0 },
+  optionMarkLtr: { left: 4 },
+  optionMarkRtl: { right: 4 },
   week: { flexDirection: "row" },
   weekday: { flex: 1, paddingVertical: space.sm, textAlign: "center" },
   dayCell: { alignItems: "center", flex: 1, height: touchTarget, justifyContent: "center" },
