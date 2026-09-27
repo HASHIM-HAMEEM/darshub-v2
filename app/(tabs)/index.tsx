@@ -10,7 +10,7 @@ import { WeekStrip } from "@/components/week-strip";
 import { directional, radius, space, type } from "@/constants/design";
 import { useColors } from "@/hooks/use-colors";
 import { useDars } from "@/lib/dars-context";
-import { dayDifference, formatClassDate, formatTime, getRef, getUpcomingClasses } from "@/lib/dars-utils";
+import { dayDifference, formatClassDate, formatTime, getNextClass, getRef, getUpcomingClasses } from "@/lib/dars-utils";
 import { haptic } from "@/lib/haptics";
 import { useI18n } from "@/lib/i18n";
 import { getTabListBottomPadding } from "@/lib/responsive-layout";
@@ -81,7 +81,7 @@ export default function HomeScreen() {
   const today = isoToday();
   const [selectedDate, setSelectedDate] = useState(today);
   const upcoming = useMemo(() => getUpcomingClasses(classes), [classes]);
-  const nextClass = upcoming[0];
+  const nextClass = useMemo(() => getNextClass(classes), [classes]);
   const dayItems = useMemo(() => upcoming.filter((item) => item.date === selectedDate), [selectedDate, upcoming]);
   const later = useMemo(
     () => upcoming.filter((item) => item.date > selectedDate && item.id !== nextClass?.id).slice(0, 4),

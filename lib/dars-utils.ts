@@ -57,7 +57,8 @@ export const formatTime = (time: string, locale = "en-EG") => { const [hours, mi
 export const classDateTime = (item: DarsClass) => new Date(`${item.date}T${item.startTime}:00`).getTime();
 export const sortClasses = (items: DarsClass[]) => [...items].sort((a, b) => classDateTime(a) - classDateTime(b));
 export const getUpcomingClasses = (items: DarsClass[]) => sortClasses(items.filter((item) => item.status === "upcoming"));
-export const getNextClass = (items: DarsClass[]) => getUpcomingClasses(items)[0];
+export const classEndDateTime = (item: DarsClass) => new Date(`${item.date}T${item.endTime ?? item.startTime}:00`).getTime();
+export const getNextClass = (items: DarsClass[], now = Date.now()) => getUpcomingClasses(items).find((item) => classEndDateTime(item) >= now);
 export const getRef = <T extends { id: string }>(items: T[], id: string) => items.find((item) => item.id === id);
 export const classMatchesQuery = (item: DarsClass, refs: DarsReferences, query: string) => [item.title, item.subject, item.city, item.status, getRef(refs.teachers, item.teacherId)?.name ?? "", getRef(refs.books, item.bookId)?.name ?? "", getRef(refs.locations, item.locationId)?.name ?? ""].join(" ").toLocaleLowerCase().includes(query.trim().toLocaleLowerCase());
 export const dayDifference = (isoDate: string) => { const start = new Date(); start.setHours(12, 0, 0, 0); return Math.round((toDate(isoDate).getTime() - start.getTime()) / 86400000); };

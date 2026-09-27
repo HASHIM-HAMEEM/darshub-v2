@@ -24,6 +24,11 @@ describe("Dars schedule utilities", () => {
     expect(getNextClass(items)?.id).toBe("early");
   });
 
+  it("skips upcoming classes that have already finished", () => {
+    const items = [classItem("past", "2026-09-20", "19:00"), classItem("soon", "2026-09-28", "10:00")];
+    expect(getNextClass(items, new Date("2026-09-27T12:00:00").getTime())?.id).toBe("soon");
+  });
+
   it("matches a class against linked teacher, book, and location details", () => {
     const item = classItem("one", "2027-04-01", "17:00");
     const refs = { teachers: [{ id: "teacher-a", name: "Shaykh Ahmad", subjects: ["Hadith"] }], books: [{ id: "book-a", name: "Riyad as-Salihin", author: "Imam an-Nawawi", subject: "Hadith" }], locations: [{ id: "loc-a", name: "Masjid Al-Fath", address: "", city: "Cairo", area: "Downtown" }] };
