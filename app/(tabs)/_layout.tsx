@@ -43,7 +43,7 @@ function TabItem({ focused, label, icon, onPress, onLongPress }: { focused: bool
       <Animated.View style={iconStyle}>
         <Icon name={icon} size={25} color={focused ? colors.line : colors.muted} strokeWidth={focused ? 2.3 : 1.9} />
       </Animated.View>
-      <Text numberOfLines={1} style={[styles.label, { color: focused ? colors.line : colors.muted, fontFamily: focused ? handFont(label) : fonts.bold, fontSize: focused ? (handFont(label) === fonts.hand ? 17 : 13) : 11 }]}>
+      <Text numberOfLines={1} style={[styles.label, { color: focused ? colors.onHighlight : colors.muted, fontFamily: focused ? handFont(label) : fonts.bold, fontSize: focused ? (handFont(label) === fonts.hand ? 17 : 13) : 11 }]}>
         {label}
       </Text>
     </Pressable>

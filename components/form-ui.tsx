@@ -306,10 +306,10 @@ export function OptionPicker({
           tilt={-3}
         >
           <SketchSurface corner={16} seed={sheetTitle.length + 31} shadow={active} fill={active ? colors.highlight : colors.surface} stroke={active ? colors.line : colors.border} style={[styles.chip, isRTL && styles.rowReverse]}>
-            <Text numberOfLines={1} style={[type.label, styles.chipText, { color: active ? colors.line : colors.text }]}>
+            <Text numberOfLines={1} style={[type.label, styles.chipText, { color: active ? colors.onHighlight : colors.text }]}>
               {active ? selected?.label : placeholder}
             </Text>
-            <Icon name="expand-more" size={16} color={active ? colors.line : colors.muted} strokeWidth={2.2} />
+            <Icon name="expand-more" size={16} color={active ? colors.onHighlight : colors.muted} strokeWidth={2.2} />
           </SketchSurface>
         </MotionPressable>
       ) : (
@@ -451,12 +451,12 @@ export function DateField({
                     style={styles.dayCell}
                   >
                     <View style={[styles.dayDot, isSelected && { backgroundColor: colors.highlight }]}>
-                      {isSelected || isToday ? <ScribbleCircle size={40} color={isSelected ? colors.line : colors.tint} seed={day.getDate()} /> : null}
+                      {isSelected || isToday ? <ScribbleCircle size={40} color={isSelected ? colors.onHighlight : colors.tint} seed={day.getDate()} /> : null}
                       <Text
                         style={[
                           type.numeric,
                           {
-                            color: isSelected ? colors.line : inMonth ? colors.text : colors.muted,
+                            color: isSelected ? colors.onHighlight : inMonth ? colors.text : colors.muted,
                             opacity: inMonth || isSelected ? 1 : 0.5,
                           },
                         ]}
@@ -559,7 +559,7 @@ export function TimeField({
                 }}
                 style={cell(item === hour)}
               >
-                <Text style={[type.numeric, { color: item === hour ? colors.line : colors.text }]}>
+                <Text style={[type.numeric, { color: item === hour ? colors.onHighlight : colors.text }]}>
                   {formatTime(`${pad(item)}:00`, locale).replace(/[:٫.]00/, "")}
                 </Text>
               </MotionPressable>
@@ -578,7 +578,7 @@ export function TimeField({
                 }}
                 style={cell(item === minute)}
               >
-                <Text style={[type.numeric, { color: item === minute ? colors.line : colors.text }]}>:{pad(item)}</Text>
+                <Text style={[type.numeric, { color: item === minute ? colors.onHighlight : colors.text }]}>:{pad(item)}</Text>
               </MotionPressable>
             ))}
           </View>
@@ -595,11 +595,11 @@ function DoodleToggle({ value, isRTL }: { value: boolean; isRTL: boolean }) {
     progress.value = withSpring(value ? 1 : 0, { damping: 12, stiffness: 260 });
   }, [progress, value]);
   const direction = isRTL ? -1 : 1;
-  const thumb = useAnimatedStyle(() => ({ transform: [{ translateX: direction * 22 * progress.value }, { rotate: `${progress.value * 180}deg` }] }));
+  const thumb = useAnimatedStyle(() => ({ transform: [{ translateX: direction * 22 * progress.value }, { rotate: `${progress.value * 360}deg` }] }));
   return (
     <SketchSurface corner={15} seed={value ? 3 : 4} shadow={false} fill={value ? colors.tint : colors.subtle} style={[styles.track, isRTL && styles.trackRtl]}>
       <Animated.View style={[styles.thumb, { backgroundColor: value ? colors.highlight : colors.surface, borderColor: colors.line }, thumb]}>
-        {value ? <Icon name="check" size={13} color={colors.line} strokeWidth={3} /> : null}
+        {value ? <Icon name="check" size={13} color={colors.onHighlight} strokeWidth={3} /> : null}
       </Animated.View>
     </SketchSurface>
   );

@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { classMatchesQuery, dayDifference, formatClassDate, formatClassDateParts, getNextClass, getUpcomingClasses, sortClasses } from "../lib/dars-utils";
+import { classMatchesQuery, dayDifference, formatClassDate, formatClassDateParts, getNextClass, hijriParts, getUpcomingClasses, sortClasses } from "../lib/dars-utils";
 import type { DarsClass } from "../lib/types/dars";
 
 const classItem = (id: string, date: string, startTime: string, status: DarsClass["status"] = "upcoming"): DarsClass => ({
@@ -58,5 +58,12 @@ describe("Dars schedule utilities", () => {
     expect(arabic.weekday).toBeTruthy();
     expect(arabic.day).toBeTruthy();
     expect(arabic.day).not.toBe(english.day);
+  });
+});
+
+describe("hijriParts", () => {
+  it("resolves Umm al-Qura dates without relying on Intl calendar support", () => {
+    expect(hijriParts(new Date("2026-09-27T12:00:00"))).toEqual({ year: 1448, month: 4, day: 16 });
+    expect(hijriParts(new Date("2025-03-01T12:00:00"))).toEqual({ year: 1446, month: 9, day: 1 });
   });
 });

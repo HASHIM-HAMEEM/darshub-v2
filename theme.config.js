@@ -10,6 +10,7 @@ const themeColors = {
   border: { light: '#E5DCC6', dark: '#363945' },
   line: { light: '#1E1B2E', dark: '#E9E2D2' },
   highlight: { light: '#FFE07A', dark: '#E8C35A' },
+  onHighlight: { light: '#1E1B2E', dark: '#1E1B2E' },
   coral: { light: '#FF9A76', dark: '#F08A68' },
   sky: { light: '#9ED8FF', dark: '#6FB7E6' },
   lilac: { light: '#CDBBFF', dark: '#A893F0' },

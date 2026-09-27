@@ -89,7 +89,7 @@ export function SketchSurface({
     <View onLayout={onLayout} style={[surfaceStyles.stack, style]}>
       {path ? (
         <Svg pointerEvents="none" style={surfaceStyles.ink} width={size.width} height={size.height}>
-          {shadow ? <Path d={path} fill={shadowColor ?? colors.line} translateX={offset} translateY={offset} /> : null}
+          {shadow ? <Path d={path} fill={shadowColor ?? colors.line} transform={`translate(${offset}, ${offset})`} /> : null}
           <Path
             d={path}
             fill={fill ?? colors.surface}

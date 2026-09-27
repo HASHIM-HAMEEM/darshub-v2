@@ -63,8 +63,8 @@ export function WeekStrip({
                   <HighlightBlob width={38} height={38} seed={date.getDate()} />
                 </View>
               ) : null}
-              <ScribbleCircle size={42} active={selected || isToday} color={selected ? colors.line : colors.tint} seed={date.getDate() + 2} strokeWidth={selected ? 2.4 : 1.6} />
-              <Text style={[styles.numeral, { color: selected ? colors.line : colors.text }]}>{date.getDate()}</Text>
+              <ScribbleCircle size={42} active={selected || isToday} color={selected ? colors.onHighlight : colors.tint} seed={date.getDate() + 2} strokeWidth={selected ? 2.4 : 1.6} />
+              <Text style={[styles.numeral, { color: selected ? colors.onHighlight : colors.text }]}>{date.getDate()}</Text>
             </View>
             <View style={styles.dots}>
               {Array.from({ length: Math.min(count, 3) }, (_, index) => (

@@ -132,7 +132,6 @@ export default function RootLayout() {
             <Stack.Screen name="location/form" options={{ presentation: "modal", animation: "slide_from_bottom", animationDuration: 320 }} />
             <Stack.Screen name="books" />
             <Stack.Screen name="locations" />
-            <Stack.Screen name="search" />
             <Stack.Screen name="settings" />
             <Stack.Screen name="oauth/callback" />
           </Stack>

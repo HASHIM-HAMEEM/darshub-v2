@@ -10,6 +10,7 @@ export const themeColors: {
   border: { light: string; dark: string };
   line: { light: string; dark: string };
   highlight: { light: string; dark: string };
+  onHighlight: { light: string; dark: string };
   coral: { light: string; dark: string };
   sky: { light: string; dark: string };
   lilac: { light: string; dark: string };

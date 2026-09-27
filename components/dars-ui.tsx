@@ -268,7 +268,7 @@ function Chip({ label, active, onPress, seed }: { label: string; active: boolean
   return (
     <MotionPressable accessibilityRole="button" accessibilityState={{ selected: active }} squish={0.9} tilt={-3} onPress={onPress}>
       <SketchSurface corner={16} seed={seed} shadow={active} fill={active ? colors.highlight : colors.surface} stroke={active ? colors.line : colors.border} style={styles.chip}>
-        <Text style={[type.label, { color: active ? colors.line : colors.text }]}>{label}</Text>
+        <Text style={[type.label, { color: active ? colors.onHighlight : colors.text }]}>{label}</Text>
       </SketchSurface>
     </MotionPressable>
   );
@@ -337,7 +337,7 @@ export function SegmentedControl<T extends string>({
             >
               {active ? (
                 <SketchSurface corner={14} seed={index + 50} fill={colors.highlight} style={styles.segmentItem}>
-                  <Text numberOfLines={1} style={[type.label, { color: colors.line }]}>{labels[item]}</Text>
+                  <Text numberOfLines={1} style={[type.label, { color: colors.onHighlight }]}>{labels[item]}</Text>
                 </SketchSurface>
               ) : (
                 <View style={styles.segmentItem}>
@@ -640,7 +640,7 @@ export function PrimaryButton({
   const { isRTL } = useI18n();
   const palette = {
     primary: { fill: colors.tint, foreground: colors.onPrimary, stroke: colors.line },
-    tonal: { fill: colors.highlight, foreground: colors.line, stroke: colors.line },
+    tonal: { fill: colors.highlight, foreground: colors.onHighlight, stroke: colors.line },
     outline: { fill: colors.surface, foreground: colors.text, stroke: colors.line },
     danger: { fill: colors.surface, foreground: colors.error, stroke: colors.error },
   }[variant];
@@ -693,8 +693,8 @@ export function Fab({ label, icon = "add", onPress }: { label: string; icon?: Ma
         }}
       >
         <SketchSurface corner={24} seed={77} fill={colors.highlight} style={[styles.fabBody, isRTL && styles.rowReverse]}>
-          <Icon name={icon} size={24} color={colors.line} strokeWidth={2.6} />
-          <Text style={[handStyle(label, styles.fabLabel), { color: colors.line }]}>{label}</Text>
+          <Icon name={icon} size={24} color={colors.onHighlight} strokeWidth={2.6} />
+          <Text style={[handStyle(label, styles.fabLabel), { color: colors.onHighlight }]}>{label}</Text>
         </SketchSurface>
       </MotionPressable>
     </Animated.View>
