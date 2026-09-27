@@ -185,7 +185,7 @@ export function SettingsContent() {
             <ListItem
               icon="alarm"
               title={ar ? "منبّه عند بدء الدرس" : "Alarm at class time"}
-              detail={ar ? "تنبيه عالٍ يتجاوز وضع عدم الإزعاج" : "A loud alert that can break through Do Not Disturb"}
+              detail={ar ? "تنبيه بصوت المنبّه عند بدء الدرس" : "Rings with the alarm sound when the class starts"}
               trailing={
                 <DoodleSwitch
                   label={ar ? "منبّه عند بدء الدرس" : "Alarm at class time"}
