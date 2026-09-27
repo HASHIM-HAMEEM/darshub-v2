@@ -62,7 +62,7 @@ export default function SearchScreen() {
       <ScrollView
         horizontal
         showsHorizontalScrollIndicator={false}
-        contentContainerStyle={[styles.chips, isRTL && styles.rowReverse]}
+        contentContainerStyle={styles.chips}
         style={styles.chipScroll}
       >
         <OptionPicker
@@ -144,7 +144,7 @@ export default function SearchScreen() {
         contentContainerStyle={[styles.content, { paddingBottom: getTabListBottomPadding(insets.bottom) + space.lg }]}
         ListHeaderComponent={header}
         ItemSeparatorComponent={() => <View style={styles.separator} />}
-        renderItem={({ item }) => <ClassCard item={item} teachers={teachers} books={books} locations={locations} compact />}
+        renderItem={({ item }) => <ClassCard item={item} teachers={teachers} books={books} locations={locations} compact showDate />}
         ListEmptyComponent={
           <EmptyState
             icon="search-off"

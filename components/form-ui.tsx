@@ -8,6 +8,7 @@ import { useColors } from "@/hooks/use-colors";
 import { formatClassDate, formatTime } from "@/lib/dars-utils";
 import { haptic } from "@/lib/haptics";
 import { useI18n } from "@/lib/i18n";
+import { localizeMessage } from "@/lib/validation-copy";
 import { useDisplayPreferences } from "@/lib/use-display-preferences";
 
 type MaterialIcon = React.ComponentProps<typeof MaterialIcons>["name"];
@@ -634,7 +635,7 @@ export function SwitchRow({
 
 export function FormNotice({ message, tone = "error" }: { message: string; tone?: "error" | "info" }) {
   const colors = useColors();
-  const { isRTL } = useI18n();
+  const { isRTL, language } = useI18n();
   const color = tone === "error" ? colors.error : colors.tint;
   return (
     <View
@@ -642,7 +643,7 @@ export function FormNotice({ message, tone = "error" }: { message: string; tone?
       style={[styles.notice, isRTL && styles.rowReverse, { backgroundColor: colors.subtle, borderColor: color }]}
     >
       <MaterialIcons name={tone === "error" ? "error-outline" : "info-outline"} size={20} color={color} />
-      <Text style={[type.meta, styles.flex, { color: colors.text }, directional(isRTL)]}>{message}</Text>
+      <Text style={[type.meta, styles.flex, { color: colors.text }, directional(isRTL)]}>{localizeMessage(message, language)}</Text>
     </View>
   );
 }

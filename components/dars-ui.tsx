@@ -5,7 +5,7 @@ import { ScrollView, StyleSheet, Text, TextInput, View } from "react-native";
 import { MotionPressable, pressedOpacity } from "@/components/motion-pressable";
 import { directional, hairline, radius, space, touchTarget, type } from "@/constants/design";
 import { useColors } from "@/hooks/use-colors";
-import { formatTime, getRef } from "@/lib/dars-utils";
+import { formatClassDate, formatTime, getRef } from "@/lib/dars-utils";
 import { haptic } from "@/lib/haptics";
 import { useI18n } from "@/lib/i18n";
 import type { Book, ClassStatus, DarsClass, Location, Teacher } from "@/lib/types/dars";
@@ -366,6 +366,7 @@ export function ClassCard({
   locations,
   onPress,
   compact = false,
+  showDate = false,
 }: {
   item: DarsClass;
   teachers: Teacher[];
@@ -373,18 +374,21 @@ export function ClassCard({
   locations: Location[];
   onPress?: () => void;
   compact?: boolean;
+  showDate?: boolean;
 }) {
   const colors = useColors();
   const { isRTL } = useI18n();
+  const { dateDisplay, locale } = useDisplayPreferences();
   const teacher = getRef(teachers, item.teacherId);
   const book = getRef(books, item.bookId);
   const location = getRef(locations, item.locationId);
   const navigate = onPress ?? (() => router.push(`/class/${item.id}` as never));
   const meta = [teacher?.name, location?.name ?? item.city].filter(Boolean).join(" · ");
+  const dateLabel = showDate ? formatClassDate(item.date, dateDisplay, locale) : "";
   return (
     <MotionPressable
       accessibilityRole="button"
-      accessibilityLabel={`${item.title}, ${meta}`}
+      accessibilityLabel={[item.title, dateLabel, meta].filter(Boolean).join(", ")}
       onPress={() => {
         haptic.light();
         navigate();
@@ -401,6 +405,11 @@ export function ClassCard({
         <Text numberOfLines={2} style={[type.bodyStrong, { color: colors.text }, directional(isRTL)]}>
           {item.title}
         </Text>
+        {dateLabel ? (
+          <Text numberOfLines={1} style={[type.meta, { color: colors.tint }, directional(isRTL)]}>
+            {dateLabel}
+          </Text>
+        ) : null}
         {meta ? (
           <Text numberOfLines={1} style={[type.meta, { color: colors.muted }, directional(isRTL)]}>
             {meta}

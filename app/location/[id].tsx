@@ -1,5 +1,6 @@
 import { router, useLocalSearchParams } from "expo-router";
-import { Alert, Linking } from "react-native";
+import { Linking } from "react-native";
+import { showAlert } from "@/lib/alert";
 import { ReferenceDetail, ReferenceMissing, type InfoRow } from "@/components/reference-screens";
 import { useDars } from "@/lib/dars-context";
 import { useI18n } from "@/lib/i18n";
@@ -17,7 +18,7 @@ export default function LocationDetailScreen() {
     try {
       await Linking.openURL(location.mapLink || `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(query)}`);
     } catch {
-      Alert.alert(ar ? "الخريطة غير متاحة" : "Map unavailable", ar ? "تعذر فتح تطبيق الخرائط." : "Could not open a maps app.");
+      showAlert(ar ? "الخريطة غير متاحة" : "Map unavailable", ar ? "تعذر فتح تطبيق الخرائط." : "Could not open a maps app.");
     }
   };
   const rows: InfoRow[] = [

@@ -1,5 +1,6 @@
 import { type ComponentProps, type ReactNode } from "react";
-import { Alert, FlatList, KeyboardAvoidingView, Platform, ScrollView, StyleSheet, Text, View } from "react-native";
+import { FlatList, KeyboardAvoidingView, Platform, ScrollView, StyleSheet, Text, View } from "react-native";
+import { showAlert } from "@/lib/alert";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import { ClassCard, EmptyState, IconButton, ListGroup, ListItem, PrimaryButton, SectionHeader, TopBar } from "@/components/dars-ui";
 import { FormNotice } from "@/components/form-ui";
@@ -59,7 +60,7 @@ export function ReferenceDetail({
   const upcoming = linked.filter((item) => item.status === "upcoming").length;
   const confirmDelete = () => {
     if (linked.length) {
-      Alert.alert(
+      showAlert(
         ar ? "مستخدم في دروس" : "Still in use",
         ar
           ? `${linked.length} من الدروس مرتبطة بهذا العنصر. عدّل تلك الدروس أو احذفها أولاً.`
@@ -68,7 +69,7 @@ export function ReferenceDetail({
       );
       return;
     }
-    Alert.alert(deleteLabel, ar ? "سيتم حذفه من مكتبتك على هذا الجهاز." : "This removes it from your library on this device.", [
+    showAlert(deleteLabel, ar ? "سيتم حذفه من مكتبتك على هذا الجهاز." : "This removes it from your library on this device.", [
       { text: ar ? "إلغاء" : "Cancel", style: "cancel" },
       {
         text: ar ? "حذف" : "Delete",
@@ -122,7 +123,7 @@ export function ReferenceDetail({
         contentContainerStyle={styles.content}
         ListHeaderComponent={header}
         ItemSeparatorComponent={() => <View style={styles.separator} />}
-        renderItem={({ item }) => <ClassCard item={item} teachers={teachers} books={books} locations={locations} compact />}
+        renderItem={({ item }) => <ClassCard item={item} teachers={teachers} books={books} locations={locations} compact showDate />}
         ListEmptyComponent={
           <Text style={[type.meta, styles.empty, { color: colors.muted }, directional(isRTL)]}>
             {ar ? "لا توجد دروس مرتبطة بعد." : "No classes linked yet."}

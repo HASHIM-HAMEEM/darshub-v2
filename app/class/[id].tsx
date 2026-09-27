@@ -1,7 +1,8 @@
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import { router, useLocalSearchParams } from "expo-router";
 import { useState } from "react";
-import { Alert, Linking, ScrollView, Share, StyleSheet, Text, View } from "react-native";
+import { Linking, ScrollView, Share, StyleSheet, Text, View } from "react-native";
+import { showAlert } from "@/lib/alert";
 import { EmptyState, IconButton, ListGroup, ListItem, PrimaryButton, SectionHeader, StatusPill, SubjectBadge, TopBar } from "@/components/dars-ui";
 import { BottomSheet, OptionList } from "@/components/form-ui";
 import { ScreenContainer } from "@/components/screen-container";
@@ -59,7 +60,7 @@ export default function ClassDetailScreen() {
     try {
       await Linking.openURL(url);
     } catch {
-      Alert.alert(ar ? "الخريطة غير متاحة" : "Map unavailable", ar ? "تعذر فتح تطبيق الخرائط." : "Could not open a maps app.");
+      showAlert(ar ? "الخريطة غير متاحة" : "Map unavailable", ar ? "تعذر فتح تطبيق الخرائط." : "Could not open a maps app.");
     }
   };
   const share = () => {
@@ -80,7 +81,7 @@ export default function ClassDetailScreen() {
     setReminderOpen(false);
   };
   const confirmDelete = () =>
-    Alert.alert(
+    showAlert(
       ar ? "حذف الدرس؟" : "Delete class?",
       item.seriesId
         ? ar
@@ -104,7 +105,7 @@ export default function ClassDetailScreen() {
     );
   const cancelSeries = () => {
     if (!item.seriesId) return;
-    Alert.alert(
+    showAlert(
       ar ? "إلغاء المواعيد القادمة" : "Cancel future occurrences",
       ar ? "سيتم إلغاء هذا الموعد وكل المواعيد القادمة في هذه السلسلة." : "This cancels this and all future occurrences in this series.",
       [

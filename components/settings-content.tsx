@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
-import { Alert, Linking, Platform, StyleSheet, Switch, Text, View } from "react-native";
+import { Linking, Platform, StyleSheet, Switch, Text, View } from "react-native";
+import { showAlert } from "@/lib/alert";
 import { ListGroup, ListItem, SectionHeader } from "@/components/dars-ui";
 import { BottomSheet, OptionList, type SheetOption } from "@/components/form-ui";
 import { directional, space, type } from "@/constants/design";
@@ -34,7 +35,7 @@ export function SettingsContent() {
   }, [preferences.remindersEnabled, preferences.reminderLeadMinutes, classes, refreshDiagnostics]);
 
   const permissionAlert = (permission: ReminderDiagnostics["permission"]) =>
-    Alert.alert(
+    showAlert(
       t("permissionRequired"),
       permission === "unavailable"
         ? ar
@@ -70,7 +71,7 @@ export function SettingsContent() {
       permissionAlert(permission);
       return;
     }
-    Alert.alert(
+    showAlert(
       ar ? "تم جدولة اختبار" : "Test scheduled",
       ar ? "ستصل رسالة اختبار خلال ثوانٍ. أرسل التطبيق للخلفية للتحقق من ظهورها." : "A test alert arrives in a few seconds. Send the app to the background to confirm it appears.",
     );
@@ -81,9 +82,9 @@ export function SettingsContent() {
       const result = await exportStudySpace({ classes, teachers, books, locations, preferences });
       haptic.success();
       if (result.kind === "saved")
-        Alert.alert(ar ? "تم حفظ التصدير" : "Export saved", ar ? "حُفظ ملف بيانات دارس هَب على هذا الجهاز." : "Your DarsHub data file has been saved on this device.");
+        showAlert(ar ? "تم حفظ التصدير" : "Export saved", ar ? "حُفظ ملف بيانات دارس هَب على هذا الجهاز." : "Your DarsHub data file has been saved on this device.");
     } catch {
-      Alert.alert(ar ? "تعذر التصدير" : "Export unavailable", ar ? "حاول مرة أخرى بعد لحظات." : "Please try again in a moment.");
+      showAlert(ar ? "تعذر التصدير" : "Export unavailable", ar ? "حاول مرة أخرى بعد لحظات." : "Please try again in a moment.");
     }
   };
 
@@ -97,9 +98,9 @@ export function SettingsContent() {
       const apply = (strategy: RestoreStrategy) => {
         restoreStudySpace(imported.data, strategy);
         haptic.success();
-        Alert.alert(ar ? "تمت الاستعادة" : "Restore complete", ar ? "تم تحديث بياناتك المحلية بأمان." : "Your local DarsHub data has been updated.");
+        showAlert(ar ? "تمت الاستعادة" : "Restore complete", ar ? "تم تحديث بياناتك المحلية بأمان." : "Your local DarsHub data has been updated.");
       };
-      Alert.alert(
+      showAlert(
         ar ? "مراجعة الاستعادة" : "Review restore",
         ar
           ? `يحتوي الملف على ${total} عنصر و${conflicts} تعارضات. الدمج يحتفظ بسجلاتك الحالية عند التعارض، والاستبدال يستبدل كل البيانات المحلية.`
@@ -111,7 +112,7 @@ export function SettingsContent() {
         ],
       );
     } catch {
-      Alert.alert(ar ? "ملف غير صالح" : "Invalid file", ar ? "اختر ملف تصدير JSON صالحاً من دارس هَب." : "Choose a valid DarsHub JSON export file.");
+      showAlert(ar ? "ملف غير صالح" : "Invalid file", ar ? "اختر ملف تصدير JSON صالحاً من دارس هَب." : "Choose a valid DarsHub JSON export file.");
     }
   };
 
