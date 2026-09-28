@@ -1,15 +1,37 @@
 import { router, useLocalSearchParams } from "expo-router";
-import { Alert, FlatList, Pressable, StyleSheet, Text, View } from "react-native";
-import { ClassCard, EmptyState, IconButton, PrimaryButton, ScreenTitle, SubjectBadge } from "@/components/dars-ui";
-import { ScreenContainer } from "@/components/screen-container";
-import { useColors } from "@/hooks/use-colors";
+import { SubjectBadge } from "@/components/dars-ui";
+import { ReferenceDetail, ReferenceMissing, type InfoRow } from "@/components/reference-screens";
 import { useDars } from "@/lib/dars-context";
+import { useI18n } from "@/lib/i18n";
 import { goBackOrHome } from "@/lib/navigation";
 
 export default function TeacherDetailScreen() {
-  const { id } = useLocalSearchParams<{ id: string }>(); const colors = useColors(); const { teachers, classes, books, locations, deleteTeacher } = useDars(); const teacher = teachers.find((item) => item.id === id); const linked = classes.filter((item) => item.teacherId === id);
-  const remove = () => Alert.alert(linked.length ? "Teacher is in use" : "Delete teacher?", linked.length ? `${linked.length} class${linked.length === 1 ? "" : "es"} still uses this teacher. Update or remove those classes first.` : "This removes the teacher from your local directory.", linked.length ? [{ text: "OK" }] : [{ text: "Cancel", style: "cancel" }, { text: "Delete", style: "destructive", onPress: () => { if (deleteTeacher(id).ok) router.replace("/(tabs)/teachers" as never); } }]);
-  if (!teacher) return <ScreenContainer><EmptyState title="Teacher not found" message="This teacher is no longer in your directory." actionLabel="Back to teachers" onAction={() => router.replace("/(tabs)/teachers" as never)} /></ScreenContainer>;
-  return <ScreenContainer><FlatList data={linked} keyExtractor={(item) => item.id} contentContainerStyle={styles.content} renderItem={({ item }) => <View style={styles.item}><ClassCard item={item} teachers={teachers} books={books} locations={locations} /></View>} ListHeaderComponent={<View style={styles.header}><ScreenTitle eyebrow="Teacher" title={teacher.name} action={<IconButton icon="close" label="Close teacher" onPress={goBackOrHome} />} /><View style={[styles.hero, { backgroundColor: colors.surface, borderColor: colors.border }]}><View style={styles.subjects}>{teacher.subjects.map((subject) => <SubjectBadge key={subject} label={subject} />)}</View>{teacher.mainLocation ? <Text style={[styles.location, { color: colors.muted }]}>{teacher.mainLocation}</Text> : null}{teacher.bio ? <Text style={[styles.bio, { color: colors.text }]}>{teacher.bio}</Text> : null}<PrimaryButton label="Edit teacher" icon="edit" onPress={() => router.push(`/teacher/form?id=${teacher.id}` as never)} /><Pressable accessibilityRole="button" accessibilityLabel="Delete teacher" onPress={remove} style={({ pressed }) => [styles.secondaryAction, { borderColor: colors.border, opacity: pressed ? 0.65 : 1 }]}><Text style={[styles.deleteText, { color: colors.error }]}>{linked.length ? `Used by ${linked.length} class${linked.length === 1 ? "" : "es"}` : "Delete teacher"}</Text></Pressable></View><Text style={[styles.heading, { color: colors.text }]}>Linked classes</Text></View>} ListEmptyComponent={<EmptyState title="No linked classes" message="When a class is scheduled with this teacher, it will appear here." />} /></ScreenContainer>;
+  const { id } = useLocalSearchParams<{ id: string }>();
+  const { teachers, classes, deleteTeacher } = useDars();
+  const { language } = useI18n();
+  const ar = language === "ar";
+  const teacher = teachers.find((item) => item.id === id);
+  if (!teacher)
+    return <ReferenceMissing title={ar ? "المعلم غير موجود" : "Teacher not found"} message={ar ? "لم يعد هذا المعلم في مكتبتك." : "This teacher is no longer in your library."} />;
+  const rows: InfoRow[] = [
+    ...(teacher.mainLocation ? [{ icon: "location-on" as const, title: teacher.mainLocation, detail: ar ? "المكان الرئيسي" : "Main location" }] : []),
+    ...(teacher.contact ? [{ icon: "call" as const, title: teacher.contact, detail: ar ? "التواصل" : "Contact" }] : []),
+    ...(teacher.bio ? [{ icon: "notes" as const, title: teacher.bio, detail: ar ? "نبذة" : "About" }] : []),
+  ];
+  return (
+    <ReferenceDetail
+      icon="person-outline"
+      kind={ar ? "معلم" : "Teacher"}
+      title={teacher.name}
+      subtitle={teacher.title}
+      badges={teacher.subjects.length ? teacher.subjects.map((subject) => <SubjectBadge key={subject} label={subject} />) : undefined}
+      rows={rows}
+      linked={classes.filter((item) => item.teacherId === teacher.id)}
+      deleteLabel={ar ? "حذف المعلم" : "Delete teacher"}
+      onEdit={() => router.push(`/teacher/form?id=${teacher.id}` as never)}
+      onDelete={() => {
+        if (deleteTeacher(teacher.id).ok) goBackOrHome();
+      }}
+    />
+  );
 }
-const styles = StyleSheet.create({ content: { padding: 16, paddingBottom: 36 }, header: { gap: 16, paddingBottom: 8 }, hero: { borderRadius: 16, borderWidth: StyleSheet.hairlineWidth, gap: 12, padding: 16, shadowColor: "#000", shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.04, shadowRadius: 8 }, subjects: { flexDirection: "row", flexWrap: "wrap", gap: 7 }, location: { fontSize: 13 }, bio: { fontSize: 13.5, lineHeight: 20 }, heading: { fontSize: 14, fontWeight: "600", marginTop: 2 }, item: { marginTop: 12 }, secondaryAction: { alignItems: "center", borderRadius: 12, borderWidth: StyleSheet.hairlineWidth, minHeight: 46, justifyContent: "center" }, deleteText: { fontSize: 13, fontWeight: "700" } });

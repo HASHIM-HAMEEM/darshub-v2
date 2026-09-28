@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { classMatchesQuery, dayDifference, formatClassDate, formatClassDateParts, getNextClass, getUpcomingClasses, sortClasses } from "../lib/dars-utils";
+import { classMatchesQuery, dayDifference, formatClassDate, formatClassDateParts, getNextClass, hijriParts, getUpcomingClasses, sortClasses } from "../lib/dars-utils";
 import type { DarsClass } from "../lib/types/dars";
 
 const classItem = (id: string, date: string, startTime: string, status: DarsClass["status"] = "upcoming"): DarsClass => ({
@@ -22,6 +22,11 @@ describe("Dars schedule utilities", () => {
     expect(sortClasses(items).map((item) => item.id)).toEqual(["done", "early", "late"]);
     expect(getUpcomingClasses(items).map((item) => item.id)).toEqual(["early", "late"]);
     expect(getNextClass(items)?.id).toBe("early");
+  });
+
+  it("skips upcoming classes that have already finished", () => {
+    const items = [classItem("past", "2026-09-20", "19:00"), classItem("soon", "2026-09-28", "10:00")];
+    expect(getNextClass(items, new Date("2026-09-27T12:00:00").getTime())?.id).toBe("soon");
   });
 
   it("matches a class against linked teacher, book, and location details", () => {
@@ -58,5 +63,12 @@ describe("Dars schedule utilities", () => {
     expect(arabic.weekday).toBeTruthy();
     expect(arabic.day).toBeTruthy();
     expect(arabic.day).not.toBe(english.day);
+  });
+});
+
+describe("hijriParts", () => {
+  it("resolves Umm al-Qura dates without relying on Intl calendar support", () => {
+    expect(hijriParts(new Date("2026-09-27T12:00:00"))).toEqual({ year: 1448, month: 4, day: 16 });
+    expect(hijriParts(new Date("2025-03-01T12:00:00"))).toEqual({ year: 1446, month: 9, day: 1 });
   });
 });

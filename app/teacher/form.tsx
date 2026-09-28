@@ -1,18 +1,75 @@
 import { router, useLocalSearchParams } from "expo-router";
 import { useEffect, useMemo, useState } from "react";
-import { ScrollView, StyleSheet, Text, View } from "react-native";
 import { FormSection, TextField } from "@/components/form-ui";
-import { IconButton, PrimaryButton, ScreenTitle } from "@/components/dars-ui";
-import { ScreenContainer } from "@/components/screen-container";
-import { useColors } from "@/hooks/use-colors";
+import { ReferenceForm } from "@/components/reference-screens";
 import { useDars } from "@/lib/dars-context";
-import { goBackOrHome } from "@/lib/navigation";
+import { useI18n } from "@/lib/i18n";
 
 export default function TeacherFormScreen() {
-  const { id, returnTo } = useLocalSearchParams<{ id?: string; returnTo?: string }>(); const colors = useColors(); const { teachers, saveTeacher, returnToClassWithReference } = useDars(); const existing = useMemo(() => teachers.find((item) => item.id === id), [id, teachers]);
-  const [name, setName] = useState(""); const [title, setTitle] = useState("Shaykh"); const [subjects, setSubjects] = useState(""); const [location, setLocation] = useState(""); const [bio, setBio] = useState(""); const [error, setError] = useState(""); const [saving, setSaving] = useState(false);
-  useEffect(() => { if (!existing) return; setName(existing.name); setTitle(existing.title ?? ""); setSubjects(existing.subjects.join(", ")); setLocation(existing.mainLocation ?? ""); setBio(existing.bio ?? ""); }, [existing]);
-  const save = () => { if (saving) return; setSaving(true); const result = saveTeacher({ name, title: title || undefined, subjects: subjects.split(","), mainLocation: location || undefined, bio: bio || undefined }, existing?.id); if (!result.ok) { setError(result.message); setSaving(false); return; } if (returnTo === "class") { returnToClassWithReference("teacher", result.id); router.back(); return; } router.replace(`/teacher/${result.id}` as never); };
-  return <ScreenContainer><ScrollView keyboardShouldPersistTaps="handled" contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}><ScreenTitle eyebrow={existing ? "Update teacher" : "New teacher"} title={existing ? "Edit teacher" : "Add teacher"} action={<IconButton icon="close" label="Close form" onPress={goBackOrHome} />} /><Text style={[styles.intro, { color: colors.muted }]}>{existing ? "Update the directory once—every linked class stays in sync." : "Keep this short. You can add more details later."}</Text><FormSection title="Teacher details"><TextField label="Name" value={name} onChangeText={(value) => { setName(value); setError(""); }} placeholder="e.g. Shaykh Mahmoud" required /><TextField label="Title" value={title} onChangeText={setTitle} placeholder="Shaykh, Ustadh…" /><TextField label="Subjects taught" value={subjects} onChangeText={(value) => { setSubjects(value); setError(""); }} placeholder="Hadith, Fiqh" required /><TextField label="Main location" value={location} onChangeText={setLocation} placeholder="Where they teach most often" /><TextField label="Short bio / notes" value={bio} onChangeText={setBio} placeholder="Optional context for your directory" multiline /></FormSection>{error ? <View style={[styles.notice, { backgroundColor: colors.wash, borderColor: colors.error }]}><Text style={[styles.noticeText, { color: colors.error }]}>{error}</Text></View> : null}<PrimaryButton label={saving ? "Saving…" : existing ? "Save changes" : "Save teacher"} icon="check" disabled={saving} onPress={save} /></ScrollView></ScreenContainer>;
+  const { id, returnTo } = useLocalSearchParams<{ id?: string; returnTo?: string }>();
+  const { teachers, saveTeacher, returnToClassWithReference } = useDars();
+  const { language } = useI18n();
+  const ar = language === "ar";
+  const existing = useMemo(() => teachers.find((item) => item.id === id), [id, teachers]);
+  const [name, setName] = useState("");
+  const [title, setTitle] = useState("");
+  const [subjects, setSubjects] = useState("");
+  const [location, setLocation] = useState("");
+  const [contact, setContact] = useState("");
+  const [bio, setBio] = useState("");
+  const [error, setError] = useState("");
+  const [saving, setSaving] = useState(false);
+  useEffect(() => {
+    if (!existing) return;
+    setName(existing.name);
+    setTitle(existing.title ?? "");
+    setSubjects(existing.subjects.join(", "));
+    setLocation(existing.mainLocation ?? "");
+    setContact(existing.contact ?? "");
+    setBio(existing.bio ?? "");
+  }, [existing]);
+  const save = () => {
+    if (saving) return;
+    setSaving(true);
+    const result = saveTeacher(
+      { name, title: title || undefined, subjects: subjects.split(/[,،]/), mainLocation: location || undefined, contact: contact || undefined, bio: bio || undefined },
+      existing?.id,
+    );
+    if (!result.ok) {
+      setError(result.message);
+      setSaving(false);
+      return;
+    }
+    if (returnTo === "class") {
+      returnToClassWithReference("teacher", result.id);
+      router.back();
+      return;
+    }
+    router.replace(`/teacher/${result.id}` as never);
+  };
+  const clear = (setter: (value: string) => void) => (value: string) => {
+    setter(value);
+    setError("");
+  };
+  return (
+    <ReferenceForm
+      title={existing ? (ar ? "تعديل المعلم" : "Edit teacher") : ar ? "معلم جديد" : "New teacher"}
+      intro={existing ? (ar ? "تبقى كل الدروس المرتبطة محدثة." : "Every linked class stays in sync.") : undefined}
+      error={error}
+      saving={saving}
+      saveLabel={existing ? (ar ? "حفظ التعديلات" : "Save changes") : ar ? "حفظ المعلم" : "Save teacher"}
+      onSave={save}
+    >
+      <FormSection title={ar ? "المعلم" : "Teacher"}>
+        <TextField label={ar ? "الاسم" : "Name"} value={name} onChangeText={clear(setName)} placeholder={ar ? "مثال: الشيخ محمود" : "e.g. Shaykh Mahmoud"} autoCapitalize="words" required />
+        <TextField label={ar ? "اللقب" : "Title"} value={title} onChangeText={setTitle} placeholder={ar ? "شيخ، أستاذ…" : "Shaykh, Ustadh…"} autoCapitalize="words" />
+        <TextField label={ar ? "المواد (مفصولة بفواصل)" : "Subjects (comma separated)"} value={subjects} onChangeText={clear(setSubjects)} placeholder="Hadith, Fiqh" required />
+      </FormSection>
+      <FormSection title={ar ? "تفاصيل اختيارية" : "Optional details"}>
+        <TextField label={ar ? "المكان الرئيسي" : "Main location"} value={location} onChangeText={setLocation} placeholder={ar ? "أين يدرّس غالباً" : "Where they teach most often"} />
+        <TextField label={ar ? "التواصل" : "Contact"} value={contact} onChangeText={setContact} placeholder={ar ? "هاتف أو بريد" : "Phone or email"} autoCapitalize="none" />
+        <TextField label={ar ? "نبذة / ملاحظات" : "Bio / notes"} value={bio} onChangeText={setBio} multiline />
+      </FormSection>
+    </ReferenceForm>
+  );
 }
-const styles = StyleSheet.create({ content: { gap: 16, padding: 16, paddingBottom: 36 }, intro: { fontSize: 13.5, lineHeight: 20, marginTop: -5 }, notice: { borderRadius: 12, borderWidth: StyleSheet.hairlineWidth, padding: 12 }, noticeText: { fontSize: 13, fontWeight: "600" } });

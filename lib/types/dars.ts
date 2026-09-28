@@ -1,6 +1,7 @@
 export type ClassStatus = "upcoming" | "completed" | "cancelled";
 export type ClassType = "one-time" | "recurring";
 export type DateDisplay = "gregorian" | "dual" | "hijri";
+export type ThemeMode = "system" | "light" | "dark";
 
 export type DarsPreferences = {
   appLanguage: "en" | "ar";
@@ -8,6 +9,8 @@ export type DarsPreferences = {
   dateLanguage: "en" | "ar";
   remindersEnabled: boolean;
   reminderLeadMinutes: 10 | 30 | 60;
+  themeMode?: ThemeMode;
+  reminderAlarm?: boolean;
 };
 
 export type Teacher = {
@@ -54,13 +57,19 @@ export type DarsClass = {
   notes?: string;
   type: ClassType;
   recurrenceRule?: string;
+  recurrenceDays?: number[];
+  recurrenceEnd?: RecurrenceEnd;
+  seriesStart?: string;
   seriesId?: string;
   occurrenceIndex?: number;
+  skippedOccurrences?: number[];
   language?: string;
   status: ClassStatus;
   reminderId?: string;
   reminderLeadMinutes?: 10 | 30 | 60;
 };
+
+export type RecurrenceEnd = { kind: "ongoing" } | { kind: "count"; count: number } | { kind: "until"; date: string };
 
 export type ClassDraft = Omit<DarsClass, "id">;
 

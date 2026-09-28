@@ -41,7 +41,7 @@ const env = {
 const config: ExpoConfig = {
   name: env.appName,
   slug: env.appSlug,
-  version: "1.0.0",
+  version: "1.1.0",
   orientation: "portrait",
   icon: "./assets/images/icon.png",
   scheme: env.scheme,
@@ -56,13 +56,16 @@ const config: ExpoConfig = {
   },
   android: {
     adaptiveIcon: {
-      backgroundColor: "#1E5B4F",
+      backgroundColor: "#FBF6EA",
       foregroundImage: "./assets/images/android-icon-foreground.png",
+      backgroundImage: "./assets/images/android-icon-background.png",
+      monochromeImage: "./assets/images/android-icon-monochrome.png",
     },
+    versionCode: 2,
     edgeToEdgeEnabled: true,
     predictiveBackGestureEnabled: false,
     package: env.androidPackage,
-    permissions: ["POST_NOTIFICATIONS"],
+    permissions: ["POST_NOTIFICATIONS", "RECEIVE_BOOT_COMPLETED", "VIBRATE", "WAKE_LOCK", "USE_EXACT_ALARM", "SCHEDULE_EXACT_ALARM"],
     intentFilters: [
       {
         action: "VIEW",
@@ -103,12 +106,12 @@ const config: ExpoConfig = {
       "expo-splash-screen",
       {
         image: "./assets/images/splash-icon.png",
-        imageWidth: 156,
+        imageWidth: 180,
         resizeMode: "contain",
-        backgroundColor: "#1E5B4F",
+        backgroundColor: "#FBF6EA",
         dark: {
-          image: "./assets/images/splash-icon.png",
-          backgroundColor: "#1E5B4F",
+          image: "./assets/images/splash-icon-dark.png",
+          backgroundColor: "#17181D",
         },
       },
     ],
@@ -125,9 +128,23 @@ const config: ExpoConfig = {
         android: {
           buildArchs: ["armeabi-v7a", "arm64-v8a"],
           minSdkVersion: 24,
+          enableMinifyInReleaseBuilds: true,
+          enableShrinkResourcesInReleaseBuilds: true,
+          useLegacyPackaging: true,
+          extraProguardRules: [
+            "-keep class expo.modules.notifications.** { *; }",
+            "-keepclassmembers class * implements java.io.Serializable {",
+            "  static final long serialVersionUID;",
+            "  private void writeObject(java.io.ObjectOutputStream);",
+            "  private void readObject(java.io.ObjectInputStream);",
+            "  java.lang.Object writeReplace();",
+            "  java.lang.Object readResolve();",
+            "}",
+          ].join("\n"),
         },
       },
     ],
+    "./plugins/with-release-signing",
   ],
   experiments: {
     typedRoutes: true,

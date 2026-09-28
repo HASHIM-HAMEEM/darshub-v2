@@ -1,18 +1,72 @@
 import { router, useLocalSearchParams } from "expo-router";
 import { useEffect, useMemo, useState } from "react";
-import { ScrollView, StyleSheet, Text, View } from "react-native";
 import { FormSection, TextField } from "@/components/form-ui";
-import { IconButton, PrimaryButton, ScreenTitle } from "@/components/dars-ui";
-import { ScreenContainer } from "@/components/screen-container";
-import { useColors } from "@/hooks/use-colors";
+import { ReferenceForm } from "@/components/reference-screens";
 import { useDars } from "@/lib/dars-context";
-import { goBackOrHome } from "@/lib/navigation";
+import { useI18n } from "@/lib/i18n";
 
 export default function LocationFormScreen() {
-  const { id, returnTo } = useLocalSearchParams<{ id?: string; returnTo?: string }>(); const colors = useColors(); const { locations, saveLocation, returnToClassWithReference } = useDars(); const existing = useMemo(() => locations.find((item) => item.id === id), [id, locations]);
-  const [name, setName] = useState(""); const [address, setAddress] = useState(""); const [city, setCity] = useState("Cairo"); const [area, setArea] = useState(""); const [mapLink, setMapLink] = useState(""); const [notes, setNotes] = useState(""); const [error, setError] = useState(""); const [saving, setSaving] = useState(false);
-  useEffect(() => { if (!existing) return; setName(existing.name); setAddress(existing.address); setCity(existing.city); setArea(existing.area); setMapLink(existing.mapLink ?? ""); setNotes(existing.notes ?? ""); }, [existing]);
-  const save = () => { if (saving) return; setSaving(true); const result = saveLocation({ name, address, city, area, mapLink: mapLink || undefined, notes: notes || undefined }, existing?.id); if (!result.ok) { setError(result.message); setSaving(false); return; } if (returnTo === "class") { returnToClassWithReference("location", result.id); router.back(); return; } router.replace(`/location/${result.id}` as never); };
-  return <ScreenContainer><ScrollView keyboardShouldPersistTaps="handled" contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}><ScreenTitle eyebrow={existing ? "Update place" : "New place"} title={existing ? "Edit location" : "Add location"} action={<IconButton icon="close" label="Close form" onPress={goBackOrHome} />} /><Text style={[styles.intro, { color: colors.muted }]}>{existing ? "Updating a place keeps every linked class city aligned." : "Add the place students need to recognize. Map links are optional."}</Text><FormSection title="Place details"><TextField label="Place name" value={name} onChangeText={(value) => { setName(value); setError(""); }} placeholder="e.g. Masjid Al-Huda" required /><TextField label="Address" value={address} onChangeText={setAddress} placeholder="Street or detailed address" /><TextField label="City" value={city} onChangeText={(value) => { setCity(value); setError(""); }} placeholder="Cairo" required /><TextField label="Area" value={area} onChangeText={(value) => { setArea(value); setError(""); }} placeholder="e.g. Nasr City" required /><TextField label="Map link" value={mapLink} onChangeText={(value) => { setMapLink(value); setError(""); }} placeholder="https://maps.google.com/..." /><TextField label="Notes" value={notes} onChangeText={setNotes} placeholder="Optional entrance or meeting note" multiline /></FormSection>{error ? <View style={[styles.notice, { backgroundColor: colors.wash, borderColor: colors.error }]}><Text style={[styles.noticeText, { color: colors.error }]}>{error}</Text></View> : null}<PrimaryButton label={saving ? "Saving…" : existing ? "Save changes" : "Save location"} icon="check" disabled={saving} onPress={save} /></ScrollView></ScreenContainer>;
+  const { id, returnTo } = useLocalSearchParams<{ id?: string; returnTo?: string }>();
+  const { locations, saveLocation, returnToClassWithReference } = useDars();
+  const { language } = useI18n();
+  const ar = language === "ar";
+  const existing = useMemo(() => locations.find((item) => item.id === id), [id, locations]);
+  const [name, setName] = useState("");
+  const [address, setAddress] = useState("");
+  const [city, setCity] = useState(() => locations[0]?.city ?? "");
+  const [area, setArea] = useState("");
+  const [mapLink, setMapLink] = useState("");
+  const [notes, setNotes] = useState("");
+  const [error, setError] = useState("");
+  const [saving, setSaving] = useState(false);
+  useEffect(() => {
+    if (!existing) return;
+    setName(existing.name);
+    setAddress(existing.address);
+    setCity(existing.city);
+    setArea(existing.area);
+    setMapLink(existing.mapLink ?? "");
+    setNotes(existing.notes ?? "");
+  }, [existing]);
+  const save = () => {
+    if (saving) return;
+    setSaving(true);
+    const result = saveLocation({ name, address, city, area, mapLink: mapLink || undefined, notes: notes || undefined }, existing?.id);
+    if (!result.ok) {
+      setError(result.message);
+      setSaving(false);
+      return;
+    }
+    if (returnTo === "class") {
+      returnToClassWithReference("location", result.id);
+      router.back();
+      return;
+    }
+    router.replace(`/location/${result.id}` as never);
+  };
+  const clear = (setter: (value: string) => void) => (value: string) => {
+    setter(value);
+    setError("");
+  };
+  return (
+    <ReferenceForm
+      title={existing ? (ar ? "تعديل المكان" : "Edit place") : ar ? "مكان جديد" : "New place"}
+      intro={existing ? (ar ? "تحديث المكان يحدّث مدينة كل الدروس المرتبطة." : "Updating a place keeps every linked class city aligned.") : undefined}
+      error={error}
+      saving={saving}
+      saveLabel={existing ? (ar ? "حفظ التعديلات" : "Save changes") : ar ? "حفظ المكان" : "Save place"}
+      onSave={save}
+    >
+      <FormSection title={ar ? "المكان" : "Place"}>
+        <TextField label={ar ? "اسم المكان" : "Place name"} value={name} onChangeText={clear(setName)} placeholder={ar ? "مثال: مسجد الهدى" : "e.g. Masjid Al-Huda"} autoCapitalize="words" required />
+        <TextField label={ar ? "المنطقة" : "Area"} value={area} onChangeText={clear(setArea)} placeholder={ar ? "مثال: مدينة نصر" : "e.g. Nasr City"} autoCapitalize="words" required />
+        <TextField label={ar ? "المدينة" : "City"} value={city} onChangeText={clear(setCity)} placeholder={ar ? "القاهرة" : "Cairo"} autoCapitalize="words" required />
+      </FormSection>
+      <FormSection title={ar ? "تفاصيل اختيارية" : "Optional details"}>
+        <TextField label={ar ? "العنوان" : "Address"} value={address} onChangeText={setAddress} placeholder={ar ? "الشارع أو العنوان التفصيلي" : "Street or detailed address"} />
+        <TextField label={ar ? "رابط الخريطة" : "Map link"} value={mapLink} onChangeText={clear(setMapLink)} placeholder="https://maps.google.com/..." keyboardType="url" />
+        <TextField label={ar ? "ملاحظات" : "Notes"} value={notes} onChangeText={setNotes} placeholder={ar ? "المدخل أو مكان اللقاء" : "Entrance or meeting note"} multiline />
+      </FormSection>
+    </ReferenceForm>
+  );
 }
-const styles = StyleSheet.create({ content: { gap: 16, padding: 16, paddingBottom: 36 }, intro: { fontSize: 13.5, lineHeight: 20, marginTop: -5 }, notice: { borderRadius: 12, borderWidth: StyleSheet.hairlineWidth, padding: 12 }, noticeText: { fontSize: 13, fontWeight: "600" } });

@@ -1,19 +1,41 @@
-import { useEffect, useRef, useState } from "react";
-import { AccessibilityInfo, Animated, Easing, Image, Platform, StyleSheet } from "react-native";
-
-const darsLogo = require("../assets/images/icon.png");
-const launchBackground = "#1E5B4F";
+import { useEffect, useState } from "react";
+import { Platform, StyleSheet, Text } from "react-native";
+import Animated, { Easing, runOnJS, useAnimatedStyle, useReducedMotion, useSharedValue, withDelay, withSpring, withTiming } from "react-native-reanimated";
+import { LogoMark, PaperDots, Squiggle } from "@/components/doodle";
+import { fonts } from "@/constants/design";
+import { useColors } from "@/hooks/use-colors";
 
 export function BrandIntro() {
-  const [visible, setVisible] = useState(Platform.OS !== "web"); const [reduceMotion, setReduceMotion] = useState(false); const opacity = useRef(new Animated.Value(1)).current; const scale = useRef(new Animated.Value(1)).current;
-  useEffect(() => { void AccessibilityInfo.isReduceMotionEnabled().then(setReduceMotion); const subscription = AccessibilityInfo.addEventListener("reduceMotionChanged", setReduceMotion); return () => subscription.remove(); }, []);
+  const colors = useColors();
+  const reduce = useReducedMotion();
+  const [visible, setVisible] = useState(Platform.OS !== "web");
+  const fade = useSharedValue(1);
+  const pop = useSharedValue(reduce ? 1 : 0.6);
   useEffect(() => {
     if (!visible) return;
-    const handoff = reduceMotion ? Animated.timing(opacity, { duration: 1, toValue: 0, useNativeDriver: true }) : Animated.sequence([Animated.delay(160), Animated.parallel([Animated.timing(opacity, { duration: 260, easing: Easing.out(Easing.cubic), toValue: 0, useNativeDriver: true }), Animated.timing(scale, { duration: 260, easing: Easing.out(Easing.cubic), toValue: 1.035, useNativeDriver: true })])]);
-    handoff.start(() => setVisible(false));
-  }, [opacity, reduceMotion, scale, visible]);
+    const hide = () => setVisible(false);
+    pop.value = withSpring(1, { damping: 9, stiffness: 180 });
+    fade.value = withDelay(reduce ? 0 : 1050, withTiming(0, { duration: reduce ? 1 : 320, easing: Easing.out(Easing.cubic) }, (finished) => {
+      if (finished) runOnJS(hide)();
+    }));
+  }, [fade, pop, reduce, visible]);
+  const overlay = useAnimatedStyle(() => ({ opacity: fade.value }));
+  const mark = useAnimatedStyle(() => ({ transform: [{ scale: pop.value }, { rotate: `${(1 - pop.value) * -18}deg` }] }));
   if (!visible) return null;
-  return <Animated.View pointerEvents="none" style={[styles.overlay, { backgroundColor: launchBackground, opacity }]}><Animated.View style={{ transform: [{ scale }] }}><Image accessibilityLabel="Dars logo" source={darsLogo} style={styles.image} /></Animated.View></Animated.View>;
+  return (
+    <Animated.View pointerEvents="none" style={[styles.overlay, { backgroundColor: colors.background }, overlay]}>
+      <PaperDots />
+      <Animated.View style={[styles.center, mark]}>
+        <LogoMark size={148} />
+        <Text accessibilityRole="header" style={[styles.word, { color: colors.text }]}>DarsHub</Text>
+        <Squiggle width={150} height={12} delay={260} strokeWidth={3.4} />
+      </Animated.View>
+    </Animated.View>
+  );
 }
 
-const styles = StyleSheet.create({ overlay: { alignItems: "center", bottom: 0, justifyContent: "center", left: 0, position: "absolute", right: 0, top: 0, zIndex: 50 }, image: { height: 156, resizeMode: "cover", width: 156 } });
+const styles = StyleSheet.create({
+  overlay: { alignItems: "center", bottom: 0, justifyContent: "center", left: 0, position: "absolute", right: 0, top: 0, zIndex: 50 },
+  center: { alignItems: "center" },
+  word: { fontFamily: fonts.hand, fontSize: 54, lineHeight: 64, marginTop: 8, paddingHorizontal: 12 },
+});
